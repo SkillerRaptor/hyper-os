@@ -1,0 +1,29 @@
+MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+HYPEROS_BASE_DIR := $(patsubst %/,%,$(dir $(MAKEFILE_PATH)))
+
+ARCH_FLAGS =
+STANDARD_FLAGS = -std=c++17 -nostdinc++ -nostdlib -nostdinc -mno-red-zone
+FILE_FLAGS = -ffreestanding -fno-stack-protector -fno-ident
+WARNING_FLAGS = -Wextra -Wall -Wundef -Wcast-qual -Wwrite-strings
+FLAVOR_FLAGS = -fomit-frame-pointer -mregparm=3 -march=i386 -m32 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections -fmerge-all-constants -fno-unroll-loops -falign-functions=1 -falign-jumps=1 -falign-loops=1 -fno-pie -fno-pic
+OPTIMIZATION_FLAGS = -Os -fno-asynchronous-unwind-tables
+SUGGEST_FLAGS = -Wsuggest-attribute=noreturn -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-override
+
+INCLUDE_FLAGS += \
+    -I. \
+    -I$(HYPEROS_BASE_DIR)/Libraries \
+    -I$(HYPEROS_BASE_DIR)/Libraries/LibC
+
+LINK_FLAGS += \
+    -L$(HYPEROS_BASE_DIR)/Libraries/LibC \
+    -L$(HYPEROS_BASE_DIR)/Libraries/LibC/LibC.a
+
+DEFINES = -D__is_libk
+
+CXX = i686-elf-g++
+CXXFLAGS = $(WARNING_FLAGS) $(OPTIMIZATION_FLAGS) $(FILE_FLAGS) $(FLAVOR_FLAGS) $(ARCH_FLAGS) $(STANDARD_FLAGS) $(INCLUDE_FLAGS) $(SUGGEST_FLAGS) $(DEFINES)
+
+AR = i686-elf-ar
+AS = i686-elf-as
+LD = i686-elf-gcc
+LDFLAGS = -T linker.ld -ffreestanding -O2 -lgcc -nostdlib
