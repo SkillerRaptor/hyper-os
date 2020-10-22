@@ -1,4 +1,6 @@
 # Compiled Object files
+*.a
+*.d
 *.slo
 *.lo
 *.o
@@ -7,3 +9,6 @@
 # Running Files
 *.bin
 *.iso
+
+# Editor Files
+.vscode
