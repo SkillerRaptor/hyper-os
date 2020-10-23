@@ -18,7 +18,7 @@ __BEGIN_DECLS
 
 /* Formatted input/output */
 int printf(const char* fmt, ...);
-bool print(const char* str, size_t num);
+int sprintf(char* str, const char* fmt, ...);
 
 /* Character input/output */
 int putchar(int character);
