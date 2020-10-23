@@ -9,6 +9,7 @@ mkdir -p iso/boot/grub
 cd iso/boot/grub
 curl -L -O https://github.com/whitequark/story-os/raw/master/grub/stage2_eltorito --output ./stage2_eltorito
 printf 'default 0\ntimeout 0\n\ntitle HyperOS\nkernel /boot/HyperOS.bin' > menu.lst
+printf 'menuentry "HyperOS" {\n    multiboot /boot/HyperOS.bin\n}' > grub.cfg
 cd ../../..
 cp HyperOS.bin iso/boot
 
