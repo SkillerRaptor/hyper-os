@@ -7,16 +7,17 @@ OBJS = \
 	./Libraries/LibC/stdio.o \
 	./Libraries/LibC/stdlib.o
 
-APP = HyperOS
+CRTI_OBJ = ./Kernel/Boot/crti.o
+CRTBEGIN_OBJ := $(shell $(LD) $(LDFLAGS) -print-file-name=crtbegin.o)
+CRTEND_OBJ := $(shell $(LD) $(LDFLAGS) -print-file-name=crtend.o)
+CRTN_OBJ = ./Kernel/Boot/crtn.o
 
-BOOTLOADER = ./Kernel/Boot/boot.bin
+APP = HyperOS
 
 all: $(BOOTLOADER) $(APP)
 
 $(APP): $(OBJS)
-	@echo "LD $@"; $(LD) $(LDFLAGS) -o ./HyperOS.bin ./Kernel/Boot/boot.bin $(LINK_FLAGS) $(OBJS)
+	@echo "LD $@"; $(LD) $(LDFLAGS) -o ./HyperOS.bin ./Kernel/Boot/boot.o $(LINK_FLAGS) $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJS) $(CRTEND_OBJ) $(CRTN_OBJ)
 
-$(BOOTLOADER): ./Kernel/Boot/boot.s
-	@echo "AS $<"; $(AS) -o $@ $<
 
 -include $(OBJS:%.o=%.d)

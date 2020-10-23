@@ -1,15 +1,23 @@
 include ../Makefile.common
 
 OBJS = \
-	Kernel.o \
-	Core/Terminal.o
+	./Kernel.o \
+	./Core/Terminal.o
 
 APP = Kernel
 
-all: $(APP)
+BOOTLOADER_OBJS = \
+	./Boot/boot.o \
+	./Boot/crti.o \
+	./Boot/crtn.o
+
+all: $(BOOTLOADER_OBJS) $(APP)
 
 $(APP): $(OBJS)
-	@echo "BUILD $@";
+	@echo "BUILD $@ CXX";
+
+.s.o:
+	@echo "AS $<"; $(AS) -o $@ $<
 
 .cpp.o:
 	@echo "CXX $<"; $(CXX) $(CXXFLAGS) $(LINK_FLAGS) -o $@ -c $<

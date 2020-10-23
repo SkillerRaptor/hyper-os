@@ -25,4 +25,4 @@ CXXFLAGS = $(WARNING_FLAGS) $(OPTIMIZATION_FLAGS) $(FILE_FLAGS) $(FLAVOR_FLAGS) 
 AR = i686-elf-ar
 AS = i686-elf-as
 LD = i686-elf-gcc
-LDFLAGS = -T linker.ld -ffreestanding -O2 -lgcc -nostdlib
+LDFLAGS = -T linker.ld -ffreestanding -O2 -lgcc -nostdlib -nodefaultlibs -nostartfiles

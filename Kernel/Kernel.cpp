@@ -3,10 +3,13 @@
 #include "Core/Terminal.h"
 
 __BEGIN_DECLS
-void KernelMain()
+void KernelInit()
 {
     Terminal::Initialize();
+}
 
+void KernelMain()
+{
     printf("Hello, Kernel World!\n");
 }
 __END_DECLS
