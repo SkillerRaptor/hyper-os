@@ -1,0 +1,8 @@
+include ../Makefile.common
+
+GLOBAL_OBJS = \
+	$(HYPEROS_BASE_DIR)/Kernel/Kernel.o \
+	$(HYPEROS_BASE_DIR)/Kernel/Core/Terminal.o \
+	$(HYPEROS_BASE_DIR)/Libraries/LibC/string.o \
+	$(HYPEROS_BASE_DIR)/Libraries/LibC/stdio.o \
+	$(HYPEROS_BASE_DIR)/Libraries/LibC/stdlib.o

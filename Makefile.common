@@ -15,8 +15,7 @@ INCLUDE_FLAGS += \
     -I$(HYPEROS_BASE_DIR)/Libraries/LibC
 
 LINK_FLAGS += \
-    -L$(HYPEROS_BASE_DIR)/Libraries/LibC \
-    -L$(HYPEROS_BASE_DIR)/Libraries/LibC/LibC.a
+    -L$(HYPEROS_BASE_DIR)/Libraries/LibC/libC.a
 
 DEFINES = -D__is_libk
 

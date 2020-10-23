@@ -1,9 +1,6 @@
 include ../Makefile.common
 
-LIB_OBJS = \
-	$(HYPEROS_BASE_DIR)/Libraries/LibC/string.o \
-	$(HYPEROS_BASE_DIR)/Libraries/LibC/stdio.o \
-	$(HYPEROS_BASE_DIR)/Libraries/LibC/stdlib.o
+include ../Makefile.files
 
 OBJS = \
 	Kernel.o \
@@ -18,7 +15,7 @@ DEFINES += \
 all: $(BOOTLOADER) $(APP)
 
 $(APP): $(OBJS)
-	@echo "LD $@"; $(LD) $(LDFLAGS) -o $(HYPEROS_BASE_DIR)/HyperOS.bin Boot/boot.bin $(LINK_FLAGS) $(OBJS) $(LIB_OBJS)
+	@echo "LD $@"; $(LD) $(LDFLAGS) -o $(HYPEROS_BASE_DIR)/HyperOS.bin Boot/boot.bin $(LINK_FLAGS) $(GLOBAL_OBJS)
 
 $(BOOTLOADER): Boot/boot.s
 	@echo "AS $<"; $(AS) -o $@ $<
