@@ -1,22 +1,5 @@
 #include <LibC/stdio.h>
 
-int putchar(int character)
-{
-#if defined(__is_libk)
-    char c = (char)character;
-    Terminal::Write(&c, sizeof(c));
-#else
-    // TODO: Implement stdio and the write system call.
-#endif
-
-    return character;
-}
-
-int puts(const char* str)
-{
-    return printf("%s\n", str);
-}
-
 bool print(const char* str, size_t num)
 {
     const unsigned char* bytes = (const unsigned char*)str;
@@ -56,10 +39,28 @@ int printf(const char* fmt, ...)
             continue;
         }
 
-        const char* fmt_begun_at = fmt++;
+        const char* fmtBegin = fmt++;
 
-        if (*fmt == 'c')
+        switch (*fmt)
         {
+        case 'i':
+            fmt++;
+            int i = va_arg(parameters, int);
+            size_t len = 0;
+            do {
+                ++len;
+                i /= 10;
+            } while (i);
+            if (!maxrem)
+            {
+                // TODO: Set errno to EOVERFLOW.
+                return -1;
+            }
+            //if (!print(i, len))
+            //   return -1;
+            written += len;
+            break;
+        case 'c':
             fmt++;
             char c = (char)va_arg(parameters, int);
             if (!maxrem)
@@ -70,9 +71,8 @@ int printf(const char* fmt, ...)
             if (!print(&c, sizeof(c)))
                 return -1;
             written++;
-        }
-        else if (*fmt == 's')
-        {
+            break;
+        case 's':
             fmt++;
             const char* str = va_arg(parameters, const char*);
             size_t len = strlen(str);
@@ -83,10 +83,9 @@ int printf(const char* fmt, ...)
             if (!print(str, len))
                 return -1;
             written += len;
-        }
-        else
-        {
-            fmt = fmt_begun_at;
+            break;
+        default:
+            fmt = fmtBegin;
             size_t len = strlen(fmt);
             if (maxrem < len) {
                 // TODO: Set errno to EOVERFLOW.
@@ -96,9 +95,27 @@ int printf(const char* fmt, ...)
                 return -1;
             written += len;
             fmt += len;
+            break;
         }
     }
 
     va_end(parameters);
     return written;
+}
+
+int putchar(int character)
+{
+#if defined(__is_libk)
+    char c = (char)character;
+    Terminal::Write(&c, sizeof(c));
+#else
+    // TODO: Implement stdio and the write system call.
+#endif
+
+    return character;
+}
+
+int puts(const char* str)
+{
+    return printf("%s\n", str);
 }

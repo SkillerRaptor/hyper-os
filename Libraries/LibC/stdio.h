@@ -16,8 +16,11 @@ __BEGIN_DECLS
 #define EOF (-1)
 #endif
 
+/* Formatted input/output */
 int printf(const char* fmt, ...);
 bool print(const char* str, size_t num);
+
+/* Character input/output */
 int putchar(int character);
 int puts(const char* str);
 
