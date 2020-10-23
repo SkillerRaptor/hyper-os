@@ -23,6 +23,6 @@ $(APP): $(OBJS)
 	@echo "CXX $<"; $(CXX) $(CXXFLAGS) $(LINK_FLAGS) -o $@ -c $<
 
 clean:
-	@echo "CLEAN"; rm -f $(APP) $(OBJS) *.d
+	@echo "CLEAN"; rm -f $(APP) $(OBJS) $(BOOTLOADER_OBJS) *.d
 
 -include $(OBJS:%.o=%.d)
