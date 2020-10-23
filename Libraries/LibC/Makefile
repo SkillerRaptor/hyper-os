@@ -1,13 +1,11 @@
 include ../../Makefile.common
 
 OBJS = \
-    	stdio.o \
-    	stdlib.o \
-    	string.o
+    stdio.o \
+    stdlib.o \
+    string.o
 
 APP = libc.a
-
-DEFINES += \
 
 all: $(APP)
 
