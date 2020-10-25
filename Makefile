@@ -19,5 +19,4 @@ all: $(BOOTLOADER) $(APP)
 $(APP): $(OBJS)
 	@echo "LD $@"; $(LD) $(LDFLAGS) -o ./HyperOS.bin ./Kernel/Boot/boot.o $(LINK_FLAGS) $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJS) $(CRTEND_OBJ) $(CRTN_OBJ)
 
-
 -include $(OBJS:%.o=%.d)
