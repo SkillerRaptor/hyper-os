@@ -7,6 +7,9 @@ OBJS = \
 	./Libraries/LibC/stdio.o \
 	./Libraries/LibC/stdlib.o
 
+LD = i686-elf-gcc
+LDFLAGS = -T linker.ld -ffreestanding -O2 -lgcc -nostdlib -nodefaultlibs -nostartfiles
+
 CRTI_OBJ = ./Kernel/Boot/crti.o
 CRTBEGIN_OBJ := $(shell $(LD) $(LDFLAGS) -print-file-name=crtbegin.o)
 CRTEND_OBJ := $(shell $(LD) $(LDFLAGS) -print-file-name=crtend.o)

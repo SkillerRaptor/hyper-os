@@ -14,9 +14,6 @@ INCLUDE_FLAGS += \
     -I$(HYPEROS_BASE_DIR)/Libraries \
     -I$(HYPEROS_BASE_DIR)/Libraries/LibC
 
-LINK_FLAGS += \
-    -L$(HYPEROS_BASE_DIR)/Libraries/LibC/libC.a
-
 DEFINES = -D__is_libk
 
 CXX = i686-elf-g++
@@ -24,5 +21,3 @@ CXXFLAGS = $(WARNING_FLAGS) $(OPTIMIZATION_FLAGS) $(FILE_FLAGS) $(FLAVOR_FLAGS) 
 
 AR = i686-elf-ar
 AS = i686-elf-as
-LD = i686-elf-gcc
-LDFLAGS = -T linker.ld -ffreestanding -O2 -lgcc -nostdlib -nodefaultlibs -nostartfiles
