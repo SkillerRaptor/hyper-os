@@ -4,7 +4,7 @@
 
 class GDT
 {
-public:
+private:
     static constexpr size_t EntrySize = 8;
     static constexpr size_t EntryCount = 9;
     uint16_t m_ActiveEntries{ 0 };
