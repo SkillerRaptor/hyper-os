@@ -2,6 +2,7 @@ include ../Makefile.common
 
 OBJS = \
 	./Kernel.o \
+	./Core/GDT.o \
 	./Core/Terminal.o
 
 APP = Kernel

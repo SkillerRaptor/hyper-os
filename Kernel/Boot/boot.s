@@ -32,6 +32,7 @@ undefined behavior.
 */
 .section .bss
 .align 16
+
 stack_bottom:
 .skip 16384 # 16 KiB
 stack_top:
@@ -75,6 +76,7 @@ _start:
 	C++ features such as global constructors and exceptions will require
 	runtime support to work as well.
 	*/
+	call KernelEarlyMain
 	call KernelInit
 
 	/*

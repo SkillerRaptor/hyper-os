@@ -7,6 +7,8 @@
 #define ALWAYS_INLINE inline __attribute__ ((always_inline))
 #define __NORETURN __attribute__ ((noreturn))
 #define __MALLOC __attribute__ ((malloc))
+#define __PACKED __attribute__ ((packed))
+#define PACKED [[gnu::packed]]
 
 #ifdef __cplusplus
 #define __BEGIN_DECLS extern "C" {

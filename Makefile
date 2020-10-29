@@ -2,6 +2,7 @@ include ./Makefile.common
 
 OBJS = \
 	./Kernel/Kernel.o \
+	./Kernel/Core/GDT.o \
 	./Kernel/Core/Terminal.o \
 	./Libraries/LibC/string.o \
 	./Libraries/LibC/stdio.o \
