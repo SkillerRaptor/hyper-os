@@ -3,13 +3,13 @@
 GDT GDT::m_Instance;
 
 GDT::GDT()
-    : m_Entries(), m_Ptr({ m_ActiveEntries, (uint32_t)&m_Entries })
+    : m_Entries(), m_Ptr({ m_ActiveEntries, (uint32_t)m_Entries })
 {
 }
 
 void GDT::Install()
 {
-    m_Ptr.Address = (uint32_t)&m_Entries;
+    m_Ptr.Address = (uint32_t)m_Entries;
 
     asm volatile("lgdt %0\n"
 #if defined(HYPER_32)
