@@ -17,11 +17,11 @@ jobs:
 
     - name: Build Cross Compiler
       run: |
-        cd ./Scripts/  
-        ./build-cross-compiler.sh
+        cd ./Scripts/
+        sh ./build-cross-compiler.sh
         cd ..
 
     - name: Build Project Files
       run: |
         cd ./Scripts/  
-        ./build.sh
+        sh ./build.sh
