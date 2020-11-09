@@ -1,6 +1,6 @@
 # HyperOS
 ![](https://img.shields.io/badge/license-MIT-yellow)
-![](https://img.shields.io/badge/build-passing-green)
+![](https://github.com/SkillerRaptor/HyperOS/workflows/build/badge.svg)
 
 A C++ Operating System.
 
