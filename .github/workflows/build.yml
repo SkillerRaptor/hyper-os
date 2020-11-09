@@ -8,12 +8,18 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
     steps:
     - uses: actions/checkout@v2
+
+    - name: Build Cross Compiler
+      run: |
+        cd ./Scripts/  
+        ./build-cross-compiler.sh
+        cd ..
 
     - name: Build Project Files
       run: |

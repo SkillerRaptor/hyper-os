@@ -10,5 +10,7 @@
 *.bin
 *.iso
 
-# Editor Files
+# Editor Files & Emulator Files
+*.ini
+.bxrc
 .vscode
