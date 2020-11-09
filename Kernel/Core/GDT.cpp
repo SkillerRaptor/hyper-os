@@ -12,27 +12,6 @@ void GDT::Install()
     m_Ptr.Address = (uint32_t)m_Entries;
 
     asm volatile("lgdt %0\n"
-#if defined(HYPER_32)
-        "pushl %%ebp\n"
-        "movl %%esp, %%ebp\n"
-        "pushfl\n"
-        "push %2\n"
-        "pushl $1f\n"
-        "iret\n"
-        "1:\n"
-        "popl %%ebp\n"
-#elif defined(HYPER_64)
-        "pushq %%rbp\n"
-        "movq %%rsp, %%rbp\n"
-        "pushq %1\n"
-        "pushq %%rbp\n"
-        "pushfq\n"
-        "pushq %2\n"
-        "pushq $1f\n"
-        "iretq\n"
-        "1:\n"
-        "popq %%rbp\n"
-#endif
         "mov %1, %%ds\n"
         "mov %1, %%es\n"
         "mov %1, %%fs\n"

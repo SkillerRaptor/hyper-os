@@ -12,13 +12,12 @@ private:
     enum AccessAttributes : uint8_t
     {
         NULL_ACCESS = 0,
-        SYSTEM = 0 << 4,
-        CODE_OR_DATA = 1 << 4,
         PRESENT = 1 << 7,
         RING_3 = 1 << 5 | 1 << 6,
+        CODE_OR_DATA = 1 << 4,
+        EXECUTEABLE = 1 << 3,
         READABLE = 1 << 1,
         WRITEABLE = 1 << 1,
-        EXECUTEABLE = 1 << 3,
         GROWS_DOWN = 1 << 2,
         ALLOW_LOWER = 1 << 2
     };
@@ -52,23 +51,13 @@ private:
         uint8_t LimitUpper : 4;
         FlagAttributes Flags : 4;
         uint8_t BaseUpper;
-    };
-
-    Entry m_Entries[EntryCount];
+    } m_Entries[EntryCount];
 
     struct PACKED Ptr
     {
         uint16_t Size;
         uint32_t Address;
-    };
-
-    Ptr m_Ptr;
-
-    static constexpr uint16_t KernelCodeSelector() { return 0x8; }
-    static constexpr uint16_t KernelDataSelector() { return 0x10; }
-
-    static constexpr uint16_t UserlandCodeSelector() { return 0x18; }
-    static constexpr uint16_t UserlandDataSelector() { return 0x20; }
+    } m_Ptr;
 
     static GDT m_Instance;
 
@@ -79,6 +68,12 @@ public:
     void CreateBasicDescriptor();
 
     static GDT& Get();
+
+    static constexpr uint16_t KernelCodeSelector() { return 0x8; }
+    static constexpr uint16_t KernelDataSelector() { return 0x10; }
+
+    static constexpr uint16_t UserlandCodeSelector() { return 0x18; }
+    static constexpr uint16_t UserlandDataSelector() { return 0x20; }
 
 private:
     void CreateDescriptor(uint32_t base, uint32_t limit, AccessAttributes accessAttributes, FlagAttributes flagAttributes);
