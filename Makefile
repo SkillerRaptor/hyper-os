@@ -1,6 +1,7 @@
 include ./Makefile.common
 
 OBJS = \
+	./AK/IO.h \
 	./Kernel/Kernel.o \
 	./Kernel/Core/GDT.o \
 	./Kernel/Core/Terminal.o \
