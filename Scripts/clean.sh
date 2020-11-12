@@ -4,6 +4,7 @@ printf "\e[93m === Starting Cleaning === \e[39m\n"
 
 make -C ../Libraries/LibC clean
 make -C ../Kernel clean
+make -C ../AK clean
 
 rm -f ../*.bin
 rm -f ../*.iso
