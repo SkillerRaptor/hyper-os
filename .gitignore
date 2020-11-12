@@ -13,4 +13,5 @@
 # Editor Files & Emulator Files
 *.ini
 .bxrc
+.vs
 .vscode
