@@ -38,12 +38,21 @@ void Terminal::PutChar(unsigned char c)
         return;
     }
 
-    PutEntryAt(c, m_Color, m_Column, m_Row);
-    if (++m_Column == VGA_WIDTH)
-    {
+    PutEntryAt(c, m_Color, m_Column++, m_Row);
+
+	if (m_Column >= VGA_WIDTH) {
+		m_Row++;
         m_Column = 0;
-        if (++m_Row == VGA_HEIGHT)
-            m_Row = 0;
+	}
+
+    if (m_Row >= VGA_HEIGHT)
+	{
+		memmove(m_Buffer, m_Buffer + VGA_WIDTH, VGA_WIDTH * (VGA_HEIGHT - 1) * sizeof(uint16_t));
+
+        for (size_t x = 0; x < VGA_WIDTH - 1; x++)
+            PutEntryAt(' ', m_Color, x + 1, VGA_HEIGHT - 1);
+
+        m_Row = VGA_HEIGHT - 1;
     }
 }
 
