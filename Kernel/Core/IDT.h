@@ -4,10 +4,7 @@
 
 class IDT
 {
-private:
-	static constexpr size_t EntrySize = 8;
-	static constexpr size_t EntryCount = 256;
-
+public:
 	enum TypeAttributes : uint8_t
 	{
 		PRESENT = 1 << 7,
@@ -31,6 +28,10 @@ private:
 		uint8_t Type;
 		uint16_t OffsetHigh;
 	};
+
+private:
+	static constexpr size_t EntrySize = 8;
+	static constexpr size_t EntryCount = 256;
 
 	Entry m_Entries[EntryCount];
 

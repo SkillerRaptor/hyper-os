@@ -64,11 +64,12 @@ __END_DECLS
 void IRQManager::RegisterInterruptRequest(size_t index, unsigned long address)
 {
 	static constexpr const int InterruptGateCode = 0x8E;
-	IDT::Get().GetEntries()[index].OffsetLow = address & 0xFFFF;
-	IDT::Get().GetEntries()[index].Selector = GDT::KernelCodeSelector();
-	IDT::Get().GetEntries()[index].Zero = 0;
-	IDT::Get().GetEntries()[index].Type = InterruptGateCode;
-	IDT::Get().GetEntries()[index].OffsetHigh = (address & 0xFFFF0000) >> 16;
+	IDT::Entry* entries = IDT::Get().GetEntries();
+	entries[index].OffsetLow = address & 0xFFFF;
+	entries[index].Selector = GDT::KernelCodeSelector();
+	entries[index].Zero = 0;
+	entries[index].Type = IDT::TypeAttributes::INTERRUPT_GATE;
+	entries[index].OffsetHigh = (address & 0xFFFF0000) >> 16;
 }
 
 IRQManager& IRQManager::Get()
@@ -79,6 +80,7 @@ IRQManager& IRQManager::Get()
 __BEGIN_DECLS
 void IRQHandler(uint16_t interruptRequestLine)
 {
+	printf("Triggered %u IRQ Line\n", interruptRequestLine);
 	PIC::Get().SendEndOfInterrupt(interruptRequestLine);
 }
 __END_DECLS
