@@ -1,5 +1,7 @@
 #include "GDT.h"
 
+#include <LibC/stdio.h>
+
 GDT GDT::m_Instance;
 
 GDT::GDT()
@@ -9,6 +11,7 @@ GDT::GDT()
 
 void GDT::Install()
 {
+	printf("[Debug] Install GDT\n");
     m_Ptr.Address = (uint32_t)m_Entries;
 
     asm volatile("lgdt %0\n"
@@ -23,6 +26,7 @@ void GDT::Install()
 
 void GDT::CreateBasicDescriptor()
 {
+    printf("[Debug] Create Basic GDT Descriptors\n");
     CreateDescriptor(0, 0, AccessAttributes::NULL_ACCESS, FlagAttributes::NULL_FLAG);
 
     /* - Kernel - */

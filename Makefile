@@ -3,7 +3,11 @@ include ./Makefile.common
 OBJS = \
 	./AK/IO.o \
 	./Kernel/Kernel.o \
+	./Kernel/Boot/Interrupts.o \
 	./Kernel/Core/GDT.o \
+	./Kernel/Core/IDT.o \
+	./Kernel/Core/IRQManager.o \
+	./Kernel/Core/PIC.o \
 	./Kernel/Core/Terminal.o \
 	./Libraries/LibC/string.o \
 	./Libraries/LibC/stdio.o \

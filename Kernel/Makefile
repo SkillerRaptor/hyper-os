@@ -3,6 +3,9 @@ include ../Makefile.common
 OBJS = \
 	./Kernel.o \
 	./Core/GDT.o \
+	./Core/IDT.o \
+	./Core/IRQManager.o \
+	./Core/PIC.o \
 	./Core/Terminal.o
 
 APP = Kernel
@@ -10,7 +13,8 @@ APP = Kernel
 BOOTLOADER_OBJS = \
 	./Boot/boot.o \
 	./Boot/crti.o \
-	./Boot/crtn.o
+	./Boot/crtn.o \
+	./Boot/Interrupts.o
 
 all: $(BOOTLOADER_OBJS) $(APP)
 
