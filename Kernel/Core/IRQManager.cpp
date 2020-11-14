@@ -11,7 +11,6 @@ IRQManager IRQManager::m_Instance;
 __BEGIN_DECLS
 void IRQManager::RegisterBasicInterrupts()
 {
-	printf("[Debug] Register Basic IRQ Interrupts\n");
 	extern int IRQCall0();
 	RegisterInterruptRequest(32, (unsigned long)IRQCall0);
 
@@ -64,7 +63,6 @@ __END_DECLS
 
 void IRQManager::RegisterInterruptRequest(size_t index, unsigned long address)
 {
-	printf("[Debug] Register Interrupt Request %u, %u\n", index, address);
 	static constexpr const int InterruptGateCode = 0x8E;
 	IDT::Get().GetEntries()[index].OffsetLow = address & 0xFFFF;
 	IDT::Get().GetEntries()[index].Selector = GDT::KernelCodeSelector();

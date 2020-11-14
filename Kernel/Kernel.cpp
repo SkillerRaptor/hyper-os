@@ -8,8 +8,6 @@
 __BEGIN_DECLS
 void KernelEarlyMain()
 {
-	Terminal::Initialize();
-
 	GDT::Get().CreateBasicDescriptor();
 	GDT::Get().Install();
 
@@ -21,6 +19,7 @@ void KernelEarlyMain()
 
 void KernelInit()
 {
+	Terminal::Initialize();
 }
 
 void KernelMain()

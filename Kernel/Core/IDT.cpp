@@ -15,8 +15,6 @@ IDT::IDT()
 
 void IDT::Install()
 {
-	printf("[Debug] Install IDT\n");
-
 	m_Ptr.Size = sizeof(Entry) * EntryCount - 1;
 	m_Ptr.Address = (uint32_t)m_Entries;
 
@@ -28,7 +26,6 @@ void IDT::Install()
 
 void IDT::CreateBasicTables()
 {
-	printf("[Debug] Create Basic IDT Tables\n");
 	IRQManager::Get().RegisterBasicInterrupts();
 }
 

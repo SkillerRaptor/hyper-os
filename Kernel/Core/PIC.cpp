@@ -7,7 +7,6 @@ PIC PIC::m_Instance;
 
 void PIC::ReMap(uint8_t masterOffset, uint8_t slaveOffset)
 {
-	printf("[Debug] ReMap PIC\n");
 	/* Save Masks */
 	uint8_t masterData = IO::In8(MasterDataSelector());
 	uint8_t slaveData = IO::In8(SlaveDataSelector());
