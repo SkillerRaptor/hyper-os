@@ -130,7 +130,7 @@ IRQCall8:
 IRQCall9:
 	pusha
 	push %eax
-	movl $1, %eax
+	movl $9, %eax
 	call IRQHandler
 	pop %eax
 	popa

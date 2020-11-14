@@ -63,12 +63,11 @@ __END_DECLS
 
 void IRQManager::RegisterInterruptRequest(size_t index, unsigned long address)
 {
-	static constexpr const int InterruptGateCode = 0x8E;
 	IDT::Entry* entries = IDT::Get().GetEntries();
 	entries[index].OffsetLow = address & 0xFFFF;
 	entries[index].Selector = GDT::KernelCodeSelector();
 	entries[index].Zero = 0;
-	entries[index].Type = IDT::TypeAttributes::INTERRUPT_GATE;
+	entries[index].Type = IDT::TypeAttributes::PRESENT | IDT::TypeAttributes::INTERRUPT_GATE;
 	entries[index].OffsetHigh = (address & 0xFFFF0000) >> 16;
 }
 
