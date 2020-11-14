@@ -12,8 +12,7 @@ SUGGEST_FLAGS = -Wsuggest-attribute=noreturn -Wsuggest-final-types -Wsuggest-fin
 INCLUDE_FLAGS += \
     -I. \
     -I$(HYPEROS_BASE_DIR) \
-    -I$(HYPEROS_BASE_DIR)/Libraries \
-    -I$(HYPEROS_BASE_DIR)/Libraries/LibC
+    -I$(HYPEROS_BASE_DIR)/Libraries
 
 DEFINES = -D__is_libk -DHYPER_32
 
