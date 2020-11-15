@@ -1,6 +1,6 @@
 #include <LibC/stdio.h>
 
-static const char h[] = { '0','1','2','3','4','5','6','7', '8','9','a','b','c','d','e','f' };
+static constexpr const char* HexDigits = "0123456789abcdef";
 
 int printHex(int number, uint8_t fields)
 {
@@ -9,7 +9,7 @@ int printHex(int number, uint8_t fields)
     while (shrCount)
     {
         shrCount -= 4;
-        putchar(h[(number >> shrCount) & 0x0F]);
+        putchar(HexDigits[(number >> shrCount) & 0x0F]);
         ++ret;
     }
     return ret;
@@ -38,6 +38,7 @@ char printNumber(int number)
             break;
         divisor /= 10;
     }
+
     return ret;
 }
 
@@ -51,13 +52,12 @@ int printSignedNumber(int number)
     return printNumber(number);
 }
 
-int printfInternal(char* str, const char* fmt, char* parameters)
+int printfInternal(char* str, const char* fmt, va_list parameters)
 {
     const char* ptr;
     int ret = 0;
 
     for (ptr = fmt; *ptr; ++ptr)
-    {
         if (*ptr == '%' && *(ptr + 1))
         {
             ++ptr;
@@ -67,7 +67,8 @@ int printfInternal(char* str, const char* fmt, char* parameters)
             {
                 const char* stringParameters = va_arg(parameters, const char*);
                 //ASSERT(sp != nullptr);
-                if (!stringParameters) {
+                if (!stringParameters) 
+                {
                     putchar('(');
                     putchar('n');
                     putchar('u');
@@ -76,8 +77,10 @@ int printfInternal(char* str, const char* fmt, char* parameters)
                     putchar(')');
                     ret += 6;
                 }
-                else {
-                    for (; *stringParameters; ++stringParameters) {
+                else 
+                {
+                    for (; *stringParameters; ++stringParameters) 
+                    {
                         putchar(*stringParameters);
                         ++ret;
                     }
@@ -116,7 +119,6 @@ int printfInternal(char* str, const char* fmt, char* parameters)
             putchar(*ptr);
             ++ret;
         }
-    }
 
     return ret;
 }
