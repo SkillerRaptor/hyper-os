@@ -1,10 +1,10 @@
 #include <AK/IO.h>
 #include <LibC/stdio.h>
 
-#include "Stivale.h"
 #include "Core/GDT.h"
 #include "Core/IDT.h"
 #include "Core/PIC.h"
+#include "Core/Stivale.h"
 #include "Core/Terminal.h"
 
 __BEGIN_DECLS
