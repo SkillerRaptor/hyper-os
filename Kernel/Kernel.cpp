@@ -41,13 +41,13 @@ void KernelEarlyMain(StivaleStruct* bootloaderData)
 
 	printf("[Kernel] HyperOS booting...\n");
 
-	//GDT::Get().CreateBasicDescriptor();
-	//GDT::Get().Install();
-	//
-	//PIC::Get().ReMap(0x20, 0x28);
-	//
-	//IDT::Get().CreateBasicTables();
-	//IDT::Get().Install();
+	GDT::Get().CreateBasicDescriptor();
+	GDT::Get().Install();
+	
+	PIC::Get().ReMap(0x20, 0x28);
+	
+	IDT::Get().CreateBasicTables();
+	IDT::Get().Install();
 
 	PhysicalAllocator::Initialize(bootloaderData);
 
