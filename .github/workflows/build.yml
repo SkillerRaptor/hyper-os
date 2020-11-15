@@ -33,7 +33,7 @@ jobs:
         mkdir -p $HOME/CrossCompiler/opt/cross
         mkdir -p $HOME/CrossCompiler/src
         sudo apt install build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo libisl-dev
-        cd $HOME/src
+        cd $HOME/CrossCompiler/src
         sudo wget -c https://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.gz -O - | sudo tar -xz
         mkdir build-binutils
         cd build-binutils
