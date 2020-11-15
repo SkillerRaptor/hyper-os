@@ -15,13 +15,23 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Cache Files
+      uses: actions/cache@v2
+      id: cache-cross-compiler
+      env:
+        cache-name: cache-cross-compiler
+      with:
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
+        path: $HOME/CrossCompiler
+
     - name: Build Cross Compiler
+      if: steps.cache-cross-compiler.outputs.cache-hit != 'true'
       run: |
-        export PREFIX="$HOME/opt/cross"
+        export PREFIX="$HOME/CrossCompiler/opt/cross"
         export TARGET=x86_64-elf
         export PATH="$PREFIX/bin:$PATH"
-        mkdir -p $HOME/opt/cross
-        mkdir -p $HOME/src
+        mkdir -p $HOME/CrossCompiler/opt/cross
+        mkdir -p $HOME/CrossCompiler/src
         sudo apt install build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo libisl-dev
         cd $HOME/src
         sudo wget -c https://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.gz -O - | sudo tar -xz
@@ -30,7 +40,7 @@ jobs:
         ../binutils-2.35/configure --target=$TARGET --prefix="$PREFIX" --with-sysroot --disable-nls --disable-werror
         make
         make install
-        cd $HOME/src
+        cd $HOME/CrossCompiler/src
         which -- $TARGET-as || echo $TARGET-as is not in the PATH
         sudo wget -c https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz -O - | sudo tar -xz
         mkdir build-gcc
@@ -43,6 +53,7 @@ jobs:
 
     - name: Build Project Files
       run: |
-        export PATH="$HOME/opt/cross/bin:$PATH"
-        cd ./Scripts/  
+        export PATH="$HOME/CrossCompiler/opt/cross/bin:$PATH"
+        cd ./Scripts/
         sh ./build.sh
+        sh ./clean.sh
