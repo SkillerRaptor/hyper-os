@@ -9,6 +9,7 @@ OBJS = \
 	./Kernel/Core/IRQManager.o \
 	./Kernel/Core/PIC.o \
 	./Kernel/Core/Terminal.o \
+	./Libraries/LibC/ctype.o \
 	./Libraries/LibC/string.o \
 	./Libraries/LibC/stdio.o \
 	./Libraries/LibC/stdlib.o

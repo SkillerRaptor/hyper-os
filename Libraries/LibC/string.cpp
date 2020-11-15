@@ -49,3 +49,20 @@ size_t strlen(const char* str)
         length++;
     return length;
 }
+
+char* strcpy(char* dest, const char* src)
+{
+	char* originalDest = dest;
+	while ((*dest++ = *src++) != '\0');
+	return originalDest;
+}
+
+char* strcat(char* dest, const char* src)
+{
+	size_t dest_length = strlen(dest);
+	size_t i;
+	for (i = 0; src[i] != '\0'; i++)
+		dest[dest_length + i] = src[i];
+	dest[dest_length + i] = '\0';
+	return dest;
+}

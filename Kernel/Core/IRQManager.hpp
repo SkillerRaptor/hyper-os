@@ -1,6 +1,6 @@
 #pragma once
 
-#include <LibC/stdint.h>
+#include <LibC/stddef.h>
 
 class IRQManager
 {

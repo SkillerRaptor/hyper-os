@@ -18,7 +18,6 @@ __BEGIN_DECLS
 
 /* Formatted input/output */
 int printf(const char* fmt, ...);
-int sprintf(char* str, const char* fmt, ...);
 
 /* Character input/output */
 int putchar(int character);

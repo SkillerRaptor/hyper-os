@@ -1,5 +1,6 @@
 #pragma once
 
+#include <LibC/stddef.h>
 #include <LibC/sys/cdefs.h>
 #include <LibC/sys/types.h>
 
@@ -11,5 +12,8 @@ void* memmove(void* destination, const void* source, size_t num);
 void* memset(void* ptr, int value, size_t num);
 
 size_t strlen(const char* str);
+
+char* strcpy(char* dest, const char* src);
+char* strcat(char* dest, const char* src);
 
 __END_DECLS

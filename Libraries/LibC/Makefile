@@ -1,6 +1,7 @@
 include ../../Makefile.common
 
 OBJS = \
+	ctype \
     stdio.o \
     stdlib.o \
     string.o

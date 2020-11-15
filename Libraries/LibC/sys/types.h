@@ -5,6 +5,8 @@
 
 __BEGIN_DECLS
 
+typedef __WINT_TYPE__ wint_t;
+
 typedef uint32_t uid_t;
 typedef uint32_t gid_t;
 typedef int pid_t;
