@@ -2,7 +2,8 @@
 
 #include <LibC/stdint.h>
 
-struct PACKED StivaleHeader {
+struct PACKED StivaleHeader 
+{
 	uint64_t Stack;
 	uint16_t Flags; // 0 = Text Mode | 1 = Graphics Mode
 	uint16_t FramebufferWidth;
@@ -11,16 +12,36 @@ struct PACKED StivaleHeader {
 	uint64_t EntryPoint;
 };
 
-struct PACKED StivaleModule {
+struct PACKED StivaleModule 
+{
 	uint64_t Begin;
 	uint64_t End;
 	char String[128];
 	uint64_t Next;
 };
 
-struct PACKED StivaleStruct {
+enum StivaleMemoryType 
+{
+	USABLE = 1,
+	RESERVED = 2,
+	ACPI_RECLAIMABLE = 3,
+	ACPI_NVS = 4,
+	BAD_MEMORY = 5,
+	KERNEL_AND_MODULES = 10
+};
+
+struct PACKED StivaleMemoryMapEntry 
+{
+	uint64_t Base;
+	uint64_t Length;
+	uint32_t Type;
+	uint32_t Unused;
+};
+
+struct PACKED StivaleStruct 
+{
 	uint64_t Cmdline;
-	uint64_t MemoryMapAddr;
+	uint64_t MemoryMapAddress;
 	uint64_t MemoryMapEntries;
 	uint64_t FramebufferAddr;
 	uint16_t FramebufferPitch;

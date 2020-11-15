@@ -31,6 +31,13 @@ void Terminal::Initialize()
 
 void Terminal::PutChar(unsigned char c)
 {
+	if (c == '\t')
+	{
+        for (size_t i = 0; i < 4; i++)
+            PutEntryAt(' ', m_Color, m_Column++, m_Row);
+		return;
+	}
+
     if (c == '\n')
     {
         m_Row++;
