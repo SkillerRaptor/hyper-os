@@ -38,7 +38,7 @@ private:
 	struct PACKED Ptr
 	{
 		uint16_t Size;
-		uint32_t Address;
+		uint64_t Address;
 	};
 
 	Ptr m_Ptr;
