@@ -23,21 +23,25 @@ char* __int_str(intmax_t i, char b[], int base, bool plusSignIfNeeded, bool spac
 		*p++ = '-';
 		i *= -1;
 	}
-	else if (plusSignIfNeeded) {
+	else if (plusSignIfNeeded) 
+	{
 		*p++ = '+';
 	}
-	else if (!plusSignIfNeeded && spaceSignIfNeeded) {
+	else if (!plusSignIfNeeded && spaceSignIfNeeded) 
+	{
 		*p++ = ' ';
 	}
 
 	intmax_t shifter = i;
-	do {
+	do 
+	{
 		++p;
 		shifter = shifter / base;
 	} while (shifter);
 
 	*p = '\0';
-	do {
+	do 
+	{
 		*--p = digit[i % base];
 		i = i / base;
 	} while (i);
@@ -45,27 +49,22 @@ char* __int_str(intmax_t i, char b[], int base, bool plusSignIfNeeded, bool spac
 	int padding = paddingNo - (int)strlen(b);
 	if (padding < 0) padding = 0;
 
-	if (justify) {
-		while (padding--) {
-			if (zeroPad) {
+	if (justify)
+	{
+		while (padding--)
+			if (zeroPad)
 				b[strlen(b)] = '0';
-			}
-			else {
+			else
 				b[strlen(b)] = ' ';
-			}
-		}
-
 	}
-	else {
+	else 
+	{
 		char a[256] = { 0 };
-		while (padding--) {
-			if (zeroPad) {
+		while (padding--) 
+			if (zeroPad)
 				a[strlen(a)] = '0';
-			}
-			else {
+			else
 				a[strlen(a)] = ' ';
-			}
-		}
 		strcat(a, b);
 		strcpy(b, a);
 	}
