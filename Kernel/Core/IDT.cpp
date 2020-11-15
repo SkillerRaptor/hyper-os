@@ -22,6 +22,8 @@ void IDT::Install()
 		"sti\n"
 		:: "m"(m_Ptr)
 		);
+
+	printf("[CPU] IDT ready...\n");
 }
 
 void IDT::CreateBasicTables()

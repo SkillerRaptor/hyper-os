@@ -21,6 +21,8 @@ void GDT::Install()
         "mov %1, %%ss"
         :: "m"(m_Ptr), "r"(static_cast<size_t>(KernelDataSelector())), "r"(static_cast<size_t>(KernelCodeSelector())) : "memory"
         );
+
+    printf("[CPU] GDT loaded...\n");
 }
 
 void GDT::CreateBasicDescriptor()
