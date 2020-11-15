@@ -9,12 +9,13 @@ OBJS = \
 	./Kernel/Core/IRQManager.o \
 	./Kernel/Core/PIC.o \
 	./Kernel/Core/Terminal.o \
+	./Kernel/Memory/PhysicalAllocator.o \
 	./Libraries/LibC/ctype.o \
 	./Libraries/LibC/string.o \
 	./Libraries/LibC/stdio.o \
 	./Libraries/LibC/stdlib.o
 
-LDFLAGS = -T linker.ld -ffreestanding -O2 -lgcc -nostdlib -nodefaultlibs -nostartfiles -z max-page-size=0x1000
+LDFLAGS = -T linker.ld -ffreestanding -static -nostdlib -no-pie -nodefaultlibs -nostartfiles -z max-page-size=0x1000
 
 APP = HyperOS
 

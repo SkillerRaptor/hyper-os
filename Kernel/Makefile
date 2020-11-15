@@ -6,7 +6,8 @@ OBJS = \
 	./Core/IDT.o \
 	./Core/IRQManager.o \
 	./Core/PIC.o \
-	./Core/Terminal.o
+	./Core/Terminal.o \
+	./Memory/PhysicalAllocator.o
 
 APP = Kernel
 
