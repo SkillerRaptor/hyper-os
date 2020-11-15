@@ -34,23 +34,6 @@ IDT::Entry* IDT::GetEntries()
 	return m_Entries;
 }
 
-/*
-void IDT::CreateDescriptor(uint32_t base, uint32_t limit, AccessAttributes accessAttributes, FlagAttributes flagAttributes)
-{
-	auto& entry = NewEntry();
-
-	entry.BaseLower = base & 0x0000FFFF;
-	entry.BaseMiddle = (base & 0x00FF0000) >> 16;
-	entry.BaseUpper = (base & 0xFF000000) >> 24;
-
-	entry.Access = accessAttributes;
-	entry.Flags = flagAttributes;
-
-	entry.LimitLower = limit & 0x0000FFFF;
-	entry.LimitUpper = (limit & 0x000F0000) >> 16;
-}
-*/
-
 IDT& IDT::Get()
 {
 	return m_Instance;

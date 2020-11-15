@@ -3,9 +3,9 @@ include ./Makefile.common
 OBJS = \
 	./AK/IO.o \
 	./Kernel/Kernel.o \
-	./Kernel/Boot/Interrupts.o \
 	./Kernel/Core/GDT.o \
 	./Kernel/Core/IDT.o \
+	./Kernel/Core/Interrupts.o \
 	./Kernel/Core/IRQManager.o \
 	./Kernel/Core/PIC.o \
 	./Kernel/Core/Terminal.o \
@@ -13,19 +13,13 @@ OBJS = \
 	./Libraries/LibC/stdio.o \
 	./Libraries/LibC/stdlib.o
 
-LD = i686-elf-gcc
-LDFLAGS = -T linker.ld -ffreestanding -O2 -lgcc -nostdlib -nodefaultlibs -nostartfiles
-
-CRTI_OBJ = ./Kernel/Boot/crti.o
-CRTBEGIN_OBJ := $(shell $(LD) $(LDFLAGS) -print-file-name=crtbegin.o)
-CRTEND_OBJ := $(shell $(LD) $(LDFLAGS) -print-file-name=crtend.o)
-CRTN_OBJ = ./Kernel/Boot/crtn.o
+LDFLAGS = -T linker.ld -ffreestanding -O2 -lgcc -nostdlib -nodefaultlibs -nostartfiles -z max-page-size=0x1000
 
 APP = HyperOS
 
-all: $(BOOTLOADER) $(APP)
+all: $(APP)
 
 $(APP): $(OBJS)
-	@echo "LD $@"; $(LD) $(LDFLAGS) -o ./HyperOS.bin ./Kernel/Boot/boot.o $(LINK_FLAGS) $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJS) $(CRTEND_OBJ) $(CRTN_OBJ)
+	@echo "LD $@"; $(LD) $(LDFLAGS) -o ./HyperOS.elf $(LINK_FLAGS) $(OBJS)
 
 -include $(OBJS:%.o=%.d)

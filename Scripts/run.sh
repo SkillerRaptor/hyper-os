@@ -1,8 +1,9 @@
 #!/bin/sh
 
-qemu-system-i386 \
-    -m 128 \
+qemu-system-x86_64 \
+    -m 2G \
     -d int,cpu_reset,guest_errors \
+    -monitor stdio \
     -no-reboot \
     -no-shutdown \
-    -kernel ../HyperOS.bin
+    -hda ../build/HyperOS.hdd

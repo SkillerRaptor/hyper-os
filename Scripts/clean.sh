@@ -6,7 +6,7 @@ make -C ../Libraries/LibC clean
 make -C ../Kernel clean
 make -C ../AK clean
 
-rm -f ../*.bin
-rm -f ../*.iso
+rm -f ../*.elf
+rm -r ../build
 
 printf "\e[92m === Finished Cleaning === \e[39m\n"

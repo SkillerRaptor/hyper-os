@@ -28,16 +28,6 @@ void GDT::CreateBasicDescriptor()
     CreateDescriptor(0, 0, AccessAttributes::NULL_ACCESS, FlagAttributes::NULL_FLAG);
 
     /* - Kernel - */
-    /* Code | 32 BIT */
-#if defined(HYPER_32)
-    CreateDescriptor(0x00000000, 0xFFFFFFFF,
-        AccessAttributes::CODE_OR_DATA |
-        AccessAttributes::PRESENT |
-        AccessAttributes::EXECUTEABLE |
-        AccessAttributes::READABLE,
-        FlagAttributes::GRANULARITY_4KB |
-        FlagAttributes::SIZE_32_BIT);
-#elif defined(HYPER_64)
     CreateDescriptor(0x00000000, 0xFFFFFFFF,
         AccessAttributes::CODE_OR_DATA |
         AccessAttributes::PRESENT |
@@ -45,7 +35,6 @@ void GDT::CreateBasicDescriptor()
         AccessAttributes::READABLE,
         FlagAttributes::GRANULARITY_4KB |
         FlagAttributes::SIZE_64_BIT);
-#endif
 
     /* Data */
     CreateDescriptor(0x00000000, 0xFFFFFFFF,
@@ -56,17 +45,6 @@ void GDT::CreateBasicDescriptor()
         FlagAttributes::SIZE_32_BIT);
 
     /* - Userspace - */
-    /* Code | 32 BIT */
-#if defined(HYPER_32)
-    CreateDescriptor(0x00000000, 0xFFFFFFFF,
-        AccessAttributes::CODE_OR_DATA |
-        AccessAttributes::PRESENT |
-        AccessAttributes::RING_3 |
-        AccessAttributes::EXECUTEABLE |
-        AccessAttributes::READABLE,
-        FlagAttributes::GRANULARITY_4KB |
-        FlagAttributes::SIZE_32_BIT);
-#elif defined(HYPER_64)
     CreateDescriptor(0x00000000, 0xFFFFFFFF,
         AccessAttributes::CODE_OR_DATA |
         AccessAttributes::PRESENT |
@@ -75,7 +53,6 @@ void GDT::CreateBasicDescriptor()
         AccessAttributes::READABLE,
         FlagAttributes::GRANULARITY_4KB |
         FlagAttributes::SIZE_64_BIT);
-#endif
 
     /* Data */
     CreateDescriptor(0x00000000, 0xFFFFFFFF,

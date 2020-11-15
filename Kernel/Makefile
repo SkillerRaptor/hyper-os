@@ -10,13 +10,10 @@ OBJS = \
 
 APP = Kernel
 
-BOOTLOADER_OBJS = \
-	./Boot/boot.o \
-	./Boot/crti.o \
-	./Boot/crtn.o \
-	./Boot/Interrupts.o
+ASM_OBJS = \
+	./Core/Interrupts.o
 
-all: $(BOOTLOADER_OBJS) $(APP)
+all: $(ASM_OBJS) $(APP)
 
 $(APP): $(OBJS)
 	@echo "BUILD $@ CXX";
@@ -28,6 +25,6 @@ $(APP): $(OBJS)
 	@echo "CXX $<"; $(CXX) $(CXXFLAGS) $(LINK_FLAGS) -o $@ -c $<
 
 clean:
-	@echo "CLEAN"; rm -f $(APP) $(OBJS) $(BOOTLOADER_OBJS) *.d
+	@echo "CLEAN"; rm -f $(APP) $(OBJS) $(ASM_OBJS) *.d
 
 -include $(OBJS:%.o=%.d)
