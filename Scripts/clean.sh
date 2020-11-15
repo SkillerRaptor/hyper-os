@@ -7,6 +7,9 @@ make -C ../Kernel clean
 make -C ../AK clean
 
 rm -f ../*.elf
-rm -r ../build
+
+if [ -d "../build" ]; then
+	rm -r ../build
+fi
 
 printf "\e[92m === Finished Cleaning === \e[39m\n"

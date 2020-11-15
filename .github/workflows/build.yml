@@ -22,7 +22,7 @@ jobs:
         cache-name: cache-cross-compiler
       with:
         key: ${{ runner.os }}-build-${{ env.cache-name }}
-        path: $HOME/CrossCompiler
+        path: ~/CrossCompiler
 
     - name: Build Cross Compiler
       if: steps.cache-cross-compiler.outputs.cache-hit != 'true'
@@ -53,6 +53,8 @@ jobs:
 
     - name: Build Project Files
       run: |
+        export PREFIX="$HOME/CrossCompiler/opt/cross"
+        export TARGET=x86_64-elf
         export PATH="$HOME/CrossCompiler/opt/cross/bin:$PATH"
         cd ./Scripts/
         sh ./build.sh
