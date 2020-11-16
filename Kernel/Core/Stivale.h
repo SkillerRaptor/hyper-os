@@ -32,7 +32,7 @@ enum StivaleMemoryType
 
 struct PACKED StivaleMemoryMapEntry 
 {
-	uint64_t Base;
+	uint64_t Address;
 	uint64_t Length;
 	uint32_t Type;
 	uint32_t Unused;

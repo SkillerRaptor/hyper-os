@@ -5,7 +5,7 @@
 #include "Core/PIC.h"
 #include "Core/Stivale.h"
 #include "Core/Terminal.h"
-#include "Memory/PhysicalAllocator.h"
+#include "Memory/PhysicalMemoryManager.h"
 
 __BEGIN_DECLS
 
@@ -49,7 +49,7 @@ void KernelEarlyMain(StivaleStruct* bootloaderData)
 	IDT::Get().CreateBasicTables();
 	IDT::Get().Install();
 
-	PhysicalAllocator::Initialize(bootloaderData);
+	PhysicalMemoryManager::Initialize(bootloaderData);
 
 	KernelInit();
 }

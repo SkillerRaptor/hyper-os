@@ -10,7 +10,7 @@ OBJS = \
 	./Kernel/Core/IRQManager.o \
 	./Kernel/Core/PIC.o \
 	./Kernel/Core/Terminal.o \
-	./Kernel/Memory/PhysicalAllocator.o \
+	./Kernel/Memory/PhysicalMemoryManager.o \
 	./Libraries/LibC/ctype.o \
 	./Libraries/LibC/string.o \
 	./Libraries/LibC/stdio.o \

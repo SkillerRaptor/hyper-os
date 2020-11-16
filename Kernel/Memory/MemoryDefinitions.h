@@ -1,0 +1,8 @@
+#pragma once
+
+#include <LibC/stdint.h>
+
+#define BYTESIZE 0x8
+#define PAGESIZE 0x1000
+#define KERNEL_TOP_ADDRESS 0xFFFFFFFF80000000
+#define KERNEL_BASE_ADDRESS 0xFFFF800000000000
