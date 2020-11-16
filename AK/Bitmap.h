@@ -1,8 +1,9 @@
 #pragma once
 
+#include <AK/NonCopyable.h>
 #include <LibC/stdint.h>
 
-class Bitmap
+class Bitmap : public NonCopyable
 {
 private:
 	static constexpr uint16_t ByteSize = 8;
@@ -18,7 +19,10 @@ public:
 
 	void Print(uint64_t start, uint64_t length);
 
+	void SetData(uint8_t* data);
 	uint8_t* Data();
 	const uint8_t* Data() const;
+
+	void SetSize(uint64_t size);
 	uint64_t Size() const;
 };

@@ -28,6 +28,11 @@ void Bitmap::Print(uint64_t start, uint64_t length)
 		printf("\n%d\n", i);
 }
 
+void Bitmap::SetData(uint8_t* data)
+{
+	m_Data = data;
+}
+
 uint8_t* Bitmap::Data()
 {
 	return m_Data;
@@ -36,6 +41,11 @@ uint8_t* Bitmap::Data()
 const uint8_t* Bitmap::Data() const
 {
 	return m_Data;
+}
+
+void Bitmap::SetSize(uint64_t size)
+{
+	m_Size = size;
 }
 
 uint64_t Bitmap::Size() const
