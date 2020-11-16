@@ -1,6 +1,7 @@
 include ../Makefile.common
 
 OBJS = \
+	./Bitmap.o \
 	./IO.o
 
 APP = AK

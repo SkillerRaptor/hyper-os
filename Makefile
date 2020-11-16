@@ -1,6 +1,7 @@
 include ./Makefile.common
 
 OBJS = \
+	./AK/Bitmap.o \
 	./AK/IO.o \
 	./Kernel/Kernel.o \
 	./Kernel/Core/GDT.o \
