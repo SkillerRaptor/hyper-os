@@ -14,7 +14,14 @@ OBJS = \
 	./Libraries/LibC/ctype.o \
 	./Libraries/LibC/string.o \
 	./Libraries/LibC/stdio.o \
-	./Libraries/LibC/stdlib.o
+	./Libraries/LibC/stdlib.o \
+	./Libraries/LibGUI/Color.o \
+	./Libraries/LibGUI/Painter.o \
+	./Libraries/LibGUI/Point.o \
+	./Libraries/LibGUI/Rect.o \
+	./Libraries/LibGUI/Widget.o \
+	./Libraries/LibGUI/Window.o \
+	./Libraries/LibGUI/WindowManager.o
 
 LDFLAGS = -T linker.ld -ffreestanding -static -nostdlib -no-pie -nodefaultlibs -nostartfiles -z max-page-size=0x1000
 
