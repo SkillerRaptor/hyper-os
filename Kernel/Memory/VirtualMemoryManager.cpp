@@ -123,7 +123,7 @@ uintptr_t VirtualMemoryManager::JoinOffsetsToVirtual(PageTableOffsets offset)
 VirtualMemoryManager::PageTable* VirtualMemoryManager::GetEntryOrNull(PageTable* table, size_t offset)
 {
 	uintptr_t entryAddress = table->Entries[offset];
-	return !(entryAddress & (uint64_t)PageTableAttributes::PRESENT) ? nullptr : (PageTable*)((entryAddress + ~(0xFFF | (1ULL << 63))) + KERNEL_BASE_ADDRESS);
+	return !(entryAddress & (uint64_t)PageTableAttributes::PRESENT) ? nullptr : (PageTable*)((entryAddress + AddressMask) + KERNEL_BASE_ADDRESS);
 }
 
 VirtualMemoryManager::PageTable* VirtualMemoryManager::GetEntryOrAllocate(PageTable* table, size_t offset, uint64_t flags)
@@ -144,5 +144,5 @@ VirtualMemoryManager::PageTable* VirtualMemoryManager::GetEntryOrAllocate(PageTa
 		memset((void*)(entryAddress + KERNEL_BASE_ADDRESS), 0, 0x1000);
 	}
 
-	return (PageTable*)((entryAddress & ~(0xFFF | (1ULL << 63))) + KERNEL_BASE_ADDRESS);
+	return (PageTable*)((entryAddress & AddressMask) + KERNEL_BASE_ADDRESS);
 }

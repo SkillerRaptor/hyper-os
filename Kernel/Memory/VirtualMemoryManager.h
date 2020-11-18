@@ -6,6 +6,8 @@
 class VirtualMemoryManager
 {
 public:
+	static constexpr uint64_t AddressMask = ~(0xFFF | (1ULL << 63));
+
 	enum PageTableAttributes : uint64_t
 	{
 		PRESENT = 1ULL << 0,
