@@ -23,8 +23,8 @@ public:
 
 	static void* AllocatePage();
 	static void* AllocatePages(uint64_t pageCount);
-	static void FreePage(void* address);
-	static void FreePages(void* address, uint64_t pageCount);
+	static void FreePage(uintptr_t address);
+	static void FreePages(uintptr_t address, uint64_t pageCount);
 	static void* GetAvailablePage();
 	static void* GetAvailablePageAfter(uint64_t lowLimit);
 };

@@ -106,12 +106,12 @@ void* PhysicalMemoryManager::AllocatePages(uint64_t pageCount)
 	return nullptr;
 }
 
-void PhysicalMemoryManager::FreePage(void* address)
+void PhysicalMemoryManager::FreePage(uintptr_t address)
 {
 	FreePages(address, 1);
 }
 
-void PhysicalMemoryManager::FreePages(void* address, uint64_t pageCount)
+void PhysicalMemoryManager::FreePages(uintptr_t address, uint64_t pageCount)
 {
 	uint64_t startAddress = (uint64_t)address / PAGESIZE;
 	for (uint64_t i = startAddress; i < startAddress + pageCount; i++)

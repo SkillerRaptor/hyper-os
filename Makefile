@@ -11,6 +11,7 @@ OBJS = \
 	./Kernel/Core/PIC.o \
 	./Kernel/Core/Terminal.o \
 	./Kernel/Memory/PhysicalMemoryManager.o \
+	./Kernel/Memory/VirtualMemoryManager.o \
 	./Libraries/LibC/ctype.o \
 	./Libraries/LibC/string.o \
 	./Libraries/LibC/stdio.o \
