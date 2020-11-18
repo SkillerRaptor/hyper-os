@@ -1,13 +1,13 @@
 #pragma once
 
-#include <LibC/sys/cdefs.h>
-#include <LibC/sys/types.h>
-#include <LibC/stdlib.h>
-#include <LibC/stdarg.h>
-#include <LibC/string.h>
+#include "sys/cdefs.h"
+#include "sys/types.h"
+#include "stdlib.h"
+#include "stdarg.h"
+#include "string.h"
 
 #if defined(__is_libk)
-#include "../../Kernel/Core/Terminal.h"
+#include <Kernel/Core/Terminal.h>
 #endif
 
 __BEGIN_DECLS

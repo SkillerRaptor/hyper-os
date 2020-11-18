@@ -1,7 +1,7 @@
-#include <LibC/stdio.h>
+#include "stdio.h"
 
-#include <LibC/ctype.h>
-#include <LibC/string.h>
+#include "ctype.h"
+#include "string.h"
 
 char* __int_str(intmax_t i, char b[], int base, bool plusSignIfNeeded, bool spaceSignIfNeeded,
 	int paddingNo, bool justify, bool zeroPad) {

@@ -1,7 +1,8 @@
 #pragma once
 
-#include <LibC/sys/cdefs.h>
-#include <LibC/sys/types.h>
+#include "stddef.h"
+#include "sys/cdefs.h"
+#include "sys/types.h"
 
 __BEGIN_DECLS
 
