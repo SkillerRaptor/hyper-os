@@ -22,11 +22,13 @@ public:
 
 	struct PACKED Entry
 	{
-		uint16_t OffsetLow;
+		uint16_t Offset_1;
 		uint16_t Selector;
-		uint8_t Zero;
-		uint8_t Type;
-		uint16_t OffsetHigh;
+		uint8_t Ist;
+		uint8_t Attributes;
+		uint16_t Offset_2;
+		uint32_t Offset_3;
+		uint32_t Zero;
 	};
 
 private:

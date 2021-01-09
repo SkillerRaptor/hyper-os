@@ -16,7 +16,7 @@ IDT::IDT()
 void IDT::Install()
 {
 	m_Ptr.Address = (uintptr_t)m_Entries;
-	m_Ptr.Size = sizeof(m_Entries) - 1;
+	m_Ptr.Size = sizeof(Entry) * EntryCount - 1;
 
 	asm volatile("lidt %0\n"
 		"sti\n"

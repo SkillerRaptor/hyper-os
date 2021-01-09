@@ -86,7 +86,7 @@ GDT::Entry& GDT::NewEntry()
     if (m_ActiveEntries >= EntryCount)
     {
         while (1);
-        // GDT is out of free entries!
+        // TODO: Panic - GDT is out of free entries!
     }
 
     m_ActiveEntries++;
