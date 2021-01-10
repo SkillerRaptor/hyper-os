@@ -1,4 +1,5 @@
 #include <LibC/stdio.h>
+#include <AK/IO.h>
 
 #include "Core/GDT.h"
 #include "Core/IDT.h"
@@ -6,6 +7,7 @@
 #include "Core/Stivale.h"
 #include "Core/Terminal.h"
 #include "Memory/PhysicalMemoryManager.h"
+#include "Memory/VirtualMemoryManager.h"
 
 __BEGIN_DECLS
 
@@ -27,7 +29,8 @@ void KernelMain()
 {
 	printf("[Kernel] HyperOS finished booting...\n");
 
-	asm volatile ("hlt");
+	while (true)
+		asm volatile ("hlt");
 }
 
 void KernelInit()
@@ -43,13 +46,22 @@ void KernelEarlyMain(StivaleStruct* bootloaderData)
 
 	GDT::Get().CreateBasicDescriptor();
 	GDT::Get().Install();
-	
+
 	PIC::Get().ReMap(0x20, 0x28);
-	
+
 	IDT::Get().CreateBasicTables();
 	IDT::Get().Install();
 
 	PhysicalMemoryManager::Get().Initialize(bootloaderData);
+	
+	VirtualMemoryManager::PageTable* pageTable = VirtualMemoryManager::Get().CreateNewPageTable();
+
+	for (uint64_t i = 0; i < PhysicalMemoryManager::Get().GetTotalMemory() * 8; i += 0x1000)
+	{
+		VirtualMemoryManager::Get().MapPage(pageTable, (void*) i, (void*) i, 0);
+	}
+	
+	asm("mov %0, %%cr3" :: "r" (pageTable) : "memory");
 
 	KernelInit();
 }

@@ -31,13 +31,13 @@ void VirtualMemoryManager::MapPages(PageTable* pageTable, void* virtualAddress, 
 	for (size_t i = 0; i < pageCount; i++)
 	{
 		PageTableOffsets offset = SplitVirtualToOffsets((uint64_t)virtualAddress);
-		PageTable* virtualPML4 = (PageTable*) pageTable;
+		PageTable* virtualPML4 = (PageTable*)pageTable;
 		PageTable* virtualPDP = GetEntryOrAllocate(virtualPML4, offset.PML4, higherFlags);
 		PageTable* virtualPD = GetEntryOrAllocate(virtualPDP, offset.PDP, higherFlags);
 		PageTable* virtualPT = GetEntryOrAllocate(virtualPD, offset.PD, higherFlags);
 
 		PageDirectoryEntry entry{};
-		entry.Address = (uint64_t)physicalAddress >> 12;
+		entry.Address = (uint64_t)physicalAddress;
 		entry.Attributes = entry.Attributes | (PageAttributes)flags | PageAttributes::PRESENT;
 		virtualPT->Entries[offset.PT] = entry;
 		virtualAddress = (void*)((uint64_t)virtualAddress + 0x1000);
@@ -76,7 +76,7 @@ VirtualMemoryManager::PageTable* VirtualMemoryManager::GetEntryOrAllocate(PageTa
 
 	if (!(entryAddress.Attributes & PageAttributes::PRESENT))
 	{
-		PageDirectoryEntry* entry = (PageDirectoryEntry*) PhysicalMemoryManager::Get().AllocatePage();
+		PageDirectoryEntry* entry = (PageDirectoryEntry*)PhysicalMemoryManager::Get().AllocatePage();
 		table->Entries[offset] = *entry;
 		entryAddress = table->Entries[offset];
 
