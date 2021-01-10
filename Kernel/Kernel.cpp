@@ -49,7 +49,7 @@ void KernelEarlyMain(StivaleStruct* bootloaderData)
 	IDT::Get().CreateBasicTables();
 	IDT::Get().Install();
 
-	PhysicalMemoryManager::Initialize(bootloaderData);
+	PhysicalMemoryManager::Get().Initialize(bootloaderData);
 
 	KernelInit();
 }

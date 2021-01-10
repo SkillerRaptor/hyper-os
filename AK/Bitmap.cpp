@@ -11,9 +11,9 @@ void Bitmap::SetBit(uint64_t index, bool value)
 {
 	// TODO: ASSERT(index < m_Size, "Index is outside of Bitmap Size");
 	if (value)
-		m_Data[index / ByteSize] |= static_cast<uint8_t>((1u << (index % ByteSize)));
+		m_Data[index / 8] |= static_cast<uint8_t>((1u << (index % 8)));
 	else
-		m_Data[index / ByteSize] &= static_cast<uint8_t>(~(1u << (index % ByteSize)));
+		m_Data[index / 8] &= static_cast<uint8_t>(~(1u << (index % 8)));
 }
 
 bool Bitmap::GetBit(uint64_t index)
@@ -22,10 +22,14 @@ bool Bitmap::GetBit(uint64_t index)
 	return 0 != (m_Data[index / ByteSize] & (1u << (index % ByteSize)));
 }
 
-void Bitmap::Print(uint64_t start, uint64_t length)
+void Bitmap::SetSize(uint64_t size)
 {
-	for (uint64_t i = start; i < start + length; i++)
-		printf("\n%d\n", i);
+	m_Size = size;
+}
+
+uint64_t Bitmap::GetSize() const
+{
+	return m_Size;
 }
 
 void Bitmap::SetData(uint8_t* data)
@@ -33,22 +37,17 @@ void Bitmap::SetData(uint8_t* data)
 	m_Data = data;
 }
 
-uint8_t* Bitmap::Data()
+uint8_t* Bitmap::GetData()
 {
 	return m_Data;
 }
 
-const uint8_t* Bitmap::Data() const
+const uint8_t* Bitmap::GetData() const
 {
 	return m_Data;
 }
 
-void Bitmap::SetSize(uint64_t size)
+bool Bitmap::operator[](size_t index) const
 {
-	m_Size = size;
-}
-
-uint64_t Bitmap::Size() const
-{
-	return m_Size;
+	return (0 != (m_Data[index / ByteSize] & (1u << (index % ByteSize))));
 }
