@@ -7,7 +7,6 @@ class GDT
 private:
     static constexpr size_t EntrySize = 8;
     static constexpr size_t EntryCount = 9;
-    uint16_t m_ActiveEntries{ 0 };
 
     enum AccessAttributes : uint8_t
     {
@@ -32,16 +31,6 @@ private:
         SIZE_64_BIT = 1 << 1
     };
 
-    friend AccessAttributes operator|(AccessAttributes left, AccessAttributes right)
-    {
-        return static_cast<AccessAttributes>(static_cast<uint8_t>(left) | static_cast<uint8_t>(right));
-    }
-
-    friend FlagAttributes operator|(FlagAttributes left, FlagAttributes right)
-    {
-        return static_cast<FlagAttributes>(static_cast<uint8_t>(left) | static_cast<uint8_t>(right));
-    }
-
     struct PACKED Entry
     {
         uint16_t LimitLower;
@@ -57,7 +46,9 @@ private:
     {
         uint16_t Size;
         uint64_t Address;
-    } m_Ptr;
+	} m_Ptr;
+
+	uint16_t m_ActiveEntries{ 0 };
 
     static GDT m_Instance;
 
@@ -78,5 +69,15 @@ public:
 private:
     void CreateDescriptor(uint32_t base, uint32_t limit, AccessAttributes accessAttributes, FlagAttributes flagAttributes);
 
-    Entry& NewEntry();
+	Entry& NewEntry();
+
+	friend AccessAttributes operator|(AccessAttributes left, AccessAttributes right)
+	{
+		return static_cast<AccessAttributes>(static_cast<uint8_t>(left) | static_cast<uint8_t>(right));
+	}
+
+	friend FlagAttributes operator|(FlagAttributes left, FlagAttributes right)
+	{
+		return static_cast<FlagAttributes>(static_cast<uint8_t>(left) | static_cast<uint8_t>(right));
+	}
 };

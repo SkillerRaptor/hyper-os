@@ -63,7 +63,7 @@ __END_DECLS
 
 void IRQManager::RegisterInterruptRequest(size_t index, uint64_t address)
 {
-	IDT::Entry& entry = IDT::Get().GetEntries()[index];
+	IDT::Entry& entry = IDT::Get().m_Entries[index];
 	entry.Offset_1 = (address & 0x0000FFFF);
 	entry.Offset_2 = (address & 0xFFFF0000) >> 16;
 	entry.Offset_3 = (address & 0xFFFFFFFF00000000) >> 32;

@@ -31,11 +31,6 @@ void IDT::CreateBasicTables()
 	IRQManager::Get().RegisterBasicInterrupts();
 }
 
-IDT::Entry* IDT::GetEntries()
-{
-	return m_Entries;
-}
-
 IDT& IDT::Get()
 {
 	return m_Instance;
