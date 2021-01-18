@@ -203,6 +203,8 @@ int vprintf(const char* fmt, va_list parameters)
 			{
 			case 'X':
 				base = 16;
+				base = (base == 10) ? 17 : base;
+				printString("0x", &ret);
 
 				switch (length)
 				{
