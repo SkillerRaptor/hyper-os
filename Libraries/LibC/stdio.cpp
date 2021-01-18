@@ -4,8 +4,8 @@
 #include "string.h"
 
 char* __int_str(intmax_t i, char b[], int base, bool plusSignIfNeeded, bool spaceSignIfNeeded,
-	int paddingNo, bool justify, bool zeroPad) {
-
+	int paddingNo, bool justify, bool zeroPad)
+{
 	char digit[32] = { 0 };
 	memset(digit, 0, 32);
 	strcpy(digit, "0123456789");
@@ -23,24 +23,24 @@ char* __int_str(intmax_t i, char b[], int base, bool plusSignIfNeeded, bool spac
 		*p++ = '-';
 		i *= -1;
 	}
-	else if (plusSignIfNeeded) 
+	else if (plusSignIfNeeded)
 	{
 		*p++ = '+';
 	}
-	else if (!plusSignIfNeeded && spaceSignIfNeeded) 
+	else if (!plusSignIfNeeded && spaceSignIfNeeded)
 	{
 		*p++ = ' ';
 	}
 
 	intmax_t shifter = i;
-	do 
+	do
 	{
 		++p;
 		shifter = shifter / base;
 	} while (shifter);
 
 	*p = '\0';
-	do 
+	do
 	{
 		*--p = digit[i % base];
 		i = i / base;
@@ -57,10 +57,10 @@ char* __int_str(intmax_t i, char b[], int base, bool plusSignIfNeeded, bool spac
 			else
 				b[strlen(b)] = ' ';
 	}
-	else 
+	else
 	{
 		char a[256] = { 0 };
-		while (padding--) 
+		while (padding--)
 			if (zeroPad)
 				a[strlen(a)] = '0';
 			else
@@ -75,7 +75,7 @@ char* __int_str(intmax_t i, char b[], int base, bool plusSignIfNeeded, bool spac
 void printChar(char c, int* ret)
 {
 	putchar(c);
-	*ret++;
+	(*ret)++;
 }
 
 void printString(const char* c, int* ret)
@@ -148,17 +148,17 @@ int vprintf(const char* fmt, va_list parameters)
 				i++;
 			}
 
-			if (fmt[i] == '.') 
+			if (fmt[i] == '.')
 			{
 				++i;
-				while (isdigit(fmt[i])) 
+				while (isdigit(fmt[i]))
 				{
 					precSpec *= 10;
 					precSpec += fmt[i] - 48;
 					++i;
 				}
 
-				if (fmt[i] == '*') 
+				if (fmt[i] == '*')
 				{
 					precSpec = va_arg(parameters, int);
 					++i;
@@ -167,13 +167,13 @@ int vprintf(const char* fmt, va_list parameters)
 			else
 				precSpec = 6;
 
-			if (fmt[i] == 'h' || fmt[i] == 'l' || fmt[i] == 'j' || fmt[i] == 'z' || fmt[i] == 't' || fmt[i] == 'L') 
+			if (fmt[i] == 'h' || fmt[i] == 'l' || fmt[i] == 'j' || fmt[i] == 'z' || fmt[i] == 't' || fmt[i] == 'L')
 			{
 				length = fmt[i];
 				++i;
 				if (fmt[i] == 'h')
 					length = 'H';
-				else if (fmt[i] == 'l') 
+				else if (fmt[i] == 'l')
 				{
 					length = 'q';
 					++i;
@@ -185,30 +185,156 @@ int vprintf(const char* fmt, va_list parameters)
 			memset(stringBuffer, 0, 256);
 
 			int base = 10;
-			if (specifier == 'o') 
+			if (specifier == 'o')
 			{
 				base = 8;
 				specifier = 'u';
 				printString("0", &ret);
 			}
 
-			if (specifier == 'p') 
+			if (specifier == 'p')
 			{
 				base = 16;
 				length = 'z';
 				specifier = 'u';
 			}
 
-			switch (specifier) 
+			switch (specifier)
 			{
 			case 'X':
 				base = 16;
+
+				switch (length)
+				{
+				case 0:
+				{
+					unsigned int integer = va_arg(parameters, unsigned int);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 'H':
+				{
+					unsigned char integer = (unsigned char)va_arg(parameters, unsigned int);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 'h':
+				{
+					unsigned short int integer = va_arg(parameters, unsigned int);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 'l':
+				{
+					unsigned long integer = va_arg(parameters, unsigned long);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 'q':
+				{
+					unsigned long long integer = va_arg(parameters, unsigned long long);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 'j':
+				{
+					uintmax_t integer = va_arg(parameters, uintmax_t);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 'z':
+				{
+					size_t integer = va_arg(parameters, size_t);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 't':
+				{
+					ptrdiff_t integer = va_arg(parameters, ptrdiff_t);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				default:
+					break;
+				}
+				break;
 			case 'x':
 				base = (base == 10) ? 17 : base;
 				printString("0x", &ret);
+
+				switch (length)
+				{
+				case 0:
+				{
+					unsigned int integer = va_arg(parameters, unsigned int);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 'H':
+				{
+					unsigned char integer = (unsigned char)va_arg(parameters, unsigned int);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 'h':
+				{
+					unsigned short int integer = va_arg(parameters, unsigned int);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 'l':
+				{
+					unsigned long integer = va_arg(parameters, unsigned long);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 'q':
+				{
+					unsigned long long integer = va_arg(parameters, unsigned long long);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 'j':
+				{
+					uintmax_t integer = va_arg(parameters, uintmax_t);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 'z':
+				{
+					size_t integer = va_arg(parameters, size_t);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				case 't':
+				{
+					ptrdiff_t integer = va_arg(parameters, ptrdiff_t);
+					__int_str(integer, stringBuffer, base, plusSign, spaceNoSign, lengthSpec, leftJustify, zeroPad);
+					printString(stringBuffer, &ret);
+					break;
+				}
+				default:
+					break;
+				}
+				break;
 			case 'u':
 			{
-				switch (length) 
+				switch (length)
 				{
 				case 0:
 				{
@@ -274,7 +400,7 @@ int vprintf(const char* fmt, va_list parameters)
 
 			case 'd': case 'i':
 			{
-				switch (length) 
+				switch (length)
 				{
 				case 0:
 				{
@@ -356,7 +482,7 @@ int vprintf(const char* fmt, va_list parameters)
 
 			case 'n':
 			{
-				switch (length) 
+				switch (length)
 				{
 				case 'H':
 					*(va_arg(parameters, signed char*)) = ret;
@@ -365,7 +491,7 @@ int vprintf(const char* fmt, va_list parameters)
 					*(va_arg(parameters, short int*)) = ret;
 					break;
 
-				case 0: 
+				case 0:
 				{
 					int* a = va_arg(parameters, int*);
 					*a = ret;

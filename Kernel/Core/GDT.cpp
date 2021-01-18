@@ -5,7 +5,7 @@
 GDT GDT::m_Instance;
 
 GDT::GDT()
-    : m_Entries(), m_Ptr({ m_ActiveEntries, (uintptr_t)m_Entries })
+    : m_Entries(), m_Ptr({ 0, (uintptr_t)m_Entries })
 {
 }
 
