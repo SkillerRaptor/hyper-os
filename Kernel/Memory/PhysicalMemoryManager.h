@@ -5,38 +5,31 @@
 #include <AK/NonMoveable.h>
 #include <Kernel/Core/Stivale.h>
 
-class PhysicalMemoryManager : public NonCopyable, NonMoveable
+class PhysicalMemoryManager : public NonCopyable, public NonMoveable
 {
-private:
+public:
+	static constexpr uint64_t KERNEL_TOP_ADDRESS = 0xFFFFFFFF80000000;
 	static constexpr uint64_t KERNEL_BASE_ADDRESS = 0xFFFF800000000000;
-	static constexpr uint64_t PAGE_SIZE = 0x1000;
+	static constexpr size_t PAGE_SIZE = 4096;
 
-	uint64_t m_TotalMemory;
-	uint64_t m_Pages;
+private:
+	static size_t s_LastUsedIndex;
+	static uintptr_t s_HighestPage;
 
-	Bitmap m_Bitmap;
-
-	static PhysicalMemoryManager m_Instance;
+	static Bitmap s_Bitmap;
 
 public:
-	PhysicalMemoryManager() = default;
+	static void Initialize(StivaleMemoryMapEntry* memoryMap, size_t memoryMapEntries);
 
-	void Initialize(StivaleStruct* bootloaderData);
+	static void* AllocatePage();
+	static void* AllocatePages(size_t pageCount);
 
-	void ReserveMemory(void* baseAddress, size_t size);
-	void FreeMemory(void* baseAddress, size_t size);
+	static void* CallocatePage();
+	static void* CallocatePages(size_t pageCount);
 
-	void* AllocatePage();
-	void* AllocatePages(size_t pageCount);
-
-	void FreePage(void* address);
-	void FreePages(void* address, size_t pageCount);
-
-	uint64_t GetTotalMemory() const;
-
-	static PhysicalMemoryManager& Get();
+	static void FreePage(void* address);
+	static void FreePages(void* address, size_t pageCount);
 
 private:
-	void* GetAvailablePage();
-	void* GetAvailablePageAfter(uint64_t lowLimit);
+	static void* InnerAllocate(size_t pageCount, size_t limit);
 };

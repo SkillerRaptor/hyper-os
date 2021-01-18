@@ -2,52 +2,85 @@
 
 #include <LibC/stdio.h>
 
-PhysicalMemoryManager PhysicalMemoryManager::m_Instance;
+size_t PhysicalMemoryManager::s_LastUsedIndex = 0;
+uintptr_t PhysicalMemoryManager::s_HighestPage = 0;
 
-void PhysicalMemoryManager::Initialize(StivaleStruct* bootloaderData)
+Bitmap PhysicalMemoryManager::s_Bitmap;
+
+void PhysicalMemoryManager::Initialize(StivaleMemoryMapEntry* memoryMap, size_t memoryMapEntries)
 {
-	StivaleMemoryMapEntry* memoryMap = (StivaleMemoryMapEntry*)bootloaderData->MemoryMapAddress;
-	printf("[PMM] Memory Address: %X\n", bootloaderData->MemoryMapAddress);
+	printf("[PMM] Memory Address: %X\n", (uint64_t)memoryMap);
 
-	for (uint64_t i = 0; i < bootloaderData->MemoryMapEntries; i++)
+	/* Calculate bitmap size */
+	for (size_t i = 0; i < memoryMapEntries; i++)
 	{
 		StivaleMemoryMapEntry& entry = memoryMap[i];
 		printf("[PMM] [Entry %d] [%X - %X]: Size %X, Type %X\n", i, entry.Address, entry.Address + entry.Length, entry.Length, entry.Type);
-		m_TotalMemory += entry.Length;
+
+		if (entry.Type != StivaleMemoryType::USABLE)
+			continue;
+
+		uintptr_t top = (uintptr_t)(entry.Address + entry.Length);
+
+		if (top > s_HighestPage)
+			s_HighestPage = top;
 	}
 
-	m_Pages = static_cast<uint64_t>((m_TotalMemory / 4096) / 8);
+	size_t memorySize = ((size_t)s_HighestPage + (PAGE_SIZE - 1)) / PAGE_SIZE;
+	size_t bitmapSize = memorySize / 8;
 
-	printf("[PMM] Total Memory: %X\n", m_TotalMemory);
-
-	uint64_t bitmapBase = 0;
-
-	for (uint64_t i = 0; i < bootloaderData->MemoryMapEntries; i++)
+	/* Find location for the bitmap*/
+	for (size_t i = 0; i < memoryMapEntries; i++)
 	{
 		StivaleMemoryMapEntry& entry = memoryMap[i];
-		if (entry.Type & StivaleMemoryType::USABLE && entry.Length >= m_Pages)
-		{
-			m_Bitmap.SetData((uint8_t*)(entry.Address + KERNEL_BASE_ADDRESS));
-			m_Bitmap.SetSize(m_Pages);
-			bitmapBase = entry.Address;
-			memset((uint64_t*)m_Bitmap.GetData(), 0xFFFFFFFF, m_Pages / 8);
+		if (entry.Type != StivaleMemoryType::USABLE)
+			continue;
+
+		if (entry.Length >= bitmapSize) {
+			s_Bitmap.SetData((uint8_t*)(entry.Address + KERNEL_BASE_ADDRESS));
+
+			memset(s_Bitmap.GetData(), 0xFF, bitmapSize);
+
+			entry.Address += bitmapSize;
+			entry.Length -= bitmapSize;
 			break;
 		}
 	}
 
-	for (uint64_t i = 0; i < bootloaderData->MemoryMapEntries; i++)
+	for (size_t i = 0; i < memoryMapEntries; i++)
 	{
 		StivaleMemoryMapEntry& entry = memoryMap[i];
-		if (entry.Type & StivaleMemoryType::USABLE)
-		{
-			FreeMemory((void*)entry.Address, entry.Length);
-		}
+		if (entry.Type != StivaleMemoryType::USABLE)
+			continue;
+
+		for (uintptr_t j = 0; j < entry.Length; j += PAGE_SIZE)
+			s_Bitmap.SetBit((entry.Address + j) / PAGE_SIZE, false);
 	}
 
-	ReserveMemory((void*)bitmapBase, m_Pages);
-	ReserveMemory((void*)0, 0x100000);
-
 	printf("[PMM] Physical Memory Manager initialized!\n");
+}
+
+void* PhysicalMemoryManager::InnerAllocate(size_t pageCount, size_t limit)
+{
+	size_t p = 0;
+
+	while (s_LastUsedIndex < limit)
+	{
+		if (s_Bitmap[s_LastUsedIndex++] == false)
+		{
+			if (p++ == pageCount)
+			{
+				size_t page = s_LastUsedIndex - pageCount;
+				for (size_t i = page; i < s_LastUsedIndex; i++)
+					s_Bitmap.SetBit(i, true);
+				return (void*)(page * PAGE_SIZE);
+			}
+		}
+		else
+			p = 0;
+	}
+
+	return nullptr;
 }
 
 void* PhysicalMemoryManager::AllocatePage()
@@ -57,36 +90,35 @@ void* PhysicalMemoryManager::AllocatePage()
 
 void* PhysicalMemoryManager::AllocatePages(size_t pageCount)
 {
-	void* firstPage = GetAvailablePage();
-	void* baseAddress = (void*)((uint64_t)firstPage * PAGE_SIZE);
-	uint64_t currentFree = 0;
-
-	if (firstPage == nullptr)
+	size_t length = s_LastUsedIndex;
+	void* address = InnerAllocate(pageCount, s_HighestPage / PAGE_SIZE);
+	if (address == nullptr)
 	{
-		printf("[PMM] Error: No free pages!\n");
-		return nullptr; // TODO: Page Frame Swap to file!
+		s_LastUsedIndex = 0;
+		address = InnerAllocate(pageCount, length);
 	}
 
-	for (size_t i = (uint64_t)firstPage; i < m_Bitmap.GetSize(); i++)
-	{
-		if (m_Bitmap[i] == true)
-		{
-			baseAddress = (void*)((uint64_t)baseAddress + ((currentFree + 1) * PAGE_SIZE));
-			currentFree = 0;
-			continue;
-		}
+	return address;
+}
 
-		if (++currentFree == pageCount)
-		{
-			for (size_t j = 0; j < pageCount; j++)
-			{
-				m_Bitmap.SetBit((uint64_t)baseAddress / PAGE_SIZE + j, true);
-			}
-			return baseAddress;
-		}
-	}
+void* PhysicalMemoryManager::CallocatePage()
+{
+	return CallocatePages(1);
+}
 
-	return nullptr;
+void* PhysicalMemoryManager::CallocatePages(size_t pageCount)
+{
+	char* address = (char*)AllocatePages(pageCount);
+
+	if (address == nullptr)
+		return nullptr;
+
+	uint64_t* ptr = (uint64_t*)(address + KERNEL_BASE_ADDRESS);
+
+	for (size_t i = 0; i < pageCount * (PAGE_SIZE / sizeof(uint64_t)); i++)
+		ptr[i] = 0;
+
+	return address;
 }
 
 void PhysicalMemoryManager::FreePage(void* address)
@@ -98,57 +130,5 @@ void PhysicalMemoryManager::FreePages(void* address, size_t pageCount)
 {
 	uint64_t startPage = (uint64_t)address / PAGE_SIZE;
 	for (size_t i = startPage; i < startPage + pageCount; i++)
-	{
-		m_Bitmap.SetBit(i, false);
-	}
-}
-
-void PhysicalMemoryManager::ReserveMemory(void* baseAddress, size_t size)
-{
-	uint64_t offsetAddress = ((uint64_t)baseAddress + size) / PAGE_SIZE;
-	for (size_t i = (uint64_t)baseAddress / PAGE_SIZE; i < (offsetAddress + (size % PAGE_SIZE ? 1 : 0)); i++)
-	{
-		m_Bitmap.SetBit(i, true);
-	}
-}
-
-void PhysicalMemoryManager::FreeMemory(void* baseAddress, size_t size)
-{
-	uint64_t offsetAddress = ((uint64_t)baseAddress + size) / PAGE_SIZE;
-	for (size_t i = (uint64_t)baseAddress / PAGE_SIZE; i < (offsetAddress + (size % PAGE_SIZE ? 1 : 0)); i++)
-	{
-		m_Bitmap.SetBit(i, false);
-	}
-}
-
-void* PhysicalMemoryManager::GetAvailablePage()
-{
-	for (uint64_t i = 0; i < m_Bitmap.GetSize(); i++)
-	{
-		if (m_Bitmap[i] == false)
-			return (void*)i;
-	}
-
-	return nullptr;
-}
-
-void* PhysicalMemoryManager::GetAvailablePageAfter(uint64_t lowLimit)
-{
-	for (uint64_t i = lowLimit; i < m_Bitmap.GetSize(); i++)
-	{
-		if (m_Bitmap[i] == false)
-			return (void*)i;
-	}
-
-	return nullptr;
-}
-
-uint64_t PhysicalMemoryManager::GetTotalMemory() const
-{
-	return m_TotalMemory;
-}
-
-PhysicalMemoryManager& PhysicalMemoryManager::Get()
-{
-	return m_Instance;
+		s_Bitmap.SetBit(i, false);
 }

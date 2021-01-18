@@ -1,5 +1,5 @@
-#include <LibC/stdio.h>
 #include <AK/IO.h>
+#include <LibC/stdio.h>
 
 #include "Core/GDT.h"
 #include "Core/IDT.h"
@@ -19,18 +19,18 @@ __attribute__((section(".stivalehdr"), used))
 struct StivaleHeader header = {
 	.Stack = (uintptr_t)stack + sizeof(stack),
 	.Flags = 0,
-	.FramebufferWidth = 0,	
+	.FramebufferWidth = 0,
 	.FramebufferHeight = 0,
 	.FramebufferBpp = 0,
-	.EntryPoint = (uintptr_t) KernelEarlyMain
+	.EntryPoint = (uintptr_t)KernelEarlyMain
 };
 
 void KernelMain()
 {
 	printf("[Kernel] HyperOS finished booting...\n");
 
-	while (true)
-		asm volatile ("hlt");
+	//while (true)
+	asm volatile ("hlt");
 }
 
 void KernelInit()
@@ -52,16 +52,11 @@ void KernelEarlyMain(StivaleStruct* bootloaderData)
 	IDT::Get().CreateBasicTables();
 	IDT::Get().Install();
 
-	PhysicalMemoryManager::Get().Initialize(bootloaderData);
-	
-	VirtualMemoryManager::PageTable* pageTable = VirtualMemoryManager::Get().CreateNewPageTable();
+	StivaleMemoryMapEntry* memoryMap = (StivaleMemoryMapEntry*)bootloaderData->MemoryMapAddress;
+	size_t memoryMapEntries = bootloaderData->MemoryMapEntries;
 
-	for (uint64_t i = 0; i < PhysicalMemoryManager::Get().GetTotalMemory() * 8; i += 0x1000)
-	{
-		VirtualMemoryManager::Get().MapPage(pageTable, (void*) i, (void*) i, 0);
-	}
-	
-	asm("mov %0, %%cr3" :: "r" (pageTable) : "memory");
+	PhysicalMemoryManager::Initialize(memoryMap, memoryMapEntries);
+	VirtualMemoryManager::Initialize(memoryMap, memoryMapEntries);
 
 	KernelInit();
 }

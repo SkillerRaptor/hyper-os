@@ -1,111 +1,86 @@
 #include "VirtualMemoryManager.h"
 
+#include <Kernel/Memory/PhysicalMemoryManager.h>
 #include <LibC/string.h>
 #include <LibC/stdio.h>
+#include <LibC/stdlib.h>
 
-#include "PhysicalMemoryManager.h"
+VirtualMemoryManager::Pagemap* VirtualMemoryManager::s_KernelPagemap;
 
-VirtualMemoryManager VirtualMemoryManager::m_Instance;
-
-VirtualMemoryManager::PageTable* VirtualMemoryManager::CreateNewPageTable()
+void VirtualMemoryManager::Initialize(StivaleMemoryMapEntry* memoryMap, size_t memoryMapEntries)
 {
-	PageTable* pml4 = (PageTable*)PhysicalMemoryManager::Get().AllocatePage();
+	s_KernelPagemap = CreateNewPagemap();
 
-	if (pml4 == nullptr)
-		return nullptr; // TODO: Panic for Address space allocation failed
+	for (uintptr_t ptr = 0; ptr < 0x100000000; ptr += PhysicalMemoryManager::PAGE_SIZE)
+		MapPage(s_KernelPagemap, (void*)ptr, (void*)(PhysicalMemoryManager::KERNEL_BASE_ADDRESS + (uint64_t)ptr), PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE);
 
-	memset((void*)pml4, 0, 0x1000);
+	for (uintptr_t ptr = 0; ptr < 0x80000000; ptr += PhysicalMemoryManager::PAGE_SIZE)
+		MapPage(s_KernelPagemap, (void*)ptr, (void*)(PhysicalMemoryManager::KERNEL_TOP_ADDRESS + (uint64_t)ptr), PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE);
 
-	return pml4;
-}
-
-void VirtualMemoryManager::MapPage(PageTable* pageTable, void* virtualAddress, void* physicalAddress, uint16_t flags)
-{
-	MapPages(pageTable, virtualAddress, physicalAddress, flags, 1);
-}
-
-void VirtualMemoryManager::MapPages(PageTable* pageTable, void* virtualAddress, void* physicalAddress, uint16_t flags, size_t pageCount)
-{
-	uint16_t higherFlags = PageAttributes::READ_AND_WRITE | PageAttributes::USER_SUPERVISOR;
-
-	for (size_t i = 0; i < pageCount; i++)
+	for (size_t i = 0; i < memoryMapEntries; i++)
 	{
-		PageTableOffsets offset = SplitVirtualToOffsets((uint64_t)virtualAddress);
-		PageTable* virtualPML4 = (PageTable*)pageTable;
-		PageTable* virtualPDP = GetEntryOrAllocate(virtualPML4, offset.PML4, higherFlags);
-		PageTable* virtualPD = GetEntryOrAllocate(virtualPDP, offset.PDP, higherFlags);
-		PageTable* virtualPT = GetEntryOrAllocate(virtualPD, offset.PD, higherFlags);
-
-		PageDirectoryEntry entry{};
-		entry.Address = (uint64_t)physicalAddress;
-		entry.Attributes = entry.Attributes | (PageAttributes)flags | PageAttributes::PRESENT;
-		virtualPT->Entries[offset.PT] = entry;
-		virtualAddress = (void*)((uint64_t)virtualAddress + 0x1000);
-		physicalAddress = (void*)((uint64_t)physicalAddress + 0x1000);
-	}
-}
-
-bool VirtualMemoryManager::UnmapPage(PageTable* pageTable, void* virtualAddress)
-{
-	return false;
-}
-
-bool VirtualMemoryManager::UnmapPages(PageTable* pageTable, void* virtualAddress, size_t pageCount)
-{
-	return false;
-}
-
-VirtualMemoryManager::PageTable* VirtualMemoryManager::GetPageTable(uintptr_t virtualAddress)
-{
-	return nullptr;
-}
-
-uint64_t VirtualMemoryManager::GetEntry(PageTable* pageTable, uint64_t virtualAddress)
-{
-	return 0;
-}
-
-VirtualMemoryManager::PageTable* VirtualMemoryManager::GetEntryOrNull(PageTable* table, size_t offset)
-{
-	return nullptr;
-}
-
-VirtualMemoryManager::PageTable* VirtualMemoryManager::GetEntryOrAllocate(PageTable* table, size_t offset, uint16_t flags)
-{
-	PageDirectoryEntry entryAddress = table->Entries[offset];
-
-	if (!(entryAddress.Attributes & PageAttributes::PRESENT))
-	{
-		PageDirectoryEntry* entry = (PageDirectoryEntry*)PhysicalMemoryManager::Get().AllocatePage();
-		table->Entries[offset] = *entry;
-		entryAddress = table->Entries[offset];
-
-		if (!entry)
-			return nullptr; // TODO: Adding failed to allocate a page for a paging table
-
-		table->Entries[offset].Attributes = table->Entries[offset].Attributes | (PageAttributes)flags | PageAttributes::PRESENT;
-		memset((void*)entryAddress.Address, 0, 0x1000);
+		StivaleMemoryMapEntry& entry = memoryMap[i];
+		for (uintptr_t ptr = 0; ptr < entry.Length; ptr += PhysicalMemoryManager::PAGE_SIZE)
+			MapPage(s_KernelPagemap, (void*)ptr, (void*)(PhysicalMemoryManager::KERNEL_BASE_ADDRESS + (uint64_t)ptr), PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE);
 	}
 
-	return (PageTable*)entryAddress.Address;
+	printf("[VMM] Virtual Memory Manager initialized!\n");
+
+	SwitchPagemap(s_KernelPagemap);
 }
 
-VirtualMemoryManager::PageTableOffsets VirtualMemoryManager::SplitVirtualToOffsets(uint64_t virtualAddress)
+VirtualMemoryManager::Pagemap* VirtualMemoryManager::CreateNewPagemap()
 {
-	PageTableOffsets offsets{};
-	offsets.PML4 = (virtualAddress >> 39) & 0x1FF;
-	offsets.PDP = (virtualAddress >> 30) & 0x1FF;
-	offsets.PD = (virtualAddress >> 21) & 0x1FF;
-	offsets.PT = (virtualAddress >> 12) & 0x1FF;
-	return offsets;
+	Pagemap* pagemap = (Pagemap*)malloc(sizeof(Pagemap));
+	pagemap->TopLevel = (uintptr_t*)PhysicalMemoryManager::AllocatePage();
+	return pagemap;
 }
 
-uint64_t VirtualMemoryManager::JoinOffsetsToVirtual(PageTableOffsets offset)
+void VirtualMemoryManager::SwitchPagemap(Pagemap* pagemap)
 {
-	return (uint64_t)((offset.PML4 << 39) | (offset.PDP << 30) | (offset.PD << 21) | (offset.PT << 12));
+	asm("mov %%cr3, %0" :: "r" (pagemap->TopLevel) : "memory");
+	//asm("mov %0, %%cr3" :: "r" (pagemap->TopLevel) : "memory");
 }
 
-VirtualMemoryManager& VirtualMemoryManager::Get()
+void VirtualMemoryManager::MapPage(Pagemap* pageMap, void* physicalAddress, void* virtualAddress, uint16_t flags)
 {
-	return m_Instance;
+	uintptr_t pml4Entry = ((uintptr_t)virtualAddress & ((uintptr_t)0x1ff << 39)) >> 39;
+	uintptr_t pml3Entry = ((uintptr_t)virtualAddress & ((uintptr_t)0x1ff << 30)) >> 30;
+	uintptr_t pml2Entry = ((uintptr_t)virtualAddress & ((uintptr_t)0x1ff << 21)) >> 21;
+	uintptr_t pml1Entry = ((uintptr_t)virtualAddress & ((uintptr_t)0x1ff << 12)) >> 12;
+
+	uintptr_t* pml4 = pageMap->TopLevel;
+
+	uintptr_t* pml3 = GetNextLevel(pml4, pml4Entry);
+	if (pml3 == nullptr)
+		return;
+
+	uintptr_t* pml2 = GetNextLevel(pml3, pml3Entry);
+	if (pml2 == nullptr)
+		return;
+
+	uintptr_t* pml1 = GetNextLevel(pml2, pml2Entry);
+	if (pml1 == nullptr)
+		return;
+
+	pml1[pml1Entry] = (uintptr_t)((uint64_t)physicalAddress | flags);
+}
+
+uintptr_t* VirtualMemoryManager::GetNextLevel(uintptr_t* currentLevel, size_t entry)
+{
+	uintptr_t level;
+
+	if (currentLevel[entry] & PagemapAttributes::PRESENT)
+	{
+		level = currentLevel[entry] & ~((uintptr_t)0xfff);
+	}
+	else
+	{
+		level = (uintptr_t)PhysicalMemoryManager::CallocatePage();
+		if (level == 0)
+			return nullptr;
+		currentLevel[entry] = level | PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE | PagemapAttributes::USER_SUPERVISOR;
+	}
+
+	return (uintptr_t*)level;
 }

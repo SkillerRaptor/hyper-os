@@ -1,15 +1,20 @@
 #pragma once
 
+#include <AK/NonCopyable.h>
+#include <AK/NonMoveable.h>
+#include <Kernel/Core/Stivale.h>
 #include <LibC/stddef.h>
 
-class VirtualMemoryManager
+class VirtualMemoryManager : public NonCopyable, public NonMoveable
 {
 public:
-	static constexpr uint64_t KERNEL_BASE_ADDRESS = 0xFFFF800000000000;
-	static constexpr size_t PAGE_SIZE = 4096;
-	static constexpr size_t EntryCount = 512;
+	struct Pagemap
+	{
+		uintptr_t* TopLevel;
+	};
 
-	enum PageAttributes : uint16_t
+private:
+	enum PagemapAttributes : uint16_t
 	{
 		PRESENT = 1 << 0,
 		READ_AND_WRITE = 1 << 1,
@@ -20,50 +25,21 @@ public:
 		SIZE_4KB = 1 << 7
 	};
 
-	struct PACKED PageDirectoryEntry
-	{
-		PageAttributes Attributes : 9;
-		uint8_t Available : 4;
-		uint64_t Address : 52;
-	};
-
-	struct PACKED PageTable
-	{
-		PageDirectoryEntry Entries[EntryCount];
-	};
-
-	struct PageTableOffsets
-	{
-		uint64_t PML4;
-		uint64_t PDP;
-		uint64_t PD;
-		uint64_t PT;
-	};
-
-	static VirtualMemoryManager m_Instance;
+	static Pagemap* s_KernelPagemap;
 
 public:
-	PageTable* CreateNewPageTable();
+	static void Initialize(StivaleMemoryMapEntry* memoryMap, size_t memoryMapEntries);
 
-	void MapPage(PageTable* pageTable, void* virtualAddress, void* physicalAddress, uint16_t flags);
-	void MapPages(PageTable* pageTable, void* virtualAddress, void* physicalAddress, uint16_t flags, size_t pageCount);
-	bool UnmapPage(PageTable* pageTable, void* virtualAddress);
-	bool UnmapPages(PageTable* pageTable, void* virtualAddress, size_t pageCount);
+	static Pagemap* CreateNewPagemap();
+	static void SwitchPagemap(Pagemap* pagemap);
 
-	PageTable* GetPageTable(uintptr_t virtualAddress);
-	uint64_t GetEntry(PageTable* pageTable, uint64_t virtualAddress);
-
-	static VirtualMemoryManager& Get();
+	static void MapPage(Pagemap* pageMap, void* physicalAddress, void* virtualAddress, uint16_t flags);
 
 private:
-	PageTableOffsets SplitVirtualToOffsets(uint64_t virtualAddress);
-	uint64_t JoinOffsetsToVirtual(PageTableOffsets offset);
+	static uintptr_t* GetNextLevel(uintptr_t* currentLevel, size_t entry);
 
-	PageTable* GetEntryOrNull(PageTable* table, size_t offset);
-	PageTable* GetEntryOrAllocate(PageTable* table, size_t offset, uint16_t flags);
-
-	friend PageAttributes operator|(PageAttributes left, PageAttributes right)
+	friend PagemapAttributes operator|(PagemapAttributes left, PagemapAttributes right)
 	{
-		return static_cast<PageAttributes>(static_cast<uint16_t>(left) | static_cast<uint16_t>(right));
+		return static_cast<PagemapAttributes>(static_cast<uint16_t>(left) | static_cast<uint16_t>(right));
 	}
 };
