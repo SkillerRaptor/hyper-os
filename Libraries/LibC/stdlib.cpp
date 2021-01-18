@@ -1,9 +1,9 @@
-#include "stdlib.h"
+#include <LibC/stdlib.h>
 
 #include <Kernel/Memory/PhysicalMemoryManager.h>
 
-#include "stdio.h"
-#include "string.h"
+#include <LibC/stdio.h>
+#include <LibC/string.h>
 
 struct HeapHeader
 {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <LibC/sys/cdefs.h>
 #include <LibC/stdint.h>
+#include <LibC/sys/cdefs.h>
 
 __BEGIN_DECLS
 

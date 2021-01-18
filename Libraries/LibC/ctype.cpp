@@ -1,4 +1,4 @@
-#include "ctype.h"
+#include <LibC/ctype.h>
 
 __BEGIN_DECLS
 

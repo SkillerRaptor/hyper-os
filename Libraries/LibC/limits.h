@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdint.h"
+#include <LibC/stdint.h>
 
 #define PATH_MAX 4096
 

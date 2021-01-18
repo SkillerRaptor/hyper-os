@@ -1,10 +1,10 @@
 #pragma once
 
-#include "sys/cdefs.h"
-#include "sys/types.h"
-#include "stdlib.h"
-#include "stdarg.h"
-#include "string.h"
+#include <LibC/stdlib.h>
+#include <LibC/stdarg.h>
+#include <LibC/string.h>
+#include <LibC/sys/cdefs.h>
+#include <LibC/sys/types.h>
 
 #if defined(__is_libk)
 #include <Kernel/Core/Terminal.h>
