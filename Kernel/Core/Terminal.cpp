@@ -1,12 +1,13 @@
 #include "Terminal.h"
 
+#include <Kernel/Memory/PhysicalMemoryManager.h>
 #include <LibC/string.h>
 
 #include "VGA.h"
 
 size_t Terminal::VGA_WIDTH = 80;
 size_t Terminal::VGA_HEIGHT = 25;
-uint16_t* Terminal::VGA_MEMORY = (uint16_t*)0xB8000;
+uint16_t* Terminal::VGA_MEMORY = (uint16_t*)(0xB8000 + PhysicalMemoryManager::PHYSICAL_MEMORY_OFFSET);
 
 size_t Terminal::m_Row;
 size_t Terminal::m_Column;
@@ -18,7 +19,7 @@ void Terminal::Initialize()
     m_Row = 0;
     m_Column = 0;
     m_Color = VGA_ENTRY_COLOR(LIGHT_GREY, BLACK);
-    m_Buffer = (uint16_t*)0xB8000;
+    m_Buffer = VGA_MEMORY;
     for (size_t y = 0; y < VGA_HEIGHT; y++)
     {
         for (size_t x = 0; x < VGA_WIDTH; x++)
@@ -31,12 +32,12 @@ void Terminal::Initialize()
 
 void Terminal::PutChar(unsigned char c)
 {
-	if (c == '\t')
-	{
+    if (c == '\t')
+    {
         for (size_t i = 0; i < 4; i++)
             PutEntryAt(' ', m_Color, m_Column++, m_Row);
-		return;
-	}
+        return;
+    }
 
     if (c == '\n')
     {
@@ -47,14 +48,14 @@ void Terminal::PutChar(unsigned char c)
 
     PutEntryAt(c, m_Color, m_Column++, m_Row);
 
-	if (m_Column >= VGA_WIDTH) {
-		m_Row++;
+    if (m_Column >= VGA_WIDTH) {
+        m_Row++;
         m_Column = 0;
-	}
+    }
 
     if (m_Row >= VGA_HEIGHT)
-	{
-		memmove(m_Buffer, m_Buffer + VGA_WIDTH, VGA_WIDTH * (VGA_HEIGHT - 1) * sizeof(uint16_t));
+    {
+        memmove(m_Buffer, m_Buffer + VGA_WIDTH, VGA_WIDTH * (VGA_HEIGHT - 1) * sizeof(uint16_t));
 
         for (size_t x = 0; x < VGA_WIDTH - 1; x++)
             PutEntryAt(' ', m_Color, x + 1, VGA_HEIGHT - 1);

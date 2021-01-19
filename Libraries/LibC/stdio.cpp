@@ -3,23 +3,25 @@
 #include <LibC/ctype.h>
 #include <LibC/string.h>
 
-char* __int_str(intmax_t i, char b[], int base, bool plusSignIfNeeded, bool spaceSignIfNeeded,
-	int paddingNo, bool justify, bool zeroPad)
+char* __int_str(intmax_t i, char b[], int base, bool plusSignIfNeeded, bool spaceSignIfNeeded, int paddingNo, bool justify, bool zeroPad)
 {
 	char digit[32] = { 0 };
 	memset(digit, 0, 32);
 	strcpy(digit, "0123456789");
 
-	if (base == 16) {
+	if (base == 16)
+	{
 		strcat(digit, "ABCDEF");
 	}
-	else if (base == 17) {
+	else if (base == 17)
+	{
 		strcat(digit, "abcdef");
 		base = 16;
 	}
 
 	char* p = b;
-	if (i < 0) {
+	if (i < 0)
+	{
 		*p++ = '-';
 		i *= -1;
 	}
