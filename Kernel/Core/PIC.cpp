@@ -1,4 +1,4 @@
-#include "PIC.h"
+#include <Kernel/Core/PIC.h>
 
 #include <AK/IO.h>
 #include <LibC/stdio.h>

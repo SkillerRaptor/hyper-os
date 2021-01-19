@@ -1,4 +1,4 @@
-#include "IDT.h"
+#include <Kernel/Core/IDT.h>
 
 #include <Kernel/Core/GDT.h>
 #include <Kernel/Core/IRQManager.h>

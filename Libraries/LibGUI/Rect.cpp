@@ -1,4 +1,4 @@
-#include "Rect.h"
+#include <LibGUI/Rect.h>
 
 Rect::Rect()
 	: m_Location(0, 0), m_Width(0), m_Height(0)

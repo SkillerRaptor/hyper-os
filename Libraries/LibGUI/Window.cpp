@@ -1,20 +1,20 @@
-#include "Window.h"
+#include <LibGUI/Window.h>
 
-#include "WindowManager.h"
+#include <LibGUI/WindowManager.h>
 
 Window::Window()
 {
 	//WindowManager::Get()->AddWindow(*this);
 }
 
-void Window::SetTitle(const char* title)
+void Window::SetTitle(const String& title)
 {
-	if (m_Title == title)
-		return;
+	//if (m_Title == title)
+	//	return;
 	m_Title = title;
 }
 
-const char* Window::GetTitle() const
+const String& Window::GetTitle() const
 {
 	return m_Title;
 }

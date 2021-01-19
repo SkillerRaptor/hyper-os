@@ -1,4 +1,4 @@
-#include "Color.h"
+#include <LibGUI/Color.h>
 
 Color::Color()
 	: m_Value(0)

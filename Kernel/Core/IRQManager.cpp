@@ -1,4 +1,4 @@
-#include "IRQManager.h"
+#include <Kernel/Core/IRQManager.h>
 
 #include <AK/IO.h>
 #include <AK/Panic.h>

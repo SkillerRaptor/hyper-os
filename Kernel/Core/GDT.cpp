@@ -1,4 +1,4 @@
-#include "GDT.h"
+#include <Kernel/Core/GDT.h>
 
 #include <LibC/stdio.h>
 

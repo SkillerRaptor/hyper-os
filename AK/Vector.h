@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AK/Utility.h>
+#include <LibC/stddef.h>
 
 template<typename T>
 class Vector

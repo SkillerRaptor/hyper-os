@@ -1,4 +1,4 @@
-#include "Point.h"
+#include <LibGUI/Point.h>
 
 Point::Point()
 	: m_X(0), m_Y(0)

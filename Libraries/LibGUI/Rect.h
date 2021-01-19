@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Point.h"
+#include <LibGUI/Point.h>
 
 class Rect
 {
@@ -22,7 +22,7 @@ public:
 
 	void SetX(uint32_t x);
 	uint32_t GetX() const;
-	
+
 	void SetY(uint32_t y);
 	uint32_t GetY() const;
 

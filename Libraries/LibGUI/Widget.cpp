@@ -1,4 +1,4 @@
-#include "Widget.h"
+#include <LibGUI/Widget.h>
 
 Widget::Widget()
 {

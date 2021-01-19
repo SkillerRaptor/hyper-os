@@ -1,4 +1,4 @@
-#include "Painter.h"
+#include <LibGUI/Painter.h>
 
 void Painter::Init(const FrameBufferInfo& frameBufferInfo)
 {

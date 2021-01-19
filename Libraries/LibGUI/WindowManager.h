@@ -1,8 +1,6 @@
 #pragma once
 
-//#include <AK/Vector.h>
-
-#include "Rect.h"
+#include <AK/Vector.h>
 
 class Painter;
 class Window;
@@ -10,7 +8,7 @@ class Window;
 class WindowManager
 {
 private:
-	//Vector<Window*> m_Windows; // TODO: Hash Table
+	Vector<Window*> m_Windows;
 
 public:
 	WindowManager() = default;

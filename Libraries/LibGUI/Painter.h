@@ -1,9 +1,8 @@
 #pragma once
 
 #include <LibC/stdint.h>
-
-#include "Color.h"
-#include "Rect.h"
+#include <LibGUI/Color.h>
+#include <LibGUI/Rect.h>
 
 struct FrameBufferInfo
 {

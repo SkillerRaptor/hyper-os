@@ -1,20 +1,21 @@
 #pragma once
 
-#include "Rect.h"
-#include "Widget.h"
+#include <AK/String.h>
+#include <LibGUI/Rect.h>
+#include <LibGUI/Widget.h>
 
 class Window
 {
 private:
-	const char* m_Title; //TODO: String Class
+	String m_Title;
 	Rect m_Rect;
 	Widget* m_MainWidget;
 
 public:
 	Window();
 
-	void SetTitle(const char* title);
-	const char* GetTitle() const;
+	void SetTitle(const String& title);
+	const String& GetTitle() const;
 
 	uint32_t GetX() const;
 	uint32_t GetY() const;

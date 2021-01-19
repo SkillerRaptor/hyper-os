@@ -1,4 +1,4 @@
-#include "VirtualMemoryManager.h"
+#include <Kernel/Memory/VirtualMemoryManager.h>
 
 #include <Kernel/Memory/PhysicalMemoryManager.h>
 #include <LibC/string.h>

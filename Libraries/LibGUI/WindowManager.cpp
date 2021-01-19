@@ -1,7 +1,7 @@
-#include "WindowManager.h"
+#include <LibGUI/WindowManager.h>
 
-#include "Painter.h"
-#include "Window.h"
+#include <LibGUI/Painter.h>
+#include <LibGUI/Window.h>
 
 void WindowManager::AddWindow(Window& window)
 {
