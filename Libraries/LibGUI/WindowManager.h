@@ -4,6 +4,7 @@
 
 #include "Rect.h"
 
+class Painter;
 class Window;
 
 class WindowManager
@@ -11,16 +12,10 @@ class WindowManager
 private:
 	//Vector<Window*> m_Windows; // TODO: Hash Table
 
-	static WindowManager m_Instance;
-
 public:
 	WindowManager() = default;
 
 	void AddWindow(Window& window);
-	void PaintWindowFrame(Window& window);
+	void PaintWindowFrame(Painter* painter, Window& window);
 	void PaintWindowFrames();
-
-	static WindowManager& Get();
-
-private:
 };

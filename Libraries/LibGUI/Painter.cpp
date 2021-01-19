@@ -1,7 +1,5 @@
 #include "Painter.h"
 
-Painter Painter::m_Instance;
-
 void Painter::Init(const FrameBufferInfo& frameBufferInfo)
 {
 	m_FrameBufferInfo = frameBufferInfo;
@@ -9,7 +7,7 @@ void Painter::Init(const FrameBufferInfo& frameBufferInfo)
 
 void Painter::FillRect(const Rect& rect, Color color)
 {
-	uint8_t* screen = (uint8_t*) m_FrameBufferInfo.FramebufferAddress;
+	uint8_t* screen = (uint8_t*)m_FrameBufferInfo.FramebufferAddress;
 	for (uint32_t y = rect.GetTop(); y < rect.GetBottom(); ++y)
 	{
 		uint32_t screenSpaceY = y * m_FrameBufferInfo.FramebufferPitch;
@@ -52,9 +50,4 @@ void Painter::DrawRect(const Rect& rect, Color color)
 			screen[screenSpaceX + screenSpaceY + 2] = (color.GetValue() >> 16) & 255;
 		}
 	}
-}
-
-Painter& Painter::Get()
-{
-	return m_Instance;
 }

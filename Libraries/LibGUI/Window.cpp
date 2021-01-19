@@ -4,7 +4,7 @@
 
 Window::Window()
 {
-	WindowManager::Get().AddWindow(*this);
+	//WindowManager::Get()->AddWindow(*this);
 }
 
 void Window::SetTitle(const char* title)
