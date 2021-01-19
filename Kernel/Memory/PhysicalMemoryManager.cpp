@@ -37,7 +37,7 @@ void PhysicalMemoryManager::Initialize(Stivale2_MmapEntry* memoryMap, size_t mem
 			continue;
 
 		if (entry.Length >= bitmapSize) {
-			s_Bitmap.SetData((uint8_t*)(entry.Base + KERNEL_BASE_ADDRESS));
+			s_Bitmap.SetData((uint8_t*)(entry.Base + PHYSICAL_MEMORY_OFFSET));
 
 			memset(s_Bitmap.GetData(), 0xFF, bitmapSize);
 
@@ -115,7 +115,7 @@ void* PhysicalMemoryManager::CallocatePages(size_t pageCount)
 	if (address == nullptr)
 		return nullptr;
 
-	uint64_t* ptr = (uint64_t*)(address + KERNEL_BASE_ADDRESS);
+	uint64_t* ptr = (uint64_t*)(address + PHYSICAL_MEMORY_OFFSET);
 
 	for (size_t i = 0; i < pageCount * (PAGE_SIZE / sizeof(uint64_t)); i++)
 		ptr[i] = 0;

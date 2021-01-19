@@ -12,20 +12,17 @@ void VirtualMemoryManager::Initialize(Stivale2_MmapEntry* memoryMap, size_t memo
 	s_KernelPagemap = CreateNewPagemap();
 
 	for (uintptr_t ptr = 0; ptr < 0x100000000; ptr += PhysicalMemoryManager::PAGE_SIZE)
-		MapPage(s_KernelPagemap, (void*)ptr, (void*)(PhysicalMemoryManager::KERNEL_BASE_ADDRESS + (uint64_t)ptr), PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE);
+		MapPage(s_KernelPagemap, (void*)ptr, (void*)(PhysicalMemoryManager::PHYSICAL_MEMORY_OFFSET + (uint64_t)ptr), PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE);
 
 	for (uintptr_t ptr = 0; ptr < 0x80000000; ptr += PhysicalMemoryManager::PAGE_SIZE)
-		MapPage(s_KernelPagemap, (void*)ptr, (void*)(PhysicalMemoryManager::KERNEL_TOP_ADDRESS + (uint64_t)ptr), PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE);
+		MapPage(s_KernelPagemap, (void*)ptr, (void*)(PhysicalMemoryManager::KERNEL_BASE_ADDRESS + (uint64_t)ptr), PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE);
 
 	for (size_t i = 0; i < memoryMapEntries; i++)
 	{
 		Stivale2_MmapEntry& entry = memoryMap[i];
 		for (uintptr_t ptr = 0; ptr < entry.Length; ptr += PhysicalMemoryManager::PAGE_SIZE)
-			MapPage(s_KernelPagemap, (void*)ptr, (void*)(PhysicalMemoryManager::KERNEL_BASE_ADDRESS + (uint64_t)ptr), PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE);
+			MapPage(s_KernelPagemap, (void*)ptr, (void*)(PhysicalMemoryManager::PHYSICAL_MEMORY_OFFSET + (uint64_t)ptr), PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE);
 	}
-
-	for (uintptr_t ptr = 0xB8000; ptr < 0xB8000 + (80 * 25 * sizeof(uint16_t)) + 0x1000; ptr += PhysicalMemoryManager::PAGE_SIZE)
-		MapPage(s_KernelPagemap, (void*)ptr, (void*)ptr, PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE);
 
 	printf("[VMM] Virtual Memory Manager initialized!\n");
 
