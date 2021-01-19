@@ -12,10 +12,8 @@ static struct Stivale2_HeaderTagSmp smpHdrTag = {
 
 static struct Stivale2_HeaderTagFramebuffer framebufferHdrTag = {
     .Tag = {
-        /*
-            .Identifier = STIVALE2_HEADER_TAG_FRAMEBUFFER_ID,
-            .Next = (uintptr_t)&smpHdrTag
-        */
+        .Identifier = STIVALE2_HEADER_TAG_FRAMEBUFFER_ID,
+        .Next = (uintptr_t)&smpHdrTag
     },
     .FramebufferWidth = 0,
     .FramebufferHeight = 0,

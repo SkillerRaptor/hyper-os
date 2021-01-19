@@ -3,6 +3,7 @@ include ../Makefile.common
 OBJS = \
 	./Bitmap.o \
 	./IO.o \
+	./Panic.o \
 	./String.o
 
 APP = AK

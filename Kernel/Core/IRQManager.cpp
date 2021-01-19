@@ -1,12 +1,17 @@
 #include "IRQManager.h"
 
 #include <AK/IO.h>
+#include <AK/Panic.h>
 #include <Kernel/Core/GDT.h>
 #include <Kernel/Core/IDT.h>
 #include <Kernel/Core/PIC.h>
 #include <LibC/stdio.h>
 
 __BEGIN_DECLS
+void ExceptionHandler8();
+void ExceptionHandler13();
+void ExceptionHandler14();
+
 void IRQHandler0();
 void IRQHandler1();
 void IRQHandler2();
@@ -29,6 +34,10 @@ void IRQManager::Install()
 {
 	IDT& idt = IDT::Get();
 
+	idt.RegisterTrapHandler(0x8, ExceptionHandler8);
+	idt.RegisterTrapHandler(0xD, ExceptionHandler13);
+	idt.RegisterTrapHandler(0xE, ExceptionHandler14);
+
 	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 0, IRQHandler0);
 	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 1, IRQHandler1);
 	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 2, IRQHandler2);
@@ -48,99 +57,120 @@ void IRQManager::Install()
 }
 
 __BEGIN_DECLS
+void ExceptionHandler8()
+{
+	Panic("IRQManager: Double Fault!");
+
+	while (true);
+}
+
+void ExceptionHandler13()
+{
+	Panic("IRQManager: General Protection Fault!");
+
+	while (true);
+}
+
+void ExceptionHandler14()
+{
+	Panic("IRQManager: Page Fault!");
+
+	while (true);
+}
+
 void IRQHandler0()
 {
-	printf("LINE!\n");
+	printf("IRQ 0!\n");
 	PIC::Get().SendEndOfInterrupt(0);
 }
 
 void IRQHandler1()
 {
-	printf("LINE!\n");
+	printf("IRQ 1!\n");
 	PIC::Get().SendEndOfInterrupt(1);
 }
 
 void IRQHandler2()
 {
-	printf("LINE!\n");
+	printf("IRQ 2!\n");
 	PIC::Get().SendEndOfInterrupt(2);
 }
 
 void IRQHandler3()
 {
-	printf("LINE!\n");
+	printf("IRQ 3!\n");
 	PIC::Get().SendEndOfInterrupt(3);
 }
 
 void IRQHandler4()
 {
-	printf("LINE!\n");
+	printf("IRQ 4!\n");
 	PIC::Get().SendEndOfInterrupt(4);
 }
 
 void IRQHandler5()
 {
-	printf("LINE!\n");
+	printf("IRQ 5!\n");
 	PIC::Get().SendEndOfInterrupt(5);
 }
 
 void IRQHandler6()
 {
-	printf("LINE!\n");
+	printf("IRQ 6!\n");
 	PIC::Get().SendEndOfInterrupt(6);
 }
 
 void IRQHandler7()
 {
-	printf("LINE!\n");
+	printf("IRQ 7!\n");
 	PIC::Get().SendEndOfInterrupt(7);
 }
 
 void IRQHandler8()
 {
-	printf("LINE!\n");
+	printf("IRQ 8!\n");
 	PIC::Get().SendEndOfInterrupt(8);
 }
 
 void IRQHandler9()
 {
-	printf("LINE!\n");
+	printf("IRQ 9\n");
 	PIC::Get().SendEndOfInterrupt(9);
 }
 
 void IRQHandler10()
 {
-	printf("LINE!\n");
+	printf("IRQ 10!\n");
 	PIC::Get().SendEndOfInterrupt(10);
 }
 
 void IRQHandler11()
 {
-	printf("LINE!\n");
+	printf("IRQ 11!\n");
 	PIC::Get().SendEndOfInterrupt(11);
 }
 
 void IRQHandler12()
 {
-	printf("LINE!\n");
+	printf("IRQ 12!\n");
 	PIC::Get().SendEndOfInterrupt(12);
 }
 
 void IRQHandler13()
 {
-	printf("LINE!\n");
+	printf("IRQ 13!\n");
 	PIC::Get().SendEndOfInterrupt(13);
 }
 
 void IRQHandler14()
 {
-	printf("LINE!\n");
+	printf("IRQ 14!\n");
 	PIC::Get().SendEndOfInterrupt(14);
 }
 
 void IRQHandler15()
 {
-	printf("LINE!\n");
+	printf("IRQ 15!\n");
 	PIC::Get().SendEndOfInterrupt(15);
 }
 __END_DECLS

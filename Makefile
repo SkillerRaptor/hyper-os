@@ -3,6 +3,7 @@ include ./Makefile.common
 OBJS = \
 	./AK/Bitmap.o \
 	./AK/IO.o \
+	./AK/Panic.o \
 	./AK/String.o \
 	./Kernel/Kernel.o \
 	./Kernel/Core/GDT.o \

@@ -27,7 +27,7 @@ void GDT::CreateBasicDescriptor()
 {
     CreateDescriptor(0, 0, AccessAttributes::NULL_ACCESS, FlagAttributes::NULL_FLAG);
 
-    /* - Kernel - */
+    /* Kernel | Code */
     CreateDescriptor(0x00000000, 0xFFFFFFFF,
         AccessAttributes::CODE_OR_DATA |
         AccessAttributes::PRESENT |
@@ -36,7 +36,7 @@ void GDT::CreateBasicDescriptor()
         FlagAttributes::GRANULARITY_4KB |
         FlagAttributes::SIZE_64_BIT);
 
-    /* Data */
+    /* Kernel | Data */
     CreateDescriptor(0x00000000, 0xFFFFFFFF,
         AccessAttributes::CODE_OR_DATA |
         AccessAttributes::PRESENT |
@@ -44,7 +44,7 @@ void GDT::CreateBasicDescriptor()
         FlagAttributes::GRANULARITY_4KB |
         FlagAttributes::SIZE_32_BIT);
 
-    /* - Userspace - */
+    /* Userspace | Code */
     CreateDescriptor(0x00000000, 0xFFFFFFFF,
         AccessAttributes::CODE_OR_DATA |
         AccessAttributes::PRESENT |
@@ -54,7 +54,7 @@ void GDT::CreateBasicDescriptor()
         FlagAttributes::GRANULARITY_4KB |
         FlagAttributes::SIZE_64_BIT);
 
-    /* Data */
+    /* Userspace | Data */
     CreateDescriptor(0x00000000, 0xFFFFFFFF,
         AccessAttributes::CODE_OR_DATA |
         AccessAttributes::PRESENT |
