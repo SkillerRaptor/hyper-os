@@ -8,6 +8,7 @@
 #include <Kernel/Stivale/Stivale2.h>
 #include <Kernel/Memory/PhysicalMemoryManager.h>
 #include <Kernel/Memory/VirtualMemoryManager.h>
+#include <LibGUI/Painter.h>
 
 __BEGIN_DECLS
 
@@ -36,6 +37,18 @@ void KernelMain(Stivale2_Struct* bootloaderData)
 	IDT::Get().Install();
 
 	printf("[Kernel] HyperOS finished booting...\n");
+
+	Stivale2_StructTagFramebuffer* framebufferTag = (Stivale2_StructTagFramebuffer*)Stivale2_GetTag(bootloaderData, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
+
+	FrameBufferInfo frameBufferInfo{};
+	frameBufferInfo.FramebufferAddress = framebufferTag->FramebufferAddress + PhysicalMemoryManager::PHYSICAL_MEMORY_OFFSET;
+	frameBufferInfo.FramebufferPitch = framebufferTag->FramebufferPitch;
+	frameBufferInfo.FramebufferWidth = framebufferTag->FramebufferWidth;
+	frameBufferInfo.FramebufferHeight = framebufferTag->FramebufferHeight;
+	frameBufferInfo.FramebufferBpp = framebufferTag->FramebufferBpp;
+
+	Painter& painter = Painter::Get();
+	painter.Init(frameBufferInfo);
 
 	asm volatile ("sti" :: : "memory");
 	while (true)

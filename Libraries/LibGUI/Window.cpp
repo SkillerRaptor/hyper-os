@@ -9,8 +9,6 @@ Window::Window()
 
 void Window::SetTitle(const String& title)
 {
-	//if (m_Title == title)
-	//	return;
 	m_Title = title;
 }
 

@@ -25,10 +25,16 @@ public:
 private:
 	FrameBufferInfo m_FrameBufferInfo;
 
+	static Painter m_Instance;
+
 public:
 	void Init(const FrameBufferInfo& frameBufferInfo);
 
-	void FillRect(const Rect& rect, Color color);
-	void DrawRect(const Rect& rect, Color color);
+	void Clear(Color color) const;
+
+	void FillRect(const Rect& rect, Color color) const;
+	void DrawRect(const Rect& rect, Color color) const;
 	// TODO: void DrawText(const Rect& rect, const String& string, TextAlignment textAlignment = TextAlignment::TOP_LEFT, const Color& color = Color());
+
+	static Painter& Get();
 };

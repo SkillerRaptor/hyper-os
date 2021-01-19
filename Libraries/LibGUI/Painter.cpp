@@ -1,11 +1,23 @@
 #include <LibGUI/Painter.h>
 
+Painter Painter::m_Instance;
+
 void Painter::Init(const FrameBufferInfo& frameBufferInfo)
 {
 	m_FrameBufferInfo = frameBufferInfo;
 }
 
-void Painter::FillRect(const Rect& rect, Color color)
+void Painter::Clear(Color color) const
+{
+	Rect screenRect{};
+	screenRect.SetX(0);
+	screenRect.SetY(0);
+	screenRect.SetWidth(m_FrameBufferInfo.FramebufferWidth);
+	screenRect.SetHeight(m_FrameBufferInfo.FramebufferHeight);
+	FillRect(screenRect, color);
+}
+
+void Painter::FillRect(const Rect& rect, Color color) const
 {
 	uint8_t* screen = (uint8_t*)m_FrameBufferInfo.FramebufferAddress;
 	for (uint32_t y = rect.GetTop(); y < rect.GetBottom(); ++y)
@@ -21,7 +33,7 @@ void Painter::FillRect(const Rect& rect, Color color)
 	}
 }
 
-void Painter::DrawRect(const Rect& rect, Color color)
+void Painter::DrawRect(const Rect& rect, Color color) const
 {
 	uint8_t* screen = (uint8_t*)m_FrameBufferInfo.FramebufferAddress;
 	for (uint32_t y = rect.GetTop(); y < rect.GetBottom(); ++y)
@@ -50,4 +62,9 @@ void Painter::DrawRect(const Rect& rect, Color color)
 			screen[screenSpaceX + screenSpaceY + 2] = (color.GetValue() >> 16) & 255;
 		}
 	}
+}
+
+Painter& Painter::Get()
+{
+	return m_Instance;
 }
