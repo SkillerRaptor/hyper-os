@@ -7,12 +7,12 @@ OBJS = \
 	./Kernel/Kernel.o \
 	./Kernel/Core/GDT.o \
 	./Kernel/Core/IDT.o \
-	./Kernel/Core/Interrupts.o \
 	./Kernel/Core/IRQManager.o \
 	./Kernel/Core/PIC.o \
 	./Kernel/Core/Terminal.o \
 	./Kernel/Memory/PhysicalMemoryManager.o \
 	./Kernel/Memory/VirtualMemoryManager.o \
+	./Kernel/Stivale/Stivale2.o \
 	./Libraries/LibC/ctype.o \
 	./Libraries/LibC/string.o \
 	./Libraries/LibC/stdio.o \

@@ -2,7 +2,7 @@
 
 #include <AK/NonCopyable.h>
 #include <AK/NonMoveable.h>
-#include <Kernel/Core/Stivale.h>
+#include <Kernel/Stivale/Stivale2.h>
 #include <LibC/stddef.h>
 
 class VirtualMemoryManager : public NonCopyable, public NonMoveable
@@ -28,7 +28,7 @@ private:
 	static Pagemap* s_KernelPagemap;
 
 public:
-	static void Initialize(StivaleMemoryMapEntry* memoryMap, size_t memoryMapEntries);
+	static void Initialize(Stivale2_MmapEntry* memoryMap, size_t memoryMapEntries);
 
 	static Pagemap* CreateNewPagemap();
 	static void SwitchPagemap(Pagemap* pagemap);

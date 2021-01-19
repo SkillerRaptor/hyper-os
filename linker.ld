@@ -1,33 +1,33 @@
-ENTRY(KernelEarlyMain)
+ENTRY(KernelMain)
 
 SECTIONS
 {
     KernelPhysicalOffset = 0xFFFFFFFF80000000;
-    . = KernelPhysicalOffset + 0x100000;
+    . = KernelPhysicalOffset + 0x200000;
 	
-    .stivalehdr ALIGN(4K) :
+    .stivale2hdr :
     {
-        KEEP(*(.stivalehdr))
+        KEEP(*(.stivale2hdr))
     }
 
-    .text ALIGN(4K) :
+    .text : ALIGN(4K)
     {
-        KEEP(*(.text*))
+        *(.text*)
     }
 
     .rodata ALIGN(4K) :
     {
-        KEEP(*(.rodata*))
+        *(.rodata*)
     }
 
     .data ALIGN(4K) :
     {
-        KEEP(*(.data*))
+        *(.data*)
     }
 
     .bss ALIGN(4K) :
     {
-        KEEP(*(COMMON))
-        KEEP(*(.bss*))
+        *(COMMON)
+        *(.bss*)
     }
 }

@@ -3,7 +3,7 @@
 #include <Ak/Bitmap.h>
 #include <AK/NonCopyable.h>
 #include <AK/NonMoveable.h>
-#include <Kernel/Core/Stivale.h>
+#include <Kernel/Stivale/Stivale2.h>
 
 class PhysicalMemoryManager : public NonCopyable, public NonMoveable
 {
@@ -19,7 +19,7 @@ private:
 	static Bitmap s_Bitmap;
 
 public:
-	static void Initialize(StivaleMemoryMapEntry* memoryMap, size_t memoryMapEntries);
+	static void Initialize(Stivale2_MmapEntry* memoryMap, size_t memoryMapEntries);
 
 	static void* AllocatePage();
 	static void* AllocatePages(size_t pageCount);

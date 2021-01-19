@@ -8,20 +8,15 @@ OBJS = \
 	./Core/PIC.o \
 	./Core/Terminal.o \
 	./Memory/PhysicalMemoryManager.o \
-	./Memory/VirtualMemoryManager.o
+	./Memory/VirtualMemoryManager.o \
+	./Stivale/Stivale2.o
 
 APP = Kernel
-
-ASM_OBJS = \
-	./Core/Interrupts.o
 
 all: $(ASM_OBJS) $(APP)
 
 $(APP): $(OBJS)
 	@echo "BUILD $@ CXX";
-
-.s.o:
-	@echo "AS $<"; $(AS) -o $@ $<
 
 .cpp.o:
 	@echo "CXX $<"; $(CXX) $(CXXFLAGS) $(LINK_FLAGS) -o $@ -c $<

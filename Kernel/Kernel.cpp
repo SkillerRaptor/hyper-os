@@ -1,45 +1,20 @@
 #include <AK/IO.h>
 #include <LibC/stdio.h>
-
-#include "Core/GDT.h"
-#include "Core/IDT.h"
-#include "Core/PIC.h"
-#include "Core/Stivale.h"
-#include "Core/Terminal.h"
-#include "Memory/PhysicalMemoryManager.h"
-#include "Memory/VirtualMemoryManager.h"
+#include <Kernel/Core/GDT.h>
+#include <Kernel/Core/IDT.h>
+#include <Kernel/Core/IRQManager.h>
+#include <Kernel/Core/PIC.h>
+#include <Kernel/Core/Terminal.h>
+#include <Kernel/Stivale/Stivale2.h>
+#include <Kernel/Memory/PhysicalMemoryManager.h>
+#include <Kernel/Memory/VirtualMemoryManager.h>
 
 __BEGIN_DECLS
 
-void KernelEarlyMain(StivaleStruct* bootloaderData);
-
-static uint8_t stack[4096] = { 0 };
-
-__attribute__((section(".stivalehdr"), used))
-struct StivaleHeader header = {
-	.Stack = (uintptr_t)stack + sizeof(stack),
-	.Flags = 0,
-	.FramebufferWidth = 0,
-	.FramebufferHeight = 0,
-	.FramebufferBpp = 0,
-	.EntryPoint = (uintptr_t)KernelEarlyMain
-};
-
-void KernelMain()
+void KernelMain(Stivale2_Struct* bootloaderData)
 {
-	printf("[Kernel] HyperOS finished booting...\n");
+	bootloaderData = (Stivale2_Struct*)((void*)((uint64_t)bootloaderData + PhysicalMemoryManager::KERNEL_BASE_ADDRESS));
 
-	//while (true)
-	asm volatile ("hlt");
-}
-
-void KernelInit()
-{
-	KernelMain();
-}
-
-void KernelEarlyMain(StivaleStruct* bootloaderData)
-{
 	Terminal::Initialize();
 
 	printf("[Kernel] HyperOS booting...\n");
@@ -47,17 +22,22 @@ void KernelEarlyMain(StivaleStruct* bootloaderData)
 	GDT::Get().CreateBasicDescriptor();
 	GDT::Get().Install();
 
-	PIC::Get().ReMap(0x20, 0x28);
-
-	IDT::Get().CreateBasicTables();
+	IRQManager::Install();
 	IDT::Get().Install();
 
-	StivaleMemoryMapEntry* memoryMap = (StivaleMemoryMapEntry*)bootloaderData->MemoryMapAddress;
-	size_t memoryMapEntries = bootloaderData->MemoryMapEntries;
+	PIC::Get().ReMap(0x20, 0x28);
 
-	PhysicalMemoryManager::Initialize(memoryMap, memoryMapEntries);
-	VirtualMemoryManager::Initialize(memoryMap, memoryMapEntries);
+	Stivale2_StructTagMemmap* memmapTag = (Stivale2_StructTagMemmap*)Stivale2_GetTag(bootloaderData, STIVALE2_STRUCT_TAG_MEMMAP_ID);
 
-	KernelInit();
+	PhysicalMemoryManager::Initialize(memmapTag->Memmap, memmapTag->Entries);
+	VirtualMemoryManager::Initialize(memmapTag->Memmap, memmapTag->Entries);
+
+	printf("[Kernel] HyperOS finished booting...\n");
+
+	asm volatile ("sti" :: : "memory");
+	while (true)
+	{
+		asm volatile ("hlt" :: : "memory");
+	}
 }
 __END_DECLS

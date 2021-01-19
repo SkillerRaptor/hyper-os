@@ -7,20 +7,20 @@ uintptr_t PhysicalMemoryManager::s_HighestPage = 0;
 
 Bitmap PhysicalMemoryManager::s_Bitmap;
 
-void PhysicalMemoryManager::Initialize(StivaleMemoryMapEntry* memoryMap, size_t memoryMapEntries)
+void PhysicalMemoryManager::Initialize(Stivale2_MmapEntry* memoryMap, size_t memoryMapEntries)
 {
 	printf("[PMM] Memory Address: %X\n", (uint64_t)memoryMap);
 
 	/* Calculate bitmap size */
 	for (size_t i = 0; i < memoryMapEntries; i++)
 	{
-		StivaleMemoryMapEntry& entry = memoryMap[i];
-		printf("[PMM] [Entry %d] [%X - %X]: Size %X, Type %X\n", i, entry.Address, entry.Address + entry.Length, entry.Length, entry.Type);
+		Stivale2_MmapEntry& entry = memoryMap[i];
+		printf("[PMM] [Entry %d] [%X - %X]: Size %X, Type %X\n", i, entry.Base, entry.Base + entry.Length, entry.Length, entry.Type);
 
-		if (entry.Type != StivaleMemoryType::USABLE)
+		if (entry.Type != STIVALE2_MMAP_USABLE)
 			continue;
 
-		uintptr_t top = (uintptr_t)(entry.Address + entry.Length);
+		uintptr_t top = (uintptr_t)(entry.Base + entry.Length);
 
 		if (top > s_HighestPage)
 			s_HighestPage = top;
@@ -32,16 +32,16 @@ void PhysicalMemoryManager::Initialize(StivaleMemoryMapEntry* memoryMap, size_t 
 	/* Find location for the bitmap*/
 	for (size_t i = 0; i < memoryMapEntries; i++)
 	{
-		StivaleMemoryMapEntry& entry = memoryMap[i];
-		if (entry.Type != StivaleMemoryType::USABLE)
+		Stivale2_MmapEntry& entry = memoryMap[i];
+		if (entry.Type != STIVALE2_MMAP_USABLE)
 			continue;
 
 		if (entry.Length >= bitmapSize) {
-			s_Bitmap.SetData((uint8_t*)(entry.Address + KERNEL_BASE_ADDRESS));
+			s_Bitmap.SetData((uint8_t*)(entry.Base + KERNEL_BASE_ADDRESS));
 
 			memset(s_Bitmap.GetData(), 0xFF, bitmapSize);
 
-			entry.Address += bitmapSize;
+			entry.Base += bitmapSize;
 			entry.Length -= bitmapSize;
 			break;
 		}
@@ -49,12 +49,12 @@ void PhysicalMemoryManager::Initialize(StivaleMemoryMapEntry* memoryMap, size_t 
 
 	for (size_t i = 0; i < memoryMapEntries; i++)
 	{
-		StivaleMemoryMapEntry& entry = memoryMap[i];
-		if (entry.Type != StivaleMemoryType::USABLE)
+		Stivale2_MmapEntry& entry = memoryMap[i];
+		if (entry.Type != STIVALE2_MMAP_USABLE)
 			continue;
 
 		for (uintptr_t j = 0; j < entry.Length; j += PAGE_SIZE)
-			s_Bitmap.SetBit((entry.Address + j) / PAGE_SIZE, false);
+			s_Bitmap.SetBit((entry.Base + j) / PAGE_SIZE, false);
 	}
 
 	printf("[PMM] Physical Memory Manager initialized!\n");
@@ -77,7 +77,9 @@ void* PhysicalMemoryManager::InnerAllocate(size_t pageCount, size_t limit)
 			}
 		}
 		else
+		{
 			p = 0;
+		}
 	}
 
 	return nullptr;

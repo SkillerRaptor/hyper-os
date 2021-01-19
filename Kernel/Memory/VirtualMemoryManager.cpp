@@ -7,7 +7,7 @@
 
 VirtualMemoryManager::Pagemap* VirtualMemoryManager::s_KernelPagemap;
 
-void VirtualMemoryManager::Initialize(StivaleMemoryMapEntry* memoryMap, size_t memoryMapEntries)
+void VirtualMemoryManager::Initialize(Stivale2_MmapEntry* memoryMap, size_t memoryMapEntries)
 {
 	s_KernelPagemap = CreateNewPagemap();
 
@@ -19,10 +19,13 @@ void VirtualMemoryManager::Initialize(StivaleMemoryMapEntry* memoryMap, size_t m
 
 	for (size_t i = 0; i < memoryMapEntries; i++)
 	{
-		StivaleMemoryMapEntry& entry = memoryMap[i];
+		Stivale2_MmapEntry& entry = memoryMap[i];
 		for (uintptr_t ptr = 0; ptr < entry.Length; ptr += PhysicalMemoryManager::PAGE_SIZE)
 			MapPage(s_KernelPagemap, (void*)ptr, (void*)(PhysicalMemoryManager::KERNEL_BASE_ADDRESS + (uint64_t)ptr), PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE);
 	}
+
+	for (uintptr_t ptr = 0xB8000; ptr < 0xB8000 + (80 * 25 * sizeof(uint16_t)) + 0x1000; ptr += PhysicalMemoryManager::PAGE_SIZE)
+		MapPage(s_KernelPagemap, (void*)ptr, (void*)ptr, PagemapAttributes::PRESENT | PagemapAttributes::READ_AND_WRITE);
 
 	printf("[VMM] Virtual Memory Manager initialized!\n");
 
@@ -38,8 +41,7 @@ VirtualMemoryManager::Pagemap* VirtualMemoryManager::CreateNewPagemap()
 
 void VirtualMemoryManager::SwitchPagemap(Pagemap* pagemap)
 {
-	asm("mov %%cr3, %0" :: "r" (pagemap->TopLevel) : "memory");
-	//asm("mov %0, %%cr3" :: "r" (pagemap->TopLevel) : "memory");
+	asm("mov %0, %%cr3" :: "r" (pagemap->TopLevel) : "memory");
 }
 
 void VirtualMemoryManager::MapPage(Pagemap* pageMap, void* physicalAddress, void* virtualAddress, uint16_t flags)
