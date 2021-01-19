@@ -1,86 +1,146 @@
-#include "IRQManager.hpp"
+#include "IRQManager.h"
 
+#include <AK/IO.h>
+#include <Kernel/Core/GDT.h>
+#include <Kernel/Core/IDT.h>
+#include <Kernel/Core/PIC.h>
 #include <LibC/stdio.h>
 
-#include "GDT.h"
-#include "IDT.h"
-#include "PIC.h"
-
-IRQManager IRQManager::m_Instance;
-
 __BEGIN_DECLS
-void IRQManager::RegisterBasicInterrupts()
-{
-	extern int IRQCall0();
-	RegisterInterruptRequest(32, (uint64_t) IRQCall0);
-
-	extern int IRQCall1();
-	RegisterInterruptRequest(33, (uint64_t) IRQCall1);
-
-	extern int IRQCall2();
-	RegisterInterruptRequest(34, (uint64_t) IRQCall2);
-
-	extern int IRQCall3();
-	RegisterInterruptRequest(35, (uint64_t) IRQCall3);
-
-	extern int IRQCall4();
-	RegisterInterruptRequest(36, (uint64_t) IRQCall4);
-
-	extern int IRQCall5();
-	RegisterInterruptRequest(37, (uint64_t) IRQCall5);
-
-	extern int IRQCall6();
-	RegisterInterruptRequest(38, (uint64_t) IRQCall6);
-
-	extern int IRQCall7();
-	RegisterInterruptRequest(39, (uint64_t) IRQCall7);
-
-	extern int IRQCall8();
-	RegisterInterruptRequest(40, (uint64_t) IRQCall8);
-
-	extern int IRQCall9();
-	RegisterInterruptRequest(41, (uint64_t) IRQCall9);
-
-	extern int IRQCall10();
-	RegisterInterruptRequest(42, (uint64_t) IRQCall10);
-
-	extern int IRQCall11();
-	RegisterInterruptRequest(43, (uint64_t) IRQCall11);
-
-	extern int IRQCall12();
-	RegisterInterruptRequest(44, (uint64_t) IRQCall12);
-
-	extern int IRQCall13();
-	RegisterInterruptRequest(45, (uint64_t) IRQCall13);
-
-	extern int IRQCall14();
-	RegisterInterruptRequest(46, (uint64_t) IRQCall14);
-
-	extern int IRQCall15();
-	RegisterInterruptRequest(47, (uint64_t) IRQCall15);
-}
+void IRQHandler0();
+void IRQHandler1();
+void IRQHandler2();
+void IRQHandler3();
+void IRQHandler4();
+void IRQHandler5();
+void IRQHandler6();
+void IRQHandler7();
+void IRQHandler8();
+void IRQHandler9();
+void IRQHandler10();
+void IRQHandler11();
+void IRQHandler12();
+void IRQHandler13();
+void IRQHandler14();
+void IRQHandler15();
 __END_DECLS
 
-void IRQManager::RegisterInterruptRequest(size_t index, uint64_t address)
+void IRQManager::Install()
 {
-	IDT::Entry& entry = IDT::Get().m_Entries[index];
-	entry.Offset_1 = (address & 0x0000FFFF);
-	entry.Offset_2 = (address & 0xFFFF0000) >> 16;
-	entry.Offset_3 = (address & 0xFFFFFFFF00000000) >> 32;
+	IDT& idt = IDT::Get();
 
-	entry.Attributes = IDT::TypeAttributes::PRESENT | IDT::TypeAttributes::INTERRUPT_GATE;
-	entry.Selector = GDT::KernelCodeSelector();
-	entry.Zero = 0;
-}
-
-IRQManager& IRQManager::Get()
-{
-	return m_Instance;
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 0, IRQHandler0);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 1, IRQHandler1);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 2, IRQHandler2);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 3, IRQHandler3);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 4, IRQHandler4);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 5, IRQHandler5);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 6, IRQHandler6);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 7, IRQHandler7);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 8, IRQHandler8);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 9, IRQHandler9);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 10, IRQHandler10);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 11, IRQHandler11);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 12, IRQHandler12);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 13, IRQHandler13);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 14, IRQHandler14);
+	idt.RegisterInterruptHandler(IRQ_BASE_INDEX + 15, IRQHandler15);
 }
 
 __BEGIN_DECLS
-void IRQHandler(uint16_t interruptRequestLine)
+void IRQHandler0()
 {
-	PIC::Get().SendEndOfInterrupt(interruptRequestLine);
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(0);
+}
+
+void IRQHandler1()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(1);
+}
+
+void IRQHandler2()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(2);
+}
+
+void IRQHandler3()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(3);
+}
+
+void IRQHandler4()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(4);
+}
+
+void IRQHandler5()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(5);
+}
+
+void IRQHandler6()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(6);
+}
+
+void IRQHandler7()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(7);
+}
+
+void IRQHandler8()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(8);
+}
+
+void IRQHandler9()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(9);
+}
+
+void IRQHandler10()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(10);
+}
+
+void IRQHandler11()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(11);
+}
+
+void IRQHandler12()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(12);
+}
+
+void IRQHandler13()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(13);
+}
+
+void IRQHandler14()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(14);
+}
+
+void IRQHandler15()
+{
+	printf("LINE!\n");
+	PIC::Get().SendEndOfInterrupt(15);
 }
 __END_DECLS

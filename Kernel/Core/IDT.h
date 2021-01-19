@@ -35,7 +35,7 @@ private:
 		uint64_t Address;
 	} m_Ptr;
 
-	friend class IRQManager;
+	using ISR = void(*)();
 
 	static IDT m_Instance;
 
@@ -43,7 +43,10 @@ public:
 	IDT();
 
 	void Install();
-	void CreateBasicTables();
+
+	void RegisterIsr(uint16_t index, TypeAttributes attributes, ISR handler);
+	void RegisterInterruptHandler(uint16_t index, ISR handler);
+	void RegisterTrapHandler(uint16_t index, ISR handler);
 
 	static IDT& Get();
 

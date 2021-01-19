@@ -11,10 +11,6 @@ void PIC::ReMap(uint8_t masterOffset, uint8_t slaveOffset)
 	static constexpr const int Icw1_Init = 0x10;
 	static constexpr const int Icw4_8086 = 0x01;
 
-	/* Save Masks */
-	uint8_t masterData = IO::In8(MasterDataSelector());
-	uint8_t slaveData = IO::In8(SlaveDataSelector());
-
 	/* Start Initialization Sequence */
 	IO::Out8(MasterCommandSelector(), Icw1_Init | Icw1_Icw4);
 	IO::IoWait();
@@ -37,12 +33,6 @@ void PIC::ReMap(uint8_t masterOffset, uint8_t slaveOffset)
 	IO::Out8(MasterDataSelector(), Icw4_8086);
 	IO::IoWait();
 	IO::Out8(SlaveDataSelector(), Icw4_8086);
-	IO::IoWait();
-
-	/* Restore Masks */
-	IO::Out8(MasterDataSelector(), masterData);
-	IO::IoWait();
-	IO::Out8(SlaveDataSelector(), slaveData);
 	IO::IoWait();
 }
 

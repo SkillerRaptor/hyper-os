@@ -11,8 +11,6 @@ GDT::GDT()
 
 void GDT::Install()
 {
-    m_Ptr.Address = (uintptr_t)m_Entries;
-
     asm volatile("lgdt %0\n"
         "mov %1, %%ds\n"
         "mov %1, %%es\n"
@@ -64,6 +62,8 @@ void GDT::CreateBasicDescriptor()
         AccessAttributes::WRITEABLE,
         FlagAttributes::GRANULARITY_4KB |
         FlagAttributes::SIZE_32_BIT);
+
+    m_Ptr.Address = (uintptr_t)m_Entries;
 }
 
 void GDT::CreateDescriptor(uint32_t base, uint32_t limit, AccessAttributes accessAttributes, FlagAttributes flagAttributes)

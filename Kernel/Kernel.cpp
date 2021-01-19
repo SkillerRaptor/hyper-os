@@ -32,6 +32,9 @@ void KernelMain(Stivale2_Struct* bootloaderData)
 	PhysicalMemoryManager::Initialize(memmapTag->Memmap, memmapTag->Entries);
 	VirtualMemoryManager::Initialize(memmapTag->Memmap, memmapTag->Entries);
 
+	GDT::Get().Install();
+	IDT::Get().Install();
+
 	printf("[Kernel] HyperOS finished booting...\n");
 
 	asm volatile ("sti" :: : "memory");
