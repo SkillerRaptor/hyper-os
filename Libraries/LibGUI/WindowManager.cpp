@@ -14,7 +14,7 @@ void WindowManager::PaintWindowFrames()
 	//	PaintWindowFrame(*window);
 }
 
-void WindowManager::PaintWindowFrame(Painter* painter, Window& window)
+void WindowManager::PaintWindowFrame(Window& window)
 {
 	static constexpr uint8_t windowFrameWidth = 2;
 	static constexpr uint8_t windowTitleBarHeight = 16;
@@ -62,15 +62,17 @@ void WindowManager::PaintWindowFrame(Painter* painter, Window& window)
 		windowFrameWidth + windowTitleBarHeight + window.GetHeight() + 4
 	};
 
-	painter->DrawRect(borderRect, Color(255, 255, 255));
+	Painter& painter = Painter::Get();
+
+	painter.DrawRect(borderRect, Color(255, 255, 255));
 	borderRect.Inflate(2, 2);
-	painter->DrawRect(borderRect, windowBorderColor);
+	painter.DrawRect(borderRect, windowBorderColor);
 
-	painter->FillRect(window.GetRect(), Color(0xBB, 0xBB, 0xBB));
-	painter->FillRect(topRect, windowBorderColor);
-	painter->FillRect(bottomRect, windowBorderColor);
-	painter->FillRect(leftRect, windowBorderColor);
-	painter->FillRect(rightRect, windowBorderColor);
+	painter.FillRect(window.GetRect(), Color(0xBB, 0xBB, 0xBB));
+	painter.FillRect(topRect, windowBorderColor);
+	painter.FillRect(bottomRect, windowBorderColor);
+	painter.FillRect(leftRect, windowBorderColor);
+	painter.FillRect(rightRect, windowBorderColor);
 
-	//painter.DrawText(topRect, window.GetTitle(), Painter::TextAlignment::Center, windowTitleColor);
+	painter.DrawText(topRect, window.GetTitle(), Painter::TextAlignment::TOP_LEFT, windowTitleColor);
 }

@@ -9,6 +9,8 @@
 #include <Kernel/Memory/PhysicalMemoryManager.h>
 #include <Kernel/Memory/VirtualMemoryManager.h>
 #include <LibGUI/Painter.h>
+#include <LibGUI/Window.h>
+#include <LibGUI/WindowManager.h>
 
 __BEGIN_DECLS
 
@@ -49,6 +51,19 @@ void KernelMain(Stivale2_Struct* bootloaderData)
 
 	Painter& painter = Painter::Get();
 	painter.Init(frameBufferInfo);
+	painter.Clear(Color{ 50, 50, 50 });
+
+	Window window1{};
+	window1.SetTitle("Hello, how are you today? Just tell me :^)");
+	window1.SetRect(Rect{ 50, 50, 500, 300 });
+
+	Window window2{};
+	window2.SetTitle("I'm good :) How are you?");
+	window2.SetRect(Rect{ 350, 400, 500, 300 });
+
+	WindowManager windowManager = WindowManager();
+	windowManager.PaintWindowFrame(window1);
+	windowManager.PaintWindowFrame(window2);
 
 	asm volatile ("sti" :: : "memory");
 	while (true)

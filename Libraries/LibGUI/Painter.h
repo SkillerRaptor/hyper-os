@@ -1,5 +1,6 @@
 #pragma once
 
+#include <AK/String.h>
 #include <LibC/stdint.h>
 #include <LibGUI/Color.h>
 #include <LibGUI/Rect.h>
@@ -34,7 +35,10 @@ public:
 
 	void FillRect(const Rect& rect, Color color) const;
 	void DrawRect(const Rect& rect, Color color) const;
-	// TODO: void DrawText(const Rect& rect, const String& string, TextAlignment textAlignment = TextAlignment::TOP_LEFT, const Color& color = Color());
+	void DrawText(const Rect& rect, const String& string, TextAlignment textAlignment = TextAlignment::TOP_LEFT, const Color& color = Color{ 100, 100, 100 });
 
 	static Painter& Get();
+
+private:
+	void PutChar(uint16_t c, const Point& cursorPosition, const Color& color);
 };

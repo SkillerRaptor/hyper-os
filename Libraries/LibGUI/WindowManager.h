@@ -14,6 +14,6 @@ public:
 	WindowManager() = default;
 
 	void AddWindow(Window& window);
-	void PaintWindowFrame(Painter* painter, Window& window);
+	void PaintWindowFrame(Window& window);
 	void PaintWindowFrames();
 };
