@@ -3,8 +3,10 @@ include ./Makefile.common
 OBJS = \
 	./AK/Bitmap.o \
 	./AK/IO.o \
+	./AK/Exception.o \
 	./AK/Panic.o \
 	./AK/String.o \
+	./AK/StringBuilder.o \
 	./Kernel/Kernel.o \
 	./Kernel/Core/GDT.o \
 	./Kernel/Core/IDT.o \

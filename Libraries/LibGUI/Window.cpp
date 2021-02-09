@@ -7,12 +7,12 @@ Window::Window()
 	//WindowManager::Get()->AddWindow(*this);
 }
 
-void Window::SetTitle(const String& title)
+void Window::SetTitle(const AK::String& title)
 {
 	m_Title = title;
 }
 
-const String& Window::GetTitle() const
+const AK::String& Window::GetTitle() const
 {
 	return m_Title;
 }

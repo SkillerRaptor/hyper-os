@@ -5,7 +5,7 @@
 size_t PhysicalMemoryManager::s_LastUsedIndex = 0;
 uintptr_t PhysicalMemoryManager::s_HighestPage = 0;
 
-Bitmap PhysicalMemoryManager::s_Bitmap;
+AK::Bitmap PhysicalMemoryManager::s_Bitmap;
 
 void PhysicalMemoryManager::Initialize(Stivale2_MmapEntry* memoryMap, size_t memoryMapEntries)
 {
@@ -37,9 +37,9 @@ void PhysicalMemoryManager::Initialize(Stivale2_MmapEntry* memoryMap, size_t mem
 			continue;
 
 		if (entry.Length >= bitmapSize) {
-			s_Bitmap.SetData((uint8_t*)(entry.Base + PHYSICAL_MEMORY_OFFSET));
+			s_Bitmap.set_data((uint8_t*)(entry.Base + PHYSICAL_MEMORY_OFFSET));
 
-			memset(s_Bitmap.GetData(), 0xFF, bitmapSize);
+			memset(s_Bitmap.data(), 0xFF, bitmapSize);
 
 			entry.Base += bitmapSize;
 			entry.Length -= bitmapSize;
@@ -54,7 +54,7 @@ void PhysicalMemoryManager::Initialize(Stivale2_MmapEntry* memoryMap, size_t mem
 			continue;
 
 		for (uintptr_t j = 0; j < entry.Length; j += PAGE_SIZE)
-			s_Bitmap.SetBit((entry.Base + j) / PAGE_SIZE, false);
+			s_Bitmap.set_bit((entry.Base + j) / PAGE_SIZE, false);
 	}
 
 	printf("[PMM] Physical Memory Manager initialized!\n");
@@ -72,7 +72,7 @@ void* PhysicalMemoryManager::InnerAllocate(size_t pageCount, size_t limit)
 			{
 				size_t page = s_LastUsedIndex - pageCount;
 				for (size_t i = page; i < s_LastUsedIndex; i++)
-					s_Bitmap.SetBit(i, true);
+					s_Bitmap.set_bit(i, true);
 				return (void*)(page * PAGE_SIZE);
 			}
 		}
@@ -132,5 +132,5 @@ void PhysicalMemoryManager::FreePages(void* address, size_t pageCount)
 {
 	uint64_t startPage = (uint64_t)address / PAGE_SIZE;
 	for (size_t i = startPage; i < startPage + pageCount; i++)
-		s_Bitmap.SetBit(i, false);
+		s_Bitmap.set_bit(i, false);
 }

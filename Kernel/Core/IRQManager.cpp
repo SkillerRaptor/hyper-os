@@ -59,23 +59,17 @@ void IRQManager::Install()
 __BEGIN_DECLS
 void ExceptionHandler8()
 {
-	Panic("IRQManager: Double Fault!");
-
-	while (true);
+	AK::panic("IRQManager: Double Fault!");
 }
 
 void ExceptionHandler13()
 {
-	Panic("IRQManager: General Protection Fault!");
-
-	while (true);
+	AK::panic("IRQManager: General Protection Fault!");
 }
 
 void ExceptionHandler14()
 {
-	Panic("IRQManager: Page Fault!");
-
-	while (true);
+	AK::panic("IRQManager: Page Fault!");
 }
 
 void IRQHandler0()

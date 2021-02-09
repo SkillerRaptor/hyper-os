@@ -8,7 +8,7 @@ class Window;
 class WindowManager
 {
 private:
-	Vector<Window*> m_Windows;
+	AK::Vector<Window*> m_Windows;
 
 public:
 	WindowManager() = default;

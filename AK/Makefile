@@ -2,9 +2,11 @@ include ../Makefile.common
 
 OBJS = \
 	./Bitmap.o \
+	./Exception.o \
 	./IO.o \
 	./Panic.o \
-	./String.o
+	./String.o \
+	./StringBuilder.o
 
 APP = AK
 

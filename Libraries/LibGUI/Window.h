@@ -7,15 +7,15 @@
 class Window
 {
 private:
-	String m_Title;
+	AK::String m_Title;
 	Rect m_Rect;
 	Widget* m_MainWidget;
 
 public:
 	Window();
 
-	void SetTitle(const String& title);
-	const String& GetTitle() const;
+	void SetTitle(const AK::String& title);
+	const AK::String& GetTitle() const;
 
 	uint32_t GetX() const;
 	uint32_t GetY() const;

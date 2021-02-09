@@ -62,8 +62,35 @@ void KernelMain(Stivale2_Struct* bootloaderData)
 	window2.SetRect(Rect{ 350, 400, 500, 300 });
 
 	WindowManager windowManager = WindowManager();
-	windowManager.PaintWindowFrame(window1);
-	windowManager.PaintWindowFrame(window2);
+
+	while (true)
+	{
+		painter.Clear(Color{ 50, 50, 50 });
+
+		windowManager.PaintWindowFrame(window1);
+		windowManager.PaintWindowFrame(window2);
+
+		{
+			Rect rect = window1.GetRect();
+			rect.SetX(rect.GetX() + 10);
+			if (rect.GetX() >= framebufferTag->FramebufferWidth - rect.GetWidth())
+			{
+				rect.SetX(0);
+			}
+			window1.SetRect(rect);
+		}
+		{
+			Rect rect = window2.GetRect();
+			rect.SetX(rect.GetX() + 10);
+			if (rect.GetX() >= framebufferTag->FramebufferWidth - rect.GetWidth())
+			{
+				rect.SetX(0);
+			}
+			window2.SetRect(rect);
+		}
+
+		painter.SwapBuffers();
+	}
 
 	asm volatile ("sti" :: : "memory");
 	while (true)

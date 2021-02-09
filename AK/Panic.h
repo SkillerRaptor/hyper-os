@@ -2,4 +2,7 @@
 
 #include <AK/String.h>
 
-void Panic(const String& string);
+namespace AK
+{
+	void panic(const String& string);
+}
