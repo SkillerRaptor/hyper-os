@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 static constexpr uint8_t FONT_OFFSET = 0;
 static constexpr uint8_t FONT_WIDTH = 8;
 static constexpr uint8_t FONT_HEIGHT = 16;

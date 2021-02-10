@@ -1,9 +1,9 @@
 #include <Kernel/Memory/VirtualMemoryManager.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <Kernel/Memory/PhysicalMemoryManager.h>
-#include <LibC/string.h>
-#include <LibC/stdio.h>
-#include <LibC/stdlib.h>
 
 VirtualMemoryManager::Pagemap* VirtualMemoryManager::s_KernelPagemap;
 

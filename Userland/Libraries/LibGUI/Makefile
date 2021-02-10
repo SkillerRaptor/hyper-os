@@ -1,12 +1,9 @@
-include ../../Makefile.common
+include ../../../Makefile.common
 
-OBJS = \
-	ctype.o \
-    stdio.o \
-    stdlib.o \
-    string.o
+SOURCES = $(shell find . -name "*.cpp")
+OBJS = $(addsuffix .o, $(basename $(SOURCES)))
 
-APP = libc.a
+APP = libgui.a
 
 all: $(APP)
 

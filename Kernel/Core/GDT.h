@@ -1,6 +1,6 @@
 #pragma once
 
-#include <LibC/stddef.h>
+#include <stddef.h>
 
 class GDT
 {
@@ -46,9 +46,9 @@ private:
     {
         uint16_t Size;
         uint64_t Address;
-	} m_Ptr;
+    } m_Ptr;
 
-	uint16_t m_ActiveEntries{ 0 };
+    uint16_t m_ActiveEntries{ 0 };
 
     static GDT m_Instance;
 
@@ -69,15 +69,15 @@ public:
 private:
     void CreateDescriptor(uint32_t base, uint32_t limit, AccessAttributes accessAttributes, FlagAttributes flagAttributes);
 
-	Entry& NewEntry();
+    Entry& NewEntry();
 
-	friend AccessAttributes operator|(AccessAttributes left, AccessAttributes right)
-	{
-		return static_cast<AccessAttributes>(static_cast<uint8_t>(left) | static_cast<uint8_t>(right));
-	}
+    friend AccessAttributes operator|(AccessAttributes left, AccessAttributes right)
+    {
+        return static_cast<AccessAttributes>(static_cast<uint8_t>(left) | static_cast<uint8_t>(right));
+    }
 
-	friend FlagAttributes operator|(FlagAttributes left, FlagAttributes right)
-	{
-		return static_cast<FlagAttributes>(static_cast<uint8_t>(left) | static_cast<uint8_t>(right));
-	}
+    friend FlagAttributes operator|(FlagAttributes left, FlagAttributes right)
+    {
+        return static_cast<FlagAttributes>(static_cast<uint8_t>(left) | static_cast<uint8_t>(right));
+    }
 };

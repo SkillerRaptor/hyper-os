@@ -1,6 +1,6 @@
 #include <Kernel/Core/GDT.h>
 
-#include <LibC/stdio.h>
+#include <stdio.h>
 
 GDT GDT::m_Instance;
 

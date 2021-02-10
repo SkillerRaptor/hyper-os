@@ -1,9 +1,8 @@
 #include <Kernel/Core/Terminal.h>
 
+#include <string.h>
 #include <Kernel/Core/VGA.h>
 #include <Kernel/Memory/PhysicalMemoryManager.h>
-#include <LibC/string.h>
-
 
 size_t Terminal::VGA_WIDTH = 80;
 size_t Terminal::VGA_HEIGHT = 25;

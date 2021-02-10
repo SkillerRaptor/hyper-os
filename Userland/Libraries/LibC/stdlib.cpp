@@ -1,13 +1,13 @@
-#include <LibC/stdlib.h>
+#include <stdlib.h>
 
-#include <LibC/stdio.h>
-#include <LibC/string.h>
+#include <stdio.h>
+#include <string.h>
 
 #include <Kernel/Memory/PhysicalMemoryManager.h>
 
 struct HeapHeader
 {
-	uint64_t Pages;
+    uint64_t Pages;
     uint64_t Size;
 };
 
@@ -33,10 +33,10 @@ void* malloc(size_t size)
     if (!ptr)
         return nullptr;
 
-    ptr = (void*)((uint64_t)ptr +PhysicalMemoryManager::KERNEL_BASE_ADDRESS);
+    ptr = (void*)((uint64_t)ptr + PhysicalMemoryManager::KERNEL_BASE_ADDRESS);
 
-	HeapHeader* metadata = (HeapHeader*)ptr;
-	ptr = (void*)((uint64_t)ptr + PhysicalMemoryManager::PAGE_SIZE);
+    HeapHeader* metadata = (HeapHeader*)ptr;
+    ptr = (void*)((uint64_t)ptr + PhysicalMemoryManager::PAGE_SIZE);
 
     metadata->Pages = pageCount;
     metadata->Size = size;
@@ -47,8 +47,8 @@ void* malloc(size_t size)
 void* calloc(size_t num, size_t size)
 {
     void* ptr = malloc(num * size);
-	memset(ptr, 0, num * size);
-	return ptr;
+    memset(ptr, 0, num * size);
+    return ptr;
 }
 
 void* realloc(void* ptr, size_t size)
@@ -58,8 +58,8 @@ void* realloc(void* ptr, size_t size)
 
     HeapHeader* metadata = (HeapHeader*)((uint64_t)ptr - PhysicalMemoryManager::PAGE_SIZE);
 
-	size_t currentSize = (metadata->Size + (PhysicalMemoryManager::PAGE_SIZE - 1)) / PhysicalMemoryManager::PAGE_SIZE;
-	size_t newSize = (size + (PhysicalMemoryManager::PAGE_SIZE - 1)) / PhysicalMemoryManager::PAGE_SIZE;
+    size_t currentSize = (metadata->Size + (PhysicalMemoryManager::PAGE_SIZE - 1)) / PhysicalMemoryManager::PAGE_SIZE;
+    size_t newSize = (size + (PhysicalMemoryManager::PAGE_SIZE - 1)) / PhysicalMemoryManager::PAGE_SIZE;
     if (currentSize == newSize)
     {
         metadata->Size = newSize;
@@ -75,8 +75,8 @@ void* realloc(void* ptr, size_t size)
         memcpy(newPtr, ptr, newSize);
     }
     else
-	{
-		memcpy(newPtr, ptr, metadata->Size);
+    {
+        memcpy(newPtr, ptr, metadata->Size);
     }
 
     free(ptr);
@@ -86,6 +86,46 @@ void* realloc(void* ptr, size_t size)
 
 void free(void* ptr)
 {
-	HeapHeader* metadata = (HeapHeader*)((uint64_t)ptr - PhysicalMemoryManager::PAGE_SIZE);
+    HeapHeader* metadata = (HeapHeader*)((uint64_t)ptr - PhysicalMemoryManager::PAGE_SIZE);
     PhysicalMemoryManager::FreePages((void*)((uint64_t)metadata - PhysicalMemoryManager::KERNEL_BASE_ADDRESS), metadata->Pages + 1);
+}
+
+void* operator new(size_t size)
+{
+    return malloc(size);
+}
+
+void* operator new[](size_t size)
+{
+    return malloc(size);
+}
+
+void* operator new(size_t, void* ptr)
+{
+    return ptr;
+}
+
+void* operator new[](size_t, void* ptr)
+{
+    return ptr;
+}
+
+void operator delete(void* ptr)
+{
+    free(ptr);
+}
+
+void operator delete[](void* ptr)
+{
+    free(ptr);
+}
+
+void operator delete(void* ptr, size_t)
+{
+    free(ptr);
+}
+
+void operator delete[](void* ptr, size_t)
+{
+    free(ptr);
 }

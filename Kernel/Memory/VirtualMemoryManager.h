@@ -1,9 +1,9 @@
 #pragma once
 
+#include <stddef.h>
 #include <AK/NonCopyable.h>
 #include <AK/NonMoveable.h>
 #include <Kernel/Stivale/Stivale2.h>
-#include <LibC/stddef.h>
 
 class VirtualMemoryManager : public NonCopyable, public NonMoveable
 {

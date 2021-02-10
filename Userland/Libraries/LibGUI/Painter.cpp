@@ -1,6 +1,6 @@
 #include <LibGUI/Painter.h>
 
-#include <LibC/string.h>
+#include <string.h>
 #include <LibGUI/Font.h>
 
 Painter Painter::s_Instance;
@@ -80,7 +80,7 @@ void Painter::DrawRect(const Rect& rect, Color color) const
 	}
 }
 
-void Painter::DrawText(const Rect& rect, const AK::String& string, TextAlignment textAlignment, const Color& color)
+void Painter::DrawText(const Rect& rect, const String& string, TextAlignment textAlignment, const Color& color)
 {
 	for (size_t i = 0; i < string.length(); i++)
 	{
@@ -90,21 +90,21 @@ void Painter::DrawText(const Rect& rect, const AK::String& string, TextAlignment
 		{
 			uint32_t x = ((rect.GetX() + rect.GetWidth()) / 2) - ((string.length() / 2) * FONT_WIDTH - 1);
 			uint32_t y = (rect.GetY() + rect.GetHeight()) / 2;
-			PutChar(string[i], Point{ x + i * FONT_WIDTH - 1, y }, color);
+			PutChar(string[i], Point{ static_cast<uint32_t>(x + i * FONT_WIDTH - 1), y }, color);
 			break;
 		}
 		case TextAlignment::TOP_LEFT:
 		{
 			uint32_t x = rect.GetX() + 6;
 			uint32_t y = rect.GetY();
-			PutChar(string[i], Point{ x + i * FONT_WIDTH - 1, y }, color);
+			PutChar(string[i], Point{ static_cast<uint32_t>(x + i * FONT_WIDTH - 1), y }, color);
 			break;
 		}
 		case TextAlignment::LEFT:
 		{
 			uint32_t x = rect.GetX() + 6;
 			uint32_t y = rect.GetY() + 6;
-			PutChar(string[i], Point{ x + i * FONT_WIDTH - 1, y }, color);
+			PutChar(string[i], Point{ static_cast<uint32_t>(x + i * FONT_WIDTH - 1), y }, color);
 			break;
 		}
 		default:

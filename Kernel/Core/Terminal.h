@@ -1,7 +1,7 @@
 #pragma once
 
-#include <LibC/stddef.h>
-#include <LibC/stdint.h>
+#include <stddef.h>
+#include <stdint.h>
 
 class Terminal
 {

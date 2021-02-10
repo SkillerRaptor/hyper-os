@@ -1,18 +1,12 @@
 #pragma once
 
-#include <LibC/stdint.h>
+#include <stdint.h>
 
-namespace AK
+class IO
 {
-	class IO
-	{
-	public:
-		static void out8(uint16_t port, uint8_t value);
-		static void out16(uint16_t port, uint16_t value);
+public:
+	static void out8(uint16_t port, uint8_t value);
+	static uint8_t in8(uint16_t port);
 
-		static uint8_t in8(uint16_t port);
-		static uint16_t in16(uint16_t port);
-
-		static void io_wait();
-	};
-}
+	static void wait();
+};

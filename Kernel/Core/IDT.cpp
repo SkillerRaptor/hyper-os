@@ -1,8 +1,8 @@
 #include <Kernel/Core/IDT.h>
 
+#include <stdio.h>
 #include <Kernel/Core/GDT.h>
 #include <Kernel/Core/IRQManager.h>
-#include <LibC/stdio.h>
 
 IDT IDT::m_Instance;
 

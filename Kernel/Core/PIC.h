@@ -1,6 +1,6 @@
 #pragma once
 
-#include <LibC/stdint.h>
+#include <stdint.h>
 
 class PIC
 {
@@ -8,15 +8,15 @@ private:
 	static PIC m_Instance;
 
 public:
-    void ReMap(uint8_t masterOffset, uint8_t slaveOffset);
-    void Disable();
+	void ReMap(uint8_t masterOffset, uint8_t slaveOffset);
+	void Disable();
 
 	void SetInterruptRequestMask(uint8_t interruptRequestLine);
 	void ClearInterruptRequestMask(uint8_t interruptRequestLine);
 
-    void SendEndOfInterrupt(uint8_t interruptRequest);
+	void SendEndOfInterrupt(uint8_t interruptRequest);
 
-    uint16_t GetInServiceRegister();
+	uint16_t GetInServiceRegister();
 	uint16_t GetInterruptRequestRegister();
 
 	static PIC& Get();

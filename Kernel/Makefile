@@ -1,15 +1,7 @@
 include ../Makefile.common
 
-OBJS = \
-	./Kernel.o \
-	./Core/GDT.o \
-	./Core/IDT.o \
-	./Core/IRQManager.o \
-	./Core/PIC.o \
-	./Core/Terminal.o \
-	./Memory/PhysicalMemoryManager.o \
-	./Memory/VirtualMemoryManager.o \
-	./Stivale/Stivale2.o
+SOURCES = $(shell find . -name "*.cpp")
+OBJS = $(addsuffix .o, $(basename $(SOURCES)))
 
 APP = Kernel
 

@@ -16,7 +16,7 @@ private:
 	static size_t s_LastUsedIndex;
 	static uintptr_t s_HighestPage;
 
-	static AK::Bitmap s_Bitmap;
+	static Bitmap s_Bitmap;
 
 public:
 	static void Initialize(Stivale2_MmapEntry* memoryMap, size_t memoryMapEntries);

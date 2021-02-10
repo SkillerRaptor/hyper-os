@@ -1,6 +1,6 @@
 #pragma once
 
-#include <LibC/stddef.h>
+#include <stddef.h>
 
 class IDT
 {

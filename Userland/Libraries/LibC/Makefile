@@ -1,15 +1,9 @@
-include ../../Makefile.common
+include ../../../Makefile.common
 
-OBJS = \
-	Color.o \
-	Painter.o \
-	Point.o \
-	Rect.o \
-	Widget.o \
-	Window.o \
-	WindowManager.o
+SOURCES = $(shell find . -name "*.cpp")
+OBJS = $(addsuffix .o, $(basename $(SOURCES)))
 
-APP = libgui.a
+APP = libc.a
 
 all: $(APP)
 

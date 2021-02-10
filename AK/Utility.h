@@ -2,23 +2,20 @@
 
 #include <AK/TypeTraits.h>
 
-namespace AK
+template<class T>
+inline T&& forward(typename remove_reference<T>::type& t) noexcept
 {
-	template<class T>
-	inline T&& forward(typename remove_reference<T>::type& t) noexcept
-	{
-		return static_cast<T&&>(t);
-	}
+	return static_cast<T&&>(t);
+}
 
-	template<class T>
-	inline T&& forward(typename remove_reference<T>::type&& t) noexcept
-	{
-		return static_cast<T&&>(t);
-	}
+template<class T>
+inline T&& forward(typename remove_reference<T>::type&& t) noexcept
+{
+	return static_cast<T&&>(t);
+}
 
-	template<class T>
-	inline typename remove_reference<T>::type&& move(T&& t) noexcept
-	{
-		return static_cast<typename remove_reference<T>::type&&>(t);
-	}
+template<class T>
+inline typename remove_reference<T>::type&& move(T&& t) noexcept
+{
+	return static_cast<typename remove_reference<T>::type&&>(t);
 }

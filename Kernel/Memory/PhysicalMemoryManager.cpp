@@ -1,11 +1,11 @@
 #include <Kernel/Memory/PhysicalMemoryManager.h>
 
-#include <LibC/stdio.h>
+#include <stdio.h>
 
 size_t PhysicalMemoryManager::s_LastUsedIndex = 0;
 uintptr_t PhysicalMemoryManager::s_HighestPage = 0;
 
-AK::Bitmap PhysicalMemoryManager::s_Bitmap;
+Bitmap PhysicalMemoryManager::s_Bitmap;
 
 void PhysicalMemoryManager::Initialize(Stivale2_MmapEntry* memoryMap, size_t memoryMapEntries)
 {

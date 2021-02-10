@@ -1,7 +1,7 @@
 #include <Kernel/Core/PIC.h>
 
+#include <stdio.h>
 #include <AK/IO.h>
-#include <LibC/stdio.h>
 
 PIC PIC::m_Instance;
 
@@ -12,36 +12,36 @@ void PIC::ReMap(uint8_t masterOffset, uint8_t slaveOffset)
 	static constexpr const int Icw4_8086 = 0x01;
 
 	/* Start Initialization Sequence */
-	AK::IO::out8(MasterCommandSelector(), Icw1_Init | Icw1_Icw4);
-	AK::IO::io_wait();
-	AK::IO::out8(SlaveCommandSelector(), Icw1_Init | Icw1_Icw4);
-	AK::IO::io_wait();
+	IO::out8(MasterCommandSelector(), Icw1_Init | Icw1_Icw4);
+	IO::wait();
+	IO::out8(SlaveCommandSelector(), Icw1_Init | Icw1_Icw4);
+	IO::wait();
 
 	/* Set PIC's vector offsets */
-	AK::IO::out8(MasterDataSelector(), masterOffset);
-	AK::IO::io_wait();
-	AK::IO::out8(SlaveDataSelector(), slaveOffset);
-	AK::IO::io_wait();
+	IO::out8(MasterDataSelector(), masterOffset);
+	IO::wait();
+	IO::out8(SlaveDataSelector(), slaveOffset);
+	IO::wait();
 
 	/* Set Identity */
-	AK::IO::out8(MasterDataSelector(), 0x04);
-	AK::IO::io_wait();
-	AK::IO::out8(SlaveDataSelector(), 0x02);
-	AK::IO::io_wait();
+	IO::out8(MasterDataSelector(), 0x04);
+	IO::wait();
+	IO::out8(SlaveDataSelector(), 0x02);
+	IO::wait();
 
 	/* Set 8086 Mode */
-	AK::IO::out8(MasterDataSelector(), Icw4_8086);
-	AK::IO::io_wait();
-	AK::IO::out8(SlaveDataSelector(), Icw4_8086);
-	AK::IO::io_wait();
+	IO::out8(MasterDataSelector(), Icw4_8086);
+	IO::wait();
+	IO::out8(SlaveDataSelector(), Icw4_8086);
+	IO::wait();
 }
 
 void PIC::Disable()
 {
 	static constexpr const int DisableCode = 0xFF;
 
-	AK::IO::out8(SlaveCommandSelector(), DisableCode);
-	AK::IO::out8(MasterDataSelector(), DisableCode);
+	IO::out8(SlaveCommandSelector(), DisableCode);
+	IO::out8(MasterDataSelector(), DisableCode);
 }
 
 void PIC::SetInterruptRequestMask(uint8_t interruptRequestLine)
@@ -59,8 +59,8 @@ void PIC::SetInterruptRequestMask(uint8_t interruptRequestLine)
 		interruptRequestLine -= 8;
 	}
 
-	value = AK::IO::in8(port) | (1 << interruptRequestLine);
-	AK::IO::out8(port, value);
+	value = IO::in8(port) | (1 << interruptRequestLine);
+	IO::out8(port, value);
 }
 
 void PIC::ClearInterruptRequestMask(uint8_t interruptRequestLine)
@@ -78,8 +78,8 @@ void PIC::ClearInterruptRequestMask(uint8_t interruptRequestLine)
 		interruptRequestLine -= 8;
 	}
 
-	value = AK::IO::in8(port) & ~(1 << interruptRequestLine);
-	AK::IO::out8(port, value);
+	value = IO::in8(port) & ~(1 << interruptRequestLine);
+	IO::out8(port, value);
 }
 
 void PIC::SendEndOfInterrupt(uint8_t interruptRequest)
@@ -87,26 +87,26 @@ void PIC::SendEndOfInterrupt(uint8_t interruptRequest)
 	static constexpr const int EndOfInterruptCode = 0x20;
 
 	if (interruptRequest >= 0x08)
-		AK::IO::out8(SlaveCommandSelector(), EndOfInterruptCode);
-	AK::IO::out8(MasterCommandSelector(), EndOfInterruptCode);
+		IO::out8(SlaveCommandSelector(), EndOfInterruptCode);
+	IO::out8(MasterCommandSelector(), EndOfInterruptCode);
 }
 
 uint16_t PIC::GetInServiceRegister()
 {
 	static constexpr const int InServiceRegisterCode = 0x0A;
 
-	AK::IO::out8(MasterCommandSelector(), InServiceRegisterCode);
-	AK::IO::out8(SlaveCommandSelector(), InServiceRegisterCode);
-	return (AK::IO::in8(SlaveCommandSelector()) << 8) | AK::IO::in8(MasterCommandSelector());
+	IO::out8(MasterCommandSelector(), InServiceRegisterCode);
+	IO::out8(SlaveCommandSelector(), InServiceRegisterCode);
+	return (IO::in8(SlaveCommandSelector()) << 8) | IO::in8(MasterCommandSelector());
 }
 
 uint16_t PIC::GetInterruptRequestRegister()
 {
 	static constexpr const int InterruptRequestRegisterCode = 0x0B;
 
-	AK::IO::out8(MasterCommandSelector(), InterruptRequestRegisterCode);
-	AK::IO::out8(SlaveCommandSelector(), InterruptRequestRegisterCode);
-	return (AK::IO::in8(SlaveCommandSelector()) << 8) | AK::IO::in8(MasterCommandSelector());
+	IO::out8(MasterCommandSelector(), InterruptRequestRegisterCode);
+	IO::out8(SlaveCommandSelector(), InterruptRequestRegisterCode);
+	return (IO::in8(SlaveCommandSelector()) << 8) | IO::in8(MasterCommandSelector());
 }
 
 PIC& PIC::Get()

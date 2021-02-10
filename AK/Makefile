@@ -1,12 +1,7 @@
 include ../Makefile.common
 
-OBJS = \
-	./Bitmap.o \
-	./Exception.o \
-	./IO.o \
-	./Panic.o \
-	./String.o \
-	./StringBuilder.o
+SOURCES = $(shell find . -name "*.cpp")
+OBJS = $(addsuffix .o, $(basename $(SOURCES)))
 
 APP = AK
 

@@ -1,4 +1,4 @@
-#include <LibC/string.h>
+#include <string.h>
 
 void* memcpy(void* destination, const void* source, size_t num)
 {
@@ -11,15 +11,15 @@ void* memcpy(void* destination, const void* source, size_t num)
 
 void* memmove(void* destination, const void* source, size_t num)
 {
-    unsigned char* dst = (unsigned char*)destination;
-    const unsigned char* src = (const unsigned char*)source;
-    if (destination < source)
-        for (size_t i = 0; i < num; i++)
-            dst[i] = src[i];
-    else
-        for (size_t i = num; i != 0; i--)
-            dst[i - 1] = src[i - 1];
-    return destination;
+	unsigned char* dst = (unsigned char*)destination;
+	const unsigned char* src = (const unsigned char*)source;
+	if (destination < source)
+		for (size_t i = 0; i < num; i++)
+			dst[i] = src[i];
+	else
+		for (size_t i = num; i != 0; i--)
+			dst[i - 1] = src[i - 1];
+	return destination;
 }
 
 char* strcpy(char* dest, const char* src)

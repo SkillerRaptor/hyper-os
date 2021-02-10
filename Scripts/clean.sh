@@ -2,8 +2,8 @@
 
 printf "\e[93m === Starting Cleaning === \e[39m\n"
 
-make -C ../Libraries/LibGUI clean
-make -C ../Libraries/LibC clean
+make -C ../Userland/Libraries/LibGUI clean
+make -C ../Userland/Libraries/LibC clean
 make -C ../Kernel clean
 make -C ../AK clean
 

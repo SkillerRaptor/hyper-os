@@ -5,19 +5,19 @@ ARCH_FLAGS =
 STANDARD_FLAGS = -std=c++17 -nostdinc++ -nostdlib -nostdinc
 FILE_FLAGS = -ffreestanding -fno-stack-protector -fno-ident
 WARNING_FLAGS = -Wextra -Wall -Wundef -Wcast-qual -Wwrite-strings
-FLAVOR_FLAGS = -fomit-frame-pointer -mno-red-zone -mno-sse -mno-sse2 -mno-80387 -mno-mmx -mcmodel=kernel -m64 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections -fmerge-all-constants -fno-unroll-loops -falign-functions=1 -falign-jumps=1 -falign-loops=1 -fno-pie -fno-pic
+FLAVOR_FLAGS = -fomit-frame-pointer -mno-red-zone -mno-sse -mno-sse2 -mno-80387 -mno-mmx -mcmodel=kernel -m64 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections -fmerge-all-constants -fno-unroll-loops -falign-functions=1 -fno-pie -fno-pic
 OPTIMIZATION_FLAGS = -Os -fno-asynchronous-unwind-tables
-SUGGEST_FLAGS = -Wsuggest-attribute=noreturn -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-override
 
 INCLUDE_FLAGS += \
     -I. \
     -I$(HYPEROS_BASE_DIR) \
-    -I$(HYPEROS_BASE_DIR)/Libraries
+    -I$(HYPEROS_BASE_DIR)/Userland/Libraries \
+    -I$(HYPEROS_BASE_DIR)/Userland/Libraries/LibC \
 
 DEFINES = -D__is_libk
 
-CXX = x86_64-elf-g++
-CXXFLAGS = $(WARNING_FLAGS) $(OPTIMIZATION_FLAGS) $(FILE_FLAGS) $(FLAVOR_FLAGS) $(ARCH_FLAGS) $(STANDARD_FLAGS) $(INCLUDE_FLAGS) $(SUGGEST_FLAGS) $(DEFINES)
+CXX = clang++
+CXXFLAGS = $(WARNING_FLAGS) $(OPTIMIZATION_FLAGS) $(FILE_FLAGS) $(FLAVOR_FLAGS) $(ARCH_FLAGS) $(STANDARD_FLAGS) $(INCLUDE_FLAGS) $(DEFINES)
 
 AR = x86_64-elf-ar
 AS = x86_64-elf-as

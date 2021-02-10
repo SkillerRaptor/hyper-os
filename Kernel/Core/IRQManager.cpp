@@ -1,11 +1,11 @@
 #include <Kernel/Core/IRQManager.h>
 
+#include <stdio.h>
 #include <AK/IO.h>
 #include <AK/Panic.h>
 #include <Kernel/Core/GDT.h>
 #include <Kernel/Core/IDT.h>
 #include <Kernel/Core/PIC.h>
-#include <LibC/stdio.h>
 
 __BEGIN_DECLS
 void ExceptionHandler8();
@@ -59,17 +59,17 @@ void IRQManager::Install()
 __BEGIN_DECLS
 void ExceptionHandler8()
 {
-	AK::panic("IRQManager: Double Fault!");
+	panic("IRQManager: Double Fault!");
 }
 
 void ExceptionHandler13()
 {
-	AK::panic("IRQManager: General Protection Fault!");
+	panic("IRQManager: General Protection Fault!");
 }
 
 void ExceptionHandler14()
 {
-	AK::panic("IRQManager: Page Fault!");
+	panic("IRQManager: Page Fault!");
 }
 
 void IRQHandler0()
