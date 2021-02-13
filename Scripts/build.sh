@@ -2,10 +2,9 @@
 
 printf "\e[93m === Starting Building === \e[39m\n"
 
-make -C ../Userland/Libraries/LibGUI
-make -C ../Userland/Libraries/LibC
-make -C ../Kernel
-make -C ../AK
-make -C ..
+cd ..
+find */ -name "Makefile" -execdir make -C . \;
+make -C .
+cd Scripts
 
 printf "\e[92m === Finished Building === \e[39m\n"
