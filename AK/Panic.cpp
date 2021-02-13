@@ -1,6 +1,5 @@
 #include <AK/Panic.h>
 
-#include <AK/String.h>
 #include <AK/StringBuilder.h>
 #include <LibGUI/Font.h>
 #include <LibGUI/Painter.h>

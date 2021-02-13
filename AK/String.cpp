@@ -1,4 +1,4 @@
-#include <AK/String.h>
+#include <AK/String.hpp>
 
 #include <string.h>
 #include <AK/StringBuilder.h>

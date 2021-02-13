@@ -1,6 +1,6 @@
 #pragma once
 
-#include <AK/String.h>
+#include <AK/String.hpp>
 #include <AK/Vector.h>
 
 class StringBuilder

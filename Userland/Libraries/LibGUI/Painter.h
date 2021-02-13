@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-#include <AK/String.h>
+#include <AK/String.hpp>
 #include <LibGUI/Color.h>
 #include <LibGUI/Rect.h>
 
