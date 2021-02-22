@@ -16,8 +16,8 @@ enum
 void idt_init(void);
 void idt_reload(void);
 
-void idt_register_handler(size_t index, uint8_t flags, void(* handler)(void));
-void idt_register_interrupt_handler(size_t index, void(* handler)(void));
-void idt_register_trap_handler(size_t index, void(* handler)(void));
+void idt_register_handler(size_t index, uint8_t flags, uintptr_t handler);
+void idt_register_interrupt_handler(size_t index, uintptr_t handler);
+void idt_register_trap_handler(size_t index, uintptr_t handler);
 
 #endif
