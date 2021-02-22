@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <AK/serial.h>
 
-static void log_string(int status, const char* format, ...)
+static void log_string(int status, const char* format, va_list args)
 {
     const char* string = "";
 
@@ -27,14 +27,9 @@ static void log_string(int status, const char* format, ...)
         break;
     }
 
-    va_list args;
-    va_start(args, format);
-
     printf(string);
-    printf(format, args);
 
-    va_end(args);
-
+    vprintf(format, args);
     serial_write('\n');
 }
 
