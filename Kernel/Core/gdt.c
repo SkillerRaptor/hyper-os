@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <AK/logger.h>
 
-struct GDT_Entry
+typedef struct
 {
 	uint16_t limit_low;
 	uint16_t base_low;
@@ -12,22 +12,22 @@ struct GDT_Entry
 	uint8_t access;
 	uint8_t granularity;
 	uint8_t base_high;
-} __PACKED;
+} __PACKED gdt_entry_t;
 
-struct GDT_Entries
+typedef struct
 {
-	struct GDT_Entry entries[3];
+	gdt_entry_t entries[3];
 	// TODO: TSS Entry
-} __PACKED;
+} __PACKED gdt_entries_t;
 
-struct GDT_Pointer
+typedef struct
 {
 	uint16_t size;
 	uint64_t address;
-} __PACKED;
+} __PACKED gdt_pointer_t;
 
-static struct GDT_Entries gdt_entries;
-static struct GDT_Pointer gdt_pointer;
+static gdt_entries_t gdt_entries;
+static gdt_pointer_t gdt_pointer;
 
 void gdt_init(void)
 {

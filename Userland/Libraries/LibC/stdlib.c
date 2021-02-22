@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <string.h>
 //#include <AK/Panic.h>
-//#include <Kernel/Memory/MemoryDefines.h>
-//#include <Kernel/Memory/PhysicalMemoryManager.h>
+#include <Kernel/Memory/mm.h>
+#include <Kernel/Memory/pmm.h>
 
-struct HeapHeader
+typedef struct
 {
 	uint64_t pages;
 	uint64_t size;
-};
+} heapheader_t;
 
 void abort()
 {
@@ -22,25 +22,22 @@ void abort()
 
 void* malloc(size_t size)
 {
-	(void)size;
-	/*
 	size_t page_count = (size + (PAGE_SIZE - 1)) / PAGE_SIZE;
 
-	void* ptr = physical_memory_manager_callocate_pages((uintptr_t)(page_count + 1));
+	void* ptr = pmm_callocate_pages((uintptr_t)(page_count + 1));
 
 	if (!ptr)
 		return NULL;
 
 	ptr = (void*)((uint64_t)ptr + KERNEL_BASE_ADDRESS);
 
-	struct HeapHeader* metadata = (struct HeapHeader*)ptr;
+	heapheader_t* metadata = (heapheader_t*)ptr;
 	ptr = (void*)((uint64_t)ptr + PAGE_SIZE);
 
 	metadata->pages = page_count;
 	metadata->size = size;
 
 	return ptr;
-	*/
 
 	return NULL;
 }
@@ -54,13 +51,10 @@ void* calloc(size_t num, size_t size)
 
 void* realloc(void* ptr, size_t size)
 {
-	(void)ptr;
-	(void)size;
-	/*
 	if (!ptr)
 		return malloc(size);
 
-	struct HeapHeader* metadata = (struct HeapHeader*)((uint64_t)ptr - PAGE_SIZE);
+	heapheader_t* metadata = (heapheader_t*)((uint64_t)ptr - PAGE_SIZE);
 
 	size_t current_size = (metadata->size + (PAGE_SIZE - 1)) / PAGE_SIZE;
 	size_t new_size = (size + (PAGE_SIZE - 1)) / PAGE_SIZE;
@@ -82,13 +76,10 @@ void* realloc(void* ptr, size_t size)
 	free(ptr);
 
 	return new_ptr;
-	*/
-	return NULL;
 }
 
 void free(void* ptr)
 {
-	(void)ptr;
-	//struct HeapHeader* metadata = (struct HeapHeader*)((uint64_t)ptr - PAGE_SIZE);
-	//physical_memory_manager_free_pages((void*)((uint64_t)metadata - KERNEL_BASE_ADDRESS), metadata->pages + 1);
+	heapheader_t* metadata = (heapheader_t*)((uint64_t)ptr - PAGE_SIZE);
+	pmm_free_pages((void*)((uint64_t)metadata - KERNEL_BASE_ADDRESS), metadata->pages + 1);
 }

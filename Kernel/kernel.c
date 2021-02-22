@@ -6,10 +6,15 @@
 #include <Kernel/Interrupts/idt.h>
 #include <Kernel/Interrupts/irq.h>
 #include <Kernel/Interrupts/pic.h>
+#include <Kernel/Memory/mm.h>
+#include <Kernel/Memory/pmm.h>
+#include <Kernel/Memory/vmm.h>
+
+#include <stdlib.h>
 
 void kernel_main(struct stivale2_struct* bootloader_data)
 {
-	(void)bootloader_data;
+	bootloader_data = (struct stivale2_struct*)((void*)((uint64_t)bootloader_data + KERNEL_BASE_ADDRESS));
 
 	gdt_init();
 
@@ -19,6 +24,11 @@ void kernel_main(struct stivale2_struct* bootloader_data)
 	idt_init();
 	
 	serial_init();
+
+	struct stivale2_struct_tag_memmap* memmapTag = (struct stivale2_struct_tag_memmap*)stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_MEMMAP_ID);
+
+	pmm_init(memmapTag->memmap, memmapTag->entries);
+	vmm_init(memmapTag->memmap, memmapTag->entries);
 
 	pic_set_interrupt_request_mask(0);
 

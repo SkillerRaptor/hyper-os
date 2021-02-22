@@ -3,7 +3,7 @@
 #include <AK/logger.h>
 #include <Kernel/Core/gdt.h>
 
-struct IDT_Entry
+typedef struct
 {
     uint16_t offset_low;
     uint16_t selector;
@@ -12,15 +12,15 @@ struct IDT_Entry
     uint16_t offset_mid;
     uint32_t offset_high;
     uint32_t zero;
-} __PACKED;
+} __PACKED idt_entry_t;
 
-struct IDT_Ptr
+typedef struct
 {
     uint16_t size;
     uint64_t address;
-} __PACKED;
+} __PACKED idt_pointer_t;
 
-static struct IDT_Entry idt_entries[256];
+static idt_entry_t idt_entries[256];
 
 void idt_init(void)
 {
@@ -31,7 +31,7 @@ void idt_reload(void)
 {
 	info("IDT: Loading IDT...");
 
-	struct IDT_Ptr idt_ptr =
+	idt_pointer_t idt_pointer =
 	{
 		sizeof(idt_entries) - 1,
 		(uintptr_t)idt_entries
@@ -40,7 +40,7 @@ void idt_reload(void)
 	asm volatile (
 		"lidt %0"
 		:
-	: "m"(idt_ptr)
+	: "m"(idt_pointer)
 		);
 
 	info("IDT: IDT was loaded!");

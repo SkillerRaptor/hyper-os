@@ -17,7 +17,7 @@ static void print_internal_string(const char* c, int* ret)
 		print_internal_char(c[i], ret);
 }
 
-static char* internal_string_format(int64_t i, char b[], size_t base, bool plus_sign, bool space_sign, int padding_offset, bool justify, bool zero)
+static char* internal_string_format(intmax_t i, char b[], int base, bool plus_sign, bool space_sign, int padding_offset, bool justify, bool zero)
 {
 	char digit[32] = { 0 };
 	memset(digit, 0, 32);
@@ -48,7 +48,7 @@ static char* internal_string_format(int64_t i, char b[], size_t base, bool plus_
 		*p++ = ' ';
 	}
 
-	size_t shifter = i;
+	intmax_t shifter = i;
 	do
 	{
 		++p;
@@ -99,41 +99,40 @@ int vprintf(const char* fmt, va_list parameters)
 
 	for (size_t i = 0; fmt[i]; ++i)
 	{
-		char c = fmt[i];
-		if (c != '%')
+		if (fmt[i] != '%')
 		{
-			putchar(c);
+			putchar(fmt[i]);
 			++ret;
 			continue;
 		}
 
-		c = fmt[++i];
+		++i;
 
 		bool left_justify = false;
 		bool plus_sign = false;
 		bool space_no_sign = false;
 		bool zero_pad = false;
 
-		bool exit_break = 0;
-		while (1)
+		bool exit_break = false;
+		while (true)
 		{
-			switch (c)
+			switch (fmt[i])
 			{
 			case '-':
 				left_justify = true;
-				c = fmt[++i];
+				++i;
 				break;
 			case '+':
 				plus_sign = true;
-				c = fmt[++i];
+				++i;
 				break;
 			case ' ':
 				space_no_sign = true;
-				c = fmt[++i];
+				++i;
 				break;
 			case '0':
 				zero_pad = true;
-				c = fmt[++i];
+				++i;
 				break;
 			default:
 				exit_break = true;
@@ -146,35 +145,35 @@ int vprintf(const char* fmt, va_list parameters)
 
 		size_t length_spec = 0;
 
-		while (isdigit(c))
+		while (isdigit(fmt[i]))
 		{
 			length_spec *= 10;
-			length_spec += c - 48;
-			c = fmt[++i];
+			length_spec += fmt[i] - 48;
+			++i;
 		}
 
-		if (c == '*')
+		if (fmt[i] == '*')
 		{
 			length_spec = va_arg(parameters, int);
-			c = fmt[++i];
+				++i;
 		}
 
 		size_t prec_spec = 0;
 
-		if (c == '.')
+		if (fmt[i] == '.')
 		{
-			c = fmt[++i];
-			while (isdigit(c))
+			++i;
+			while (isdigit(fmt[i]))
 			{
 				prec_spec *= 10;
-				prec_spec += c - 48;
-				c = fmt[++i];
+				prec_spec += fmt[i] - 48;
+				++i;
 			}
 
-			if (c == '*')
+			if (fmt[i] == '*')
 			{
 				prec_spec = va_arg(parameters, int);
-				c = fmt[++i];
+				++i;
 			}
 		}
 		else
@@ -185,26 +184,26 @@ int vprintf(const char* fmt, va_list parameters)
 		char specifier = '\0';
 		char length = '\0';
 
-		if (c == 'h' || c == 'l' || c == 'j' || c == 'z' || c == 't' || c == 'L')
+		if (fmt[i] == 'h' || fmt[i] == 'l' || fmt[i] == 'j' || fmt[i] == 'z' || fmt[i] == 't' || fmt[i] == 'L')
 		{
-			length = c;
-			c = fmt[++i];
-			if (c == 'h')
+			length = fmt[i];
+			++i;
+			if (fmt[i] == 'h')
 			{
 				length = 'H';
 			}
-			else if (c == 'l')
+			else if (fmt[i] == 'l')
 			{
 				length = 'q';
-				c = fmt[++i];
+				++i;
 			}
 		}
 
-		specifier = c;
+		specifier = fmt[i];
 
 		memset(string_buffer, 0, 256);
 
-		size_t base = 10;
+		int base = 10;
 		if (specifier == 'o')
 		{
 			base = 8;

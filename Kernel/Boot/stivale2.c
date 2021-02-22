@@ -1,6 +1,7 @@
 #include <Kernel/Boot/stivale2.h>
 
 #include <sys/types.h>
+#include <Kernel/Memory/mm.h>
 
 static struct stivale2_header_tag_smp smp_hdr_tag =
 {
@@ -37,7 +38,7 @@ static struct stivale2_header stivale_hdr =
 
 void* stivale2_get_tag(struct stivale2_struct* stivale2_struct, uint64_t id)
 {
-    struct stivale2_tag* current_tag = (struct stivale2_tag*)((void*)(stivale2_struct->tags));
+    struct stivale2_tag* current_tag = (struct stivale2_tag*)((void*)(stivale2_struct->tags + KERNEL_BASE_ADDRESS));
     while (1)
     {
         if (current_tag == NULL)
@@ -46,6 +47,6 @@ void* stivale2_get_tag(struct stivale2_struct* stivale2_struct, uint64_t id)
         if (current_tag->identifier == id)
             return current_tag;
 
-        current_tag = (struct stivale2_tag*)((void*)(current_tag->next));
+        current_tag = (struct stivale2_tag*)((void*)(current_tag->next + KERNEL_BASE_ADDRESS));
     }
 }
