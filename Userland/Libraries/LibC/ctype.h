@@ -1,8 +1,7 @@
-#pragma once
+#ifndef HYPEROS_USERLAND_LIBRARIES_LIBC_CTYPE_H_
+#define HYPEROS_USERLAND_LIBRARIES_LIBC_CTYPE_H_
 
 #include <sys/cdefs.h>
-
-__BEGIN_DECLS
 
 #define _U 01
 #define _L 02
@@ -76,4 +75,4 @@ static inline int isupper(int c)
 #define isascii(c) ((unsigned)c <= 127)
 #define toascii(c) ((c)&127)
 
-__END_DECLS
+#endif

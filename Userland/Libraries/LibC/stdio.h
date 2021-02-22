@@ -1,26 +1,20 @@
-#pragma once
+#ifndef HYPEROS_USERLAND_LIBARIRES_LIBC_STDIO_H_
+#define HYPEROS_USERLAND_LIBARIRES_LIBC_STDIO_H_
 
-#include <stdlib.h>
 #include <stdarg.h>
-#include <string.h>
-#include <sys/cdefs.h>
-#include <sys/types.h>
-
-#if defined(__is_libk)
-#include <Kernel/Core/Terminal.h>
-#endif
-
-__BEGIN_DECLS
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #ifndef EOF
 #define EOF (-1)
 #endif
 
-/* Formatted input/output */
+int vprintf(const char* fmt, va_list parameters);
+
 int printf(const char* fmt, ...);
 
-/* Character input/output */
 int putchar(int character);
 int puts(const char* str);
 
-__END_DECLS
+#endif

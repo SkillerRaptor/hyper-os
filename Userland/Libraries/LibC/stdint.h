@@ -1,8 +1,7 @@
-#pragma once
+#ifndef HYPEROS_USERLAND_LIBRARIES_LIBC_STDINT_H_
+#define HYPEROS_USERLAND_LIBRARIES_LIBC_STDINT_H_
 
 #include <sys/cdefs.h>
-
-__BEGIN_DECLS
 
 typedef __UINT64_TYPE__ uint64_t;
 typedef __UINT32_TYPE__ uint32_t;
@@ -115,4 +114,4 @@ typedef __INTMAX_TYPE__ intmax_t;
 
 #define SIZE_MAX ((size_t)-1)
 
-__END_DECLS
+#endif

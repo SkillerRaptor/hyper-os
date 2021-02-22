@@ -1,9 +1,8 @@
-#pragma once
+#ifndef HYPEROS_USERLAND_LIBRARIES_LIBC_SYS_TYPES_H_
+#define HYPEROS_USERLAND_LIBRARIES_LIBC_SYS_TYPES_H_
 
 #include <stdint.h>
 #include <sys/cdefs.h>
-
-__BEGIN_DECLS
 
 typedef __WINT_TYPE__ wint_t;
 
@@ -28,31 +27,27 @@ typedef uint32_t socklen_t;
 
 struct timeval
 {
-	time_t tv_sec;
-	suseconds_t tv_usec;
+    time_t tv_sec;
+    suseconds_t tv_usec;
 };
 
 struct stat
 {
-	dev_t st_dev; /* ID of device containing file */
-	ino_t st_ino; /* inode number */
-	mode_t st_mode; /* protection */
-	nlink_t st_nlink; /* number of hard links */
-	uid_t st_uid; /* user ID of owner */
-	gid_t st_gid; /* group ID of owner */
-	dev_t st_rdev; /* device ID (if special file) */
-	off_t st_size; /* total size, in bytes */
-	blksize_t st_blksize; /* blocksize for file system I/O */
-	blkcnt_t st_blocks; /* number of 512B blocks allocated */
-	time_t st_atime; /* time of last access */
-	time_t st_mtime; /* time of last modification */
-	time_t st_ctime; /* time of last status change */
+    dev_t st_dev;
+    ino_t st_ino;
+    mode_t st_mode;
+    nlink_t st_nlink;
+    uid_t st_uid;
+    gid_t st_gid;
+    dev_t st_rdev;
+    off_t st_size;
+    blksize_t st_blksize;
+    blkcnt_t st_blocks;
+    time_t st_atime;
+    time_t st_mtime;
+    time_t st_ctime;
 };
 
-#ifdef __cplusplus
-#define NULL nullptr
-#else
 #define NULL 0
-#endif
 
-__END_DECLS
+#endif
