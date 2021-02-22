@@ -27,7 +27,7 @@ static void log_string(int status, const char* format, ...)
         break;
     }
 
-    serial_write_string(string);
+    printf(string);
 
     va_list parameters;
     va_start(parameters, format);

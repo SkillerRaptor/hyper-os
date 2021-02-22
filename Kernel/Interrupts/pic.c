@@ -14,6 +14,8 @@
 
 void pic_remap(uint8_t master_offset, uint8_t slave_offset)
 {
+	info("PIC: Remapping PIC...");
+
 	/* Start Initialization Sequence */
 	io_outb(MASTER_COMMAND_SELECTOR, ICW1_INIT | ICW1_ICW4);
 	io_wait();
@@ -38,7 +40,7 @@ void pic_remap(uint8_t master_offset, uint8_t slave_offset)
 	io_outb(SLAVE_DATA_SELECTOR, ICW1_8086);
 	io_wait();
 
-	info("The PIC was remaped!");
+	info("PIC: PIC remaped!");
 }
 
 void pic_disable(void)

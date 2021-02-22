@@ -29,6 +29,8 @@ void idt_init(void)
 
 void idt_reload(void)
 {
+	info("IDT: Loading IDT...");
+
 	struct IDT_Ptr idt_ptr =
 	{
 		sizeof(idt_entries) - 1,
@@ -41,7 +43,7 @@ void idt_reload(void)
 	: "m"(idt_ptr)
 		);
 
-	info("The IDT was installed!");
+	info("IDT: IDT was loaded!");
 }
 
 void idt_register_handler(size_t index, uint8_t flags, uintptr_t handler)

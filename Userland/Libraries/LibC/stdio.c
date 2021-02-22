@@ -566,9 +566,12 @@ int printf(const char* fmt, ...)
 	return ret;
 }
 
+#include <AK/serial.h>
+
 int putchar(int character)
 {
 	// TODO: Implement stdio and the write system call.
+	serial_write(character);
 	return character;
 }
 

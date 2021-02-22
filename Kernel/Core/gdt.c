@@ -62,6 +62,8 @@ void gdt_init(void)
 
 void gdt_reload(void)
 {
+	info("GDT: Loading GDT...");
+
 	asm volatile ("cli");
 
 	asm volatile (
@@ -86,5 +88,5 @@ void gdt_reload(void)
 		: "memory"
 		);
 		
-	info("The GDT was installed!");
+	info("GDT: GDT was loaded!");
 }
