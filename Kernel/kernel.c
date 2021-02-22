@@ -10,8 +10,6 @@
 #include <Kernel/Memory/pmm.h>
 #include <Kernel/Memory/vmm.h>
 
-#include <stdlib.h>
-
 void kernel_main(struct stivale2_struct* bootloader_data)
 {
 	bootloader_data = (struct stivale2_struct*)((void*)((uint64_t)bootloader_data + KERNEL_BASE_ADDRESS));
