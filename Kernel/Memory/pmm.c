@@ -43,6 +43,8 @@ void pmm_init(struct stivale2_mmap_entry* memory_map, size_t memory_map_entries)
     {
         struct stivale2_mmap_entry* entry = &memory_map[i];
 
+        info("PMM: [Entry %d] [%X - %X]: Size %X, Type %X", i, entry->base, entry->base + entry->length, entry->length, entry->type);
+        
         if (entry->type != STIVALE2_MMAP_USABLE)
             continue;
 
