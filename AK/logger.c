@@ -27,54 +27,13 @@ static void log_string(int status, const char* format, ...)
         break;
     }
 
+    va_list args;
+    va_start(args, format);
+
     printf(string);
+    printf(format, args);
 
-    va_list parameters;
-    va_start(parameters, format);
-
-    while(*format)
-    {
-        if(*format == '%')
-        {
-            format++;
-            switch (*format)
-            {
-            case 'c':
-            {
-                break;
-            }
-            case 'd':
-            {
-                break;
-            }
-            case 'o':
-            {
-                break;
-            }
-            case 's':
-            {
-                char* str = va_arg(parameters, char*);
-                serial_write_string(str);
-                break;
-            }
-            case 'x':
-            {
-                break;
-            }
-            default:
-                serial_write('%');
-                break;
-            }
-        }
-        else
-        {
-            serial_write(*format);
-        }
-
-        format++;
-    }
-    
-    va_end(parameters);
+    va_end(args);
 
     serial_write('\n');
 }

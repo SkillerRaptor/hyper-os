@@ -27,7 +27,7 @@ extern int interrupt_handler_15();
 
 void irq_init(void)
 {
-	info("IRQ Manager: Registering IRQ handlers...");
+	info("IRQ: Registering IRQ handlers...");
 
 	idt_register_interrupt_handler(32 + 0, (uintptr_t) interrupt_handler_0);
 	idt_register_interrupt_handler(32 + 1, (uintptr_t) interrupt_handler_1);
@@ -49,7 +49,7 @@ void irq_init(void)
 	//idt_register_trap_handler(0x8, exception_handler_8);
 	//idt_register_trap_handler(0xD, exception_handler_13);
 
-	info("IRQ Manager: IRQ handlers registered!");
+	info("IRQ: IRQ handlers registered!");
 }
 
 void c_interrupt_handler_0()

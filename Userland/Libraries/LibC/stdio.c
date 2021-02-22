@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <sys/types.h>
+#include <AK/serial.h>
 
 static void print_internal_char(char c, int* ret)
 {
@@ -565,8 +566,6 @@ int printf(const char* fmt, ...)
 	va_end(parameters);
 	return ret;
 }
-
-#include <AK/serial.h>
 
 int putchar(int character)
 {
