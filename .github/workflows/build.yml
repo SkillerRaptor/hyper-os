@@ -50,13 +50,11 @@ jobs:
         make all-target-libgcc
         make install-gcc
         make install-target-libgcc
-
     - name: Build Project Files
       run: |
         export PREFIX="$HOME/CrossCompiler/opt/cross"
         export TARGET=x86_64-elf
         export PATH="$HOME/CrossCompiler/opt/cross/bin:$PATH"
-        cmake . -Bbuild
-        cd build
-        make
-        make image
+        cd ./Scripts/
+        sh ./build.sh
+        sh ./clean.sh
