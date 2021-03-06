@@ -29,7 +29,7 @@ void idt_init(void)
 
 void idt_reload(void)
 {
-	info("IDT: Loading IDT...");
+	info("Kernel (idt.c): Loading IDT...");
 
 	idt_pointer_t idt_pointer =
 	{
@@ -40,10 +40,10 @@ void idt_reload(void)
 	asm volatile (
 		"lidt %0"
 		:
-	: "m"(idt_pointer)
+		: "m"(idt_pointer)
 		);
 
-	info("IDT: IDT was loaded!");
+	info("Kernel (idt.c): IDT was loaded!");
 }
 
 void idt_register_handler(size_t index, uint8_t flags, uintptr_t handler)

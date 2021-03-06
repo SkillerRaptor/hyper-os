@@ -16,13 +16,11 @@ static const char* EXCEPTIONS[] =
 	"Invalid Opcode",
 	"Device Not Available",
 	"Double Fault",
-	"",
 	"Invalid TSS",
 	"Segment Not Present",
 	"Stack-Segment Fault",
 	"General Protection Fault",
 	"Page Fault",
-	"",
 	"x87 Floating-Point Exception"
 	"Alignment Check",
 	"Machine Check"
@@ -71,7 +69,7 @@ extern int exception_handler_30();
 
 void irq_init(void)
 {
-	info("IRQ: Registering IRQ handlers...");
+	info("Kernel (irq.c): Registering IRQ handlers...");
 
 	idt_register_interrupt_handler(32 + 0, (uintptr_t) interrupt_handler_0);
 	idt_register_interrupt_handler(32 + 1, (uintptr_t) interrupt_handler_1);
@@ -111,7 +109,7 @@ void irq_init(void)
 	idt_register_trap_handler(20, (uintptr_t) exception_handler_20);
 	idt_register_trap_handler(30, (uintptr_t) exception_handler_30);
 
-	info("IRQ: IRQ handlers registered!");
+	info("Kernel (irq.c): IRQ handlers registered!");
 }
 
 void c_interrupt_handler_0()
@@ -122,6 +120,7 @@ void c_interrupt_handler_0()
 void c_interrupt_handler_1()
 {
 	uint8_t scanCode = io_inb(0x60);
+	(void) scanCode;
 	pic_send_end_of_interrupt(1);
 }
 
@@ -203,114 +202,114 @@ void c_exception_handler_0()
 
 void c_exception_handler_1()
 {
-	error("Exception: %s", EXCEPTIONS[0]);
+	error("Exception: %s", EXCEPTIONS[1]);
 	while (1);
 }
 
 void c_exception_handler_2()
 {
-	error("Exception: 2");
+	error("Exception: %s", EXCEPTIONS[2]);
 	while (1);
 }
 
 void c_exception_handler_3()
 {
-	error("Exception: 3");
+	error("Exception: %s", EXCEPTIONS[3]);
 	while (1);
 }
 
 void c_exception_handler_4()
 {
-	error("Exception: 4");
+	error("Exception: %s", EXCEPTIONS[4]);
 	while (1);
 }
 
 void c_exception_handler_5()
 {
-	error("Exception: 5");
+	error("Exception: %s", EXCEPTIONS[5]);
 	while (1);
 }
 
 void c_exception_handler_6()
 {
-	error("Exception: 6");
+	error("Exception: %s", EXCEPTIONS[6]);
 	while (1);
 }
 
 void c_exception_handler_7()
 {
-	error("Exception: 7");
+	error("Exception: %s", EXCEPTIONS[7]);
 	while (1);
 }
 
 void c_exception_handler_8()
 {
-	error("Exception: 8");
+	error("Exception: %s", EXCEPTIONS[8]);
 	while (1);
 }
 
 void c_exception_handler_10()
 {
-	error("Exception: 10");
+	error("Exception: %s", EXCEPTIONS[9]);
 	while (1);
 }
 
 void c_exception_handler_11()
 {
-	error("Exception: 11");
+	error("Exception: %s", EXCEPTIONS[10]);
 	while (1);
 }
 
 void c_exception_handler_12()
 {
-	error("Exception: 12");
+	error("Exception: %s", EXCEPTIONS[11]);
 	while (1);
 }
 
 void c_exception_handler_13()
 {
-	error("Exception: %s", EXCEPTIONS[13]);
+	error("Exception: %s", EXCEPTIONS[12]);
 	while (1);
 }
 
 void c_exception_handler_14()
 {
-	error("Exception: 14");
+	error("Exception: %s", EXCEPTIONS[13]);
 	while (1);
 }
 
 void c_exception_handler_16()
 {
-	error("Exception: 16");
+	error("Exception: %s", EXCEPTIONS[14]);
 	while (1);
 }
 
 void c_exception_handler_17()
 {
-	error("Exception: 17");
+	error("Exception: %s", EXCEPTIONS[15]);
 	while (1);
 }
 
 void c_exception_handler_18()
 {
-	error("Exception: 18");
+	error("Exception: %s", EXCEPTIONS[16]);
 	while (1);
 }
 
 void c_exception_handler_19()
 {
-	error("Exception: 19");
+	error("Exception: %s", EXCEPTIONS[17]);
 	while (1);
 }
 
 void c_exception_handler_20()
 {
-	error("Exception: 20");
+	error("Exception: %s", EXCEPTIONS[18]);
 	while (1);
 }
 
 void c_exception_handler_30()
 {
-	error("Exception: 30");
+	error("Exception: %s", EXCEPTIONS[19]);
 	while (1);
 }

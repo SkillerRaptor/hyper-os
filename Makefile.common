@@ -4,7 +4,7 @@ HYPEROS_BASE_DIR := $(patsubst %/,%,$(dir $(MAKEFILE_PATH)))
 ARCH_FLAGS =
 STANDARD_FLAGS = -nostdlib -nostdinc
 FILE_FLAGS = -ffreestanding -fno-stack-protector -fno-ident
-WARNING_FLAGS = -Wextra -Wall -Wundef -Wcast-qual -Wwrite-strings
+WARNING_FLAGS = -Wextra -Wall -Wundef -Wcast-qual -Wwrite-strings -Werror
 FLAVOR_FLAGS = -fomit-frame-pointer -mno-red-zone -mno-sse -mno-sse2 -mno-80387 -mno-mmx -mcmodel=kernel -m64 -fno-exceptions -ffunction-sections -fdata-sections -fmerge-all-constants -fno-unroll-loops -falign-functions=1 -fno-pie -fno-pic
 OPTIMIZATION_FLAGS = -Os -fno-asynchronous-unwind-tables
 
@@ -14,7 +14,7 @@ INCLUDE_FLAGS += \
     -I$(HYPEROS_BASE_DIR)/Userland/Libraries/ \
     -I$(HYPEROS_BASE_DIR)/Userland/Libraries/LibC/ \
 
-C = clang
+C = x86_64-elf-gcc
 CFLAGS = $(WARNING_FLAGS) $(OPTIMIZATION_FLAGS) $(FILE_FLAGS) $(FLAVOR_FLAGS) $(ARCH_FLAGS) $(STANDARD_FLAGS) $(INCLUDE_FLAGS)
 
 AR = x86_64-elf-ar

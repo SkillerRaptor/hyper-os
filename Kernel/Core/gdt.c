@@ -62,7 +62,7 @@ void gdt_init(void)
 
 void gdt_reload(void)
 {
-	info("GDT: Loading GDT...");
+	info("Kernel (gdt.c): Loading GDT...");
 
 	asm volatile ("cli");
 
@@ -84,9 +84,9 @@ void gdt_reload(void)
 		"mov %%gs, %1\n"
 		"mov %%ss, %1\n"
 		:
-	: "m"(gdt_pointer), "r"((uint64_t)KERNEL_DATA_SELECTOR), "r"((uint64_t)KERNEL_CODE_SELECTOR)
+		: "m"(gdt_pointer), "r"((uint64_t)KERNEL_DATA_SELECTOR), "r"((uint64_t)KERNEL_CODE_SELECTOR)
 		: "memory"
 		);
 		
-	info("GDT: GDT was loaded!");
+	info("Kernel (gdt.c): GDT was loaded!");
 }

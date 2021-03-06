@@ -18,12 +18,12 @@ enum
 typedef struct
 {
     uintptr_t* top_level;
-} pagemap_t;
+} __ALIGN(4096) pagemap_t;
 
 void vmm_init(struct stivale2_mmap_entry* memory_map, size_t memory_map_entries);
 
 pagemap_t* vmm_create_new_pagemap(void);
 void vmm_switch_pagemap(pagemap_t* pagemap);
-void vmm_map_page(pagemap_t* pagemap, void* physical_address, void* virtual_address, uint16_t flags);
+void vmm_map_page(pagemap_t* pagemap, uintptr_t physical_address, uintptr_t virtual_address, uint16_t flags);
 
 #endif
