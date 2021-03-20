@@ -48,10 +48,7 @@ clean:
 	@make -C ./AK clean
 
 	@rm -f HyperOS.elf
-
-	if [ -d "build" ]; then
-		@rm -r build
-	fi
+	@rm -r ./build
 
 	@printf "\e[92m === Finished Cleaning === \e[39m\n"
 
