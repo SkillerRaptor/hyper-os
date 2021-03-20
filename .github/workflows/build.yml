@@ -55,6 +55,5 @@ jobs:
         export PREFIX="$HOME/CrossCompiler/opt/cross"
         export TARGET=x86_64-elf
         export PATH="$HOME/CrossCompiler/opt/cross/bin:$PATH"
-        cd ./Scripts/
-        sh ./build.sh
-        sh ./clean.sh
+        make build
+        make clean
