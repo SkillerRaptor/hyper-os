@@ -2,7 +2,7 @@
 
 printf "\e[93m === Starting Building === \e[39m\n"
 
-find */ -name "ThirdParty" -prune -o -name "Makefile" -execdir make -C . \;
+find */ -name "ThirdParty" -prune -o -name "Userland" -prune -o -name "Makefile" -execdir make -C . \;
 make -C .
 
 printf "\e[92m === Finished Building === \e[39m\n"

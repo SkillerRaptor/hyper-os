@@ -25,29 +25,28 @@ void kernel_main(struct stivale2_struct* bootloader_data)
 
 	serial_init();
 
-	struct stivale2_struct_tag_memmap* memmap_tag = (struct stivale2_struct_tag_memmap*)stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_MEMMAP_ID);
+	struct stivale2_struct_tag_memory_map* memory_map_tag = stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_MEMORY_MAP_ID);
 	
-	pmm_init(memmap_tag->memmap, memmap_tag->entries);
-	vmm_init(memmap_tag->memmap, memmap_tag->entries);
+	(void) memory_map_tag;
+	pmm_init(memory_map_tag->memory_map, memory_map_tag->entries);
+	vmm_init(memory_map_tag->memory_map, memory_map_tag->entries);
 
 	pic_set_interrupt_request_mask(0);
 
-	struct stivale2_struct_tag_framebuffer* framebuffer_tag = (struct stivale2_struct_tag_framebuffer*)stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
+	//struct stivale2_struct_tag_framebuffer* framebuffer_tag = stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
 	
-	return;
-	
-	painter_init(framebuffer_tag);
+	//painter_init(framebuffer_tag);
 
 	asm volatile (
 		"sti"
 		);
 	
-	color_t color;
-	color.red = 255;
-	color.green = 0;
-	color.blue = 255;
+	//color_t color;
+	//color.red = 255;
+	//color.green = 0;
+	//color.blue = 255;
 	
-	painter_clear(color);
+	//painter_clear(color);
 
 	while (1)
 	{

@@ -5,29 +5,44 @@ SECTIONS
 	KERNEL_PHYSICAL_OFFSET = 0xFFFFFFFF80000000;
 	. = KERNEL_PHYSICAL_OFFSET + 0x200000;
 
-    .stivale2hdr :
-    {
-        KEEP(*(.stivale2hdr))
-    }
+	.stivale2hdr ALIGN(4K) :
+	{
+		KEEP(*(.stivale2hdr))
+	}
 
 	.text ALIGN(4K) :
 	{
-		*(.text*)
+		KEEP(*(.text*))
 	}
 
 	.rodata ALIGN(4K) :
 	{
-		*(.rodata*)
+		KEEP(*(.rodata*))
 	}
 
 	.data ALIGN(4K) :
 	{
-		*(.data*)
+		KEEP(*(.data*))
 	}
 
 	.bss ALIGN(4K) :
 	{
-		*(COMMON)
-		*(.bss*)
+		KEEP(*(COMMON))
+		KEEP(*(.bss*))
+	}
+
+	.text :
+	{
+		*(.text)
+	}
+
+	.data :
+	{
+		*(.data)
+	}
+	
+	.bss :
+	{
+		*(.bss) 
 	}
 }

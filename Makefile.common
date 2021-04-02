@@ -1,7 +1,7 @@
 MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 HYPEROS_BASE_DIR := $(patsubst %/,%,$(dir $(MAKEFILE_PATH)))
 
-ARCH_FLAGS =
+ARCH_FLAGS = -std=c99
 STANDARD_FLAGS = -nostdlib -nostdinc
 FILE_FLAGS = -ffreestanding -fno-stack-protector -fno-ident
 WARNING_FLAGS = -Wextra -Wall -Wundef -Wcast-qual -Wwrite-strings -Werror
@@ -11,8 +11,6 @@ OPTIMIZATION_FLAGS = -Os -fno-asynchronous-unwind-tables
 INCLUDE_FLAGS += \
     -I. \
     -I$(HYPEROS_BASE_DIR)/ \
-    -I$(HYPEROS_BASE_DIR)/Userland/Libraries/ \
-    -I$(HYPEROS_BASE_DIR)/Userland/Libraries/LibC/ \
 
 C = x86_64-elf-gcc
 CFLAGS = $(WARNING_FLAGS) $(OPTIMIZATION_FLAGS) $(FILE_FLAGS) $(FLAVOR_FLAGS) $(ARCH_FLAGS) $(STANDARD_FLAGS) $(INCLUDE_FLAGS)

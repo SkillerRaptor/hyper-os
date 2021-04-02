@@ -1,8 +1,8 @@
 include ./Makefile.common
 
-SOURCES = $(shell find . -name "ThirdParty" -prune -o -name ".git" -prune -o -name "*.c" -o -name '*.s')
+SOURCES = $(shell find . -name "ThirdParty" -prune -o -name "Userland" -prune -o -name ".git" -prune -o -name "*.c" -o -name '*.s')
 TMP_SOURCES := $(SOURCES)
-SOURCES = $(filter-out ./.git ./ThirdParty, $(TMP_SOURCES))
+SOURCES = $(filter-out ./.git ./ThirdParty ./Userland, $(TMP_SOURCES))
 OBJS = $(addsuffix .o, $(basename $(SOURCES)))
 
 LDFLAGS = -T linker.ld -ffreestanding -static -nostdlib -no-pie -nodefaultlibs -nostartfiles -z max-page-size=0x1000

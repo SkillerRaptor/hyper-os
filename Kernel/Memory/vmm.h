@@ -20,10 +20,10 @@ typedef struct
     uintptr_t* top_level;
 } __ALIGN(4096) pagemap_t;
 
-void vmm_init(struct stivale2_mmap_entry* memory_map, size_t memory_map_entries);
+void vmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_entries);
 
 pagemap_t* vmm_create_new_pagemap(void);
 void vmm_switch_pagemap(pagemap_t* pagemap);
-void vmm_map_page(pagemap_t* pagemap, uintptr_t physical_address, uintptr_t virtual_address, uint16_t flags);
+void vmm_map_page(pagemap_t* pagemap, uintptr_t physical_address, uintptr_t virtual_address, uintptr_t flags);
 
 #endif
