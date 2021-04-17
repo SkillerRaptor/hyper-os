@@ -1,27 +1,13 @@
 #!/bin/sh
 
-printf "\e[93m === Starting Building === \e[39m\n"
+KERNEL_HDD=./build/Kernel.hdd
 
-find */ -name "ThirdParty" -prune -o -name "Userland" -prune -o -name "Makefile" -execdir make -C . \;
-make -C .
-
-printf "\e[92m === Finished Building === \e[39m\n"
-
-printf "\n\e[93m === Starting Building HDD === \e[39m\n"
-
-mkdir ./build
-rm -f ./build/HyperOS.hdd
-
-dd if=/dev/zero bs=1M count=0 seek=64 of=./build/HyperOS.hdd
-
-parted -s ./build/HyperOS.hdd mklabel msdos
-parted -s ./build/HyperOS.hdd mkpart primary 1 100%
-parted -s ./build/HyperOS.hdd set 1 boot on
-
-./ThirdParty/echfs/echfs-utils -m -p0 ./build/HyperOS.hdd quick-format 32768
-./ThirdParty/echfs/echfs-utils -m -p0 ./build/HyperOS.hdd import ./HyperOS.elf HyperOS.elf
-./ThirdParty/echfs/echfs-utils -m -p0 ./build/HyperOS.hdd import ./limine.cfg limine.cfg
-
-./ThirdParty/limine/limine-install ./limine.bin ./build/HyperOS.hdd
-
-printf "\e[92m === Finished Building HDD === \e[39m\n"
+mkdir build
+rm -f $KERNEL_HDD
+dd if=/dev/zero bs=1M count=0 seek=64 of=$KERNEL_HDD
+parted -s $KERNEL_HDD mklabel msdos
+parted -s $KERNEL_HDD mkpart primary 1 100%
+$THIRD_PARTY_HOME/echfs/echfs-utils -m -p0 $KERNEL_HDD quick-format 32768
+$THIRD_PARTY_HOME/echfs/echfs-utils -m -p0 $KERNEL_HDD import Kernel.elf build/Kernel.elf
+$THIRD_PARTY_HOME/echfs/echfs-utils -m -p0 $KERNEL_HDD import limine.cfg limine.cfg
+$THIRD_PARTY_HOME/limine/limine-install $THIRD_PARTY_HOME/limine/limine.bin $KERNEL_HDD

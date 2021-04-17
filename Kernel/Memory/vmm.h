@@ -1,29 +1,19 @@
 #ifndef HYPEROS_KERNEL_MEMORY_VMM_H_
 #define HYPEROS_KERNEL_MEMORY_VMM_H_
 
+#include <boot/stivale2.h>
+
 #include <stddef.h>
-#include <Kernel/Boot/stivale2.h>
 
-enum
+struct pagemap
 {
-    PAGEMAP_ATTRIBUTE_PRESENT = 1 << 0,
-    PAGEMAP_ATTRIBUTE_READ_AND_WRITE = 1 << 1,
-    PAGEMAP_ATTRIBUTE_USER_SUPERVISOR = 1 << 2,
-    PAGEMAP_ATTRIBUTE_WRITE_TROUGH = 1 << 3,
-    PAGEMAP_ATTRIBUTE_CACHE_DISABLED = 1 << 4,
-    PAGEMAP_ATTRIBUTE_ACCESSED = 1 << 5,
-    PAGEMAP_ATTRIBUTE_SIZE_4KB = 1 << 7
+	uintptr_t top_level;
 };
-
-typedef struct
-{
-    uintptr_t* top_level;
-} __ALIGN(4096) pagemap_t;
 
 void vmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_entries);
 
-pagemap_t* vmm_create_new_pagemap(void);
-void vmm_switch_pagemap(pagemap_t* pagemap);
-void vmm_map_page(pagemap_t* pagemap, uintptr_t physical_address, uintptr_t virtual_address, uintptr_t flags);
+struct pagemap* vmm_create_new_pagemap(void);
+void vmm_switch_pagemap(struct pagemap* pagemap);
+uint8_t vmm_map_page(struct pagemap* pagemap, uintptr_t virtual_address, uintptr_t physical_address, uintptr_t flags);
 
-#endif
+#endif // HYPEROS_KERNEL_MEMORY_VMM_H_

@@ -1,171 +1,141 @@
-#include <Kernel/Memory/vmm.h>
+#include "vmm.h"
 
-#include <stdbool.h>
-#include <AK/logger.h>
-#include <Kernel/Memory/mm.h>
-#include <Kernel/Memory/kmm.h>
-#include <Kernel/Memory/pmm.h>
+#include "kalloc.h"
+#include "memory.h"
+#include "pmm.h"
 
-static pagemap_t* kernel_pagemap;
+#include <utilities/logger.h>
 
-static char hexTo_StringOutput[128];
-static const char* to_string(uint64_t value){
-	uint64_t* valPtr = &value;
-	uint8_t* ptr;
-	uint8_t tmp;
-	uint8_t size = 8 * 2 - 1;
-	for (uint8_t i = 0; i < size; i++){
-		ptr = ((uint8_t*)valPtr + i);
-		tmp = ((*ptr & 0xF0) >> 4);
-		hexTo_StringOutput[size - (i * 2 + 1)] = tmp + (tmp > 9 ? 55 : '0');
-		tmp = ((*ptr & 0x0F));
-		hexTo_StringOutput[size - (i * 2)] = tmp + (tmp > 9 ? 55 : '0');
-	}
-	hexTo_StringOutput[size + 1] = 0;
-	return hexTo_StringOutput;
-}
+struct pagemap* kernel_pagemap;
 
 void vmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_entries)
 {
-    info("Kernel (vmm.c): Initializing virtual memory manager...");
-
+	info("Initializing VMM...");
+	
 	kernel_pagemap = vmm_create_new_pagemap();
 	
-	for (uintptr_t ptr = 0; ptr < 0x100000000; ptr += PAGE_SIZE)
+	info(" The kernel pagemap was created!");
+	
+	/* Map memory */
+	for (uintptr_t p = 0; p < 0x100000000; p += PAGE_SIZE)
 	{
-		vmm_map_page(kernel_pagemap, ptr, ptr + PHYSICAL_MEMORY_OFFSET, PAGEMAP_ATTRIBUTE_PRESENT | PAGEMAP_ATTRIBUTE_READ_AND_WRITE);
-		break;
+		vmm_map_page(kernel_pagemap, PHYSICAL_MEMORY_OFFSET + p, p, 0x03);
 	}
 	
-	/*
-	for (uintptr_t ptr = 0; ptr < 0x80000000; ptr += PAGE_SIZE)
+	for (uintptr_t p = 0; p < 0x80000000; p += PAGE_SIZE)
 	{
-		vmm_map_page(kernel_pagemap, ptr, ptr + KERNEL_BASE_ADDRESS, PAGEMAP_ATTRIBUTE_PRESENT | PAGEMAP_ATTRIBUTE_READ_AND_WRITE);
+		vmm_map_page(kernel_pagemap, KERNEL_BASE_ADDRESS + p, p, 0x03);
 	}
-	 */
 	
 	for (size_t i = 0; i < memory_map_entries; i++)
 	{
-		for (uintptr_t ptr = 0; ptr < memory_map[i].length; ptr += PAGE_SIZE)
-	    {
-			//vmm_map_page(kernel_pagemap, ptr, ptr + PHYSICAL_MEMORY_OFFSET, PAGEMAP_ATTRIBUTE_PRESENT | PAGEMAP_ATTRIBUTE_READ_AND_WRITE);
-	    }
+		for (uintptr_t p = 0; p < memory_map[i].length; p += PAGE_SIZE)
+		{
+			vmm_map_page(kernel_pagemap, PHYSICAL_MEMORY_OFFSET + p, p, 0x03);
+		}
 	}
 	
-	info("Kernel (vmm.c): Virtual memory manager initialized...");
-
+	info(" The memory for the kernel pagemap was mapped!");
+	
 	vmm_switch_pagemap(kernel_pagemap);
+	
+	info(" The pagemap was switched to the kernel pagemap!");
+	
+	info("Initializing VMM finished!");
 }
 
-pagemap_t* vmm_create_new_pagemap(void)
+struct pagemap* vmm_create_new_pagemap(void)
 {
-	pagemap_t* pagemap = kmalloc(sizeof(pagemap_t));
-	info("pagemap: %s", to_string((uint64_t)pagemap));
-	info("pagemap size: %d", sizeof(pagemap_t));
-	pagemap->top_level = pmm_callocate_pages(1);
-	info("top_level: %s", to_string((uint64_t)pagemap->top_level));
-	
-	if(kernel_pagemap != NULL)
+	struct pagemap* pagemap = kmalloc(sizeof(struct pagemap));
+	pagemap->top_level = (uintptr_t) pmm_calloc(1);
+	if (kernel_pagemap != NULL)
 	{
-		uintptr_t* top_level = pagemap->top_level + PHYSICAL_MEMORY_OFFSET;
-		uintptr_t* kernel_top_level = kernel_pagemap->top_level + PHYSICAL_MEMORY_OFFSET;
-		for(size_t i = 256; i < 512; i++)
+		uintptr_t* top_level = (void*) pagemap->top_level + PHYSICAL_MEMORY_OFFSET;
+		uintptr_t* kernel_top_level = (void*) kernel_pagemap->top_level + PHYSICAL_MEMORY_OFFSET;
+		for (size_t i = 256; i < 512; i++)
 		{
 			top_level[i] = kernel_top_level[i];
 		}
 	}
-	
 	return pagemap;
 }
 
-void vmm_switch_pagemap(pagemap_t* pagemap)
+void vmm_switch_pagemap(struct pagemap* pagemap)
 {
-	asm volatile(
-		"mov %%cr3, %0"
-		:
-		: "r" (pagemap->top_level)
-		: "memory"
-		);
+	asm volatile (
+	"mov %%cr3, %0"
+	:
+	: "r" (pagemap->top_level)
+	: "memory"
+	);
 }
 
-static uintptr_t* vmm_get_next_level(uintptr_t* current_level, size_t entry, bool allocate)
+static uintptr_t* get_next_level(uintptr_t* current_level, size_t entry, uint8_t allocate)
 {
-	uintptr_t level;
-	if (current_level[entry] & PAGEMAP_ATTRIBUTE_PRESENT)
+	uintptr_t ret;
+	
+	if (current_level[entry] & 0x1)
 	{
-		level = current_level[entry] & ~((uintptr_t)0xFFF);
+		ret = current_level[entry] & ~((uintptr_t) 0xFFF);
 	}
 	else
 	{
-		if (!allocate)
+		if (allocate == 0)
 		{
 			return NULL;
 		}
 		
-		level = (uintptr_t)pmm_callocate_pages(1);
-		if(level == 0)
+		ret = (uintptr_t) pmm_calloc(1);
+		if (ret == 0)
 		{
 			return NULL;
 		}
 		
-		current_level[entry] = level | PAGEMAP_ATTRIBUTE_PRESENT | PAGEMAP_ATTRIBUTE_READ_AND_WRITE | PAGEMAP_ATTRIBUTE_USER_SUPERVISOR;
+		current_level[entry] = ret | 0b111;
 	}
 	
-	return (void*)level + PHYSICAL_MEMORY_OFFSET;
+	return (void*) ret + PHYSICAL_MEMORY_OFFSET;
 }
 
-static uintptr_t* virtual_to_page_entry(pagemap_t* pagemap, uintptr_t virtual_address, bool allocate)
+static uintptr_t* virtual2pte(struct pagemap* pagemap, uintptr_t virt_addr, uint8_t allocate)
 {
-	uintptr_t pml4_entry = (virtual_address & ((uintptr_t)0x1FF << 39)) >> 39;
-	uintptr_t pml3_entry = (virtual_address & ((uintptr_t)0x1FF << 30)) >> 30;
-	uintptr_t pml2_entry = (virtual_address & ((uintptr_t)0x1FF << 21)) >> 21;
-	uintptr_t pml1_entry = (virtual_address & ((uintptr_t)0x1FF << 12)) >> 12;
+	uintptr_t pml4_entry = (virt_addr & ((uintptr_t) 0x1FF << 39)) >> 39;
+	uintptr_t pml3_entry = (virt_addr & ((uintptr_t) 0x1FF << 30)) >> 30;
+	uintptr_t pml2_entry = (virt_addr & ((uintptr_t) 0x1FF << 21)) >> 21;
+	uintptr_t pml1_entry = (virt_addr & ((uintptr_t) 0x1FF << 12)) >> 12;
 	
-	uintptr_t* pml4 = (void*)pagemap->top_level + PHYSICAL_MEMORY_OFFSET;
-	if(pml4 == NULL)
-	{
-		error("Kernel (vmm.c): PML4 is null!");
-		return NULL;
-	}
+	uintptr_t* pml4 = (void*) pagemap->top_level + PHYSICAL_MEMORY_OFFSET;
 	
-	uintptr_t* pml3 = vmm_get_next_level(pml4, pml4_entry, allocate);
+	uintptr_t* pml3 = get_next_level(pml4, pml4_entry, allocate);
 	if (pml3 == NULL)
 	{
-		error("Kernel (vmm.c): PML3 is null!");
 		return NULL;
 	}
 	
-	uintptr_t* pml2 = vmm_get_next_level(pml3, pml3_entry, allocate);
+	uintptr_t* pml2 = get_next_level(pml3, pml3_entry, allocate);
 	if (pml2 == NULL)
 	{
-		error("Kernel (vmm.c): PML2 is null!");
 		return NULL;
 	}
 	
-	uintptr_t* pml1 = vmm_get_next_level(pml2, pml2_entry, allocate);
+	uintptr_t* pml1 = get_next_level(pml2, pml2_entry, allocate);
 	if (pml1 == NULL)
 	{
-		error("Kernel (vmm.c): PML1 is null!");
 		return NULL;
 	}
 	
 	return &pml1[pml1_entry];
 }
 
-void vmm_map_page(pagemap_t* pagemap, uintptr_t physical_address, uintptr_t virtual_address, uintptr_t flags)
+uint8_t vmm_map_page(struct pagemap* pagemap, uintptr_t virtual_address, uintptr_t physical_address, uintptr_t flags)
 {
-	info("pagemap: %s", to_string((uint64_t)pagemap));
-	info("physical_address: %s", to_string((uint64_t)physical_address));
-	info("virtual_address: %s", to_string((uint64_t)virtual_address));
-	info("flags: %x", flags);
-	uintptr_t* page_entry = virtual_to_page_entry(pagemap, virtual_address, true);
-	if (page_entry == NULL)
+	uintptr_t* pte = virtual2pte(pagemap, virtual_address, 1);
+	if (pte == NULL)
 	{
-		error("Kernel (vmm.c): Page Entry is null!");
-		return;
+		return 0;
 	}
-	info("Pointer: %p", page_entry);
-	return;
 	
-	*page_entry = physical_address | flags;
+	*pte = physical_address | flags;
+	
+	return 1;
 }

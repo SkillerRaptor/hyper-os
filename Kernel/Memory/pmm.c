@@ -1,99 +1,103 @@
-#include <Kernel/Memory/pmm.h>
+#include "pmm.h"
 
-#include <stdbool.h>
-#include <string.h>
-#include <AK/logger.h>
-#include <Kernel/Memory/mm.h>
+#include "bitmap.h"
+#include "memory.h"
 
-static uint8_t* bitmap = NULL;
+#include <utilities/builtins.h>
+#include <utilities/logger.h>
+#include <utilities/math.h>
+
+static uint8_t* bitmap;
 static size_t last_used_index = 0;
 static uintptr_t highest_page = 0;
 
-#define SET_BIT(index) bitmap[index / BYTE_SIZE] |= (1u << (index % BYTE_SIZE))
-#define CLEAR_BIT(index) bitmap[index / BYTE_SIZE] &= (~(1u << (index % BYTE_SIZE)))
-#define GET_BIT(index) (bitmap[index / BYTE_SIZE] & (1u << (index % BYTE_SIZE)))
-
 void pmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_entries)
 {
-	info("Kernel (pmm.c): Initializing physical memory manager...");
+	info("Initializing PMM...");
 	
+	/* Find biggest memory map entry */
 	for (size_t i = 0; i < memory_map_entries; i++)
 	{
-		debug("Kernel (pmm.c): [Entry %d] [%X - %X]: Size %X, Type %X", i, memory_map[i].base, memory_map[i].base + memory_map[i].length, memory_map[i].length, memory_map[i].type);
+		debug("[Entry %d] [%x - %x]: Size: %x - Type: %x", i, memory_map[i].base,
+		      memory_map[i].base + memory_map[i].length, memory_map[i].length, memory_map[i].type);
 		
-		if (memory_map[i].type != STIVALE2_MMAP_USABLE &&
-			memory_map[i].type != STIVALE2_MMAP_BOOTLOADER_RECLAIMABLE &&
-			memory_map[i].type != STIVALE2_MMAP_KERNEL_AND_MODULES)
+		if (memory_map[i].type != STIVALE2_MEMORY_MAP_USABLE)
+		{
 			continue;
+		}
 		
-		uintptr_t top_address = memory_map[i].base + memory_map[i].length;
-		
-		if (top_address > highest_page)
-			highest_page = top_address;
+		uintptr_t top = memory_map[i].base + memory_map[i].length;
+		if (top > highest_page)
+		{
+			highest_page = top;
+		}
 	}
 	
-	size_t memory_size = (highest_page + (PAGE_SIZE - 1)) / PAGE_SIZE;
-	size_t bitmap_size = memory_size / BYTE_SIZE;
-	warning("%d", bitmap_size);
+	info(" The biggest memory map entry was found!");
 	
+	/* Find place to put bitmap in */
+	size_t bitmap_size = DIV_ROUNDUP(highest_page, PAGE_SIZE) / 8;
 	for (size_t i = 0; i < memory_map_entries; i++)
 	{
-		if (memory_map[i].type != STIVALE2_MMAP_USABLE)
+		if (memory_map[i].type != STIVALE2_MEMORY_MAP_USABLE)
+		{
 			continue;
+		}
 		
 		if (memory_map[i].length >= bitmap_size)
 		{
-			bitmap = (uint8_t*)(uintptr_t)((uintptr_t)memory_map[i].base + PHYSICAL_MEMORY_OFFSET);
+			bitmap = (void*) (memory_map[i].base + PHYSICAL_MEMORY_OFFSET);
 			
 			memset(bitmap, 0xFF, bitmap_size);
 			
-			memory_map[i].base += bitmap_size;
 			memory_map[i].length -= bitmap_size;
+			memory_map[i].base += bitmap_size;
+			
 			break;
 		}
 	}
 	
+	info(" The bitmap was placed into a memory map entry!");
+	
+	/* Free usable memory */
 	for (size_t i = 0; i < memory_map_entries; i++)
 	{
-		if (memory_map[i].type != STIVALE2_MMAP_USABLE)
-			continue;
-		
-		for (size_t length = 0; length < memory_map[i].length; length += PAGE_SIZE)
+		if (memory_map[i].type != STIVALE2_MEMORY_MAP_USABLE)
 		{
-			CLEAR_BIT((memory_map[i].base + length) / PAGE_SIZE);
+			continue;
+		}
+		
+		for (uintptr_t j = 0; j < memory_map[i].length; j += PAGE_SIZE)
+		{
+			bitmap_set_bit(bitmap, (memory_map[i].base + j) / PAGE_SIZE, 0);
 		}
 	}
 	
-	info("Kernel (pmm.c): Physical memory manager initialized...");
+	info(" The usable memory was marked as free!");
+	
+	info("Initializing PMM finished!");
 }
 
-static void* pmm_inner_allocate(size_t page_count, size_t limit)
+static void* pmm_inner_alloc(size_t count, size_t limit)
 {
-	debug("pmm_inner_allocate");
 	size_t p = 0;
 	
 	while (last_used_index < limit)
 	{
-		debug("GET_BIT - %d - %d", last_used_index, last_used_index / BYTE_SIZE);
-		if (GET_BIT(last_used_index) == false)
+		if (!bitmap_get_bit(bitmap, last_used_index++))
 		{
-			last_used_index++;
-			debug("page_count");
-			if (++p == page_count)
+			if (++p == count)
 			{
-				debug("page");
-				size_t page = last_used_index - page_count;
+				size_t page = last_used_index - count;
 				for (size_t i = page; i < last_used_index; i++)
 				{
-					debug("set");
-					SET_BIT(i);
+					bitmap_set_bit(bitmap, i, 1);
 				}
-				return (void*)(page * PAGE_SIZE);
+				return (void*) (page * PAGE_SIZE);
 			}
 		}
 		else
 		{
-			last_used_index++;
 			p = 0;
 		}
 	}
@@ -101,45 +105,43 @@ static void* pmm_inner_allocate(size_t page_count, size_t limit)
 	return NULL;
 }
 
-void* pmm_allocate_pages(size_t page_count)
+void* pmm_alloc(size_t count)
 {
-	debug("pmm_allocate_pages");
-	size_t index = last_used_index;
-	void* address = pmm_inner_allocate(page_count, highest_page / PAGE_SIZE);
-	if(address == NULL)
+	size_t l = last_used_index;
+	void* ret = pmm_inner_alloc(count, highest_page / PAGE_SIZE);
+	if (ret == NULL)
 	{
 		last_used_index = 0;
-		address = pmm_inner_allocate(page_count, index);
+		ret = pmm_inner_alloc(count, l);
 	}
-	return address;
+	
+	return ret;
 }
 
-void* pmm_callocate_pages(size_t page_count)
+void* pmm_calloc(size_t count)
 {
-	debug("pmm_callocate_pages");
-	uint8_t* address = (uint8_t*)pmm_allocate_pages(page_count);
+	char* ret = (char*) pmm_alloc(count);
 	
-	if (address == NULL)
+	if (ret == NULL)
 	{
 		return NULL;
 	}
 	
-	uint64_t* ptr = (uint64_t*)(address + PHYSICAL_MEMORY_OFFSET);
+	uint64_t* ptr = (uint64_t*) (ret + PHYSICAL_MEMORY_OFFSET);
 	
-	for (size_t i = 0; i < page_count * (PAGE_SIZE / sizeof(uint64_t)); i++)
+	for (size_t i = 0; i < count * (PAGE_SIZE / sizeof(uint64_t)); i++)
 	{
-		ptr[i] = 0;
+		ptr[i] = 0x0;
 	}
 	
-	return address;
+	return ret;
 }
 
-void pmm_free_pages(void* ptr, size_t page_count)
+void pmm_free(void* ptr, size_t count)
 {
-	debug("pmm_free_pages");
-	size_t start_page = (size_t)ptr / PAGE_SIZE;
-	for (size_t i = start_page; i < start_page + page_count; i++)
+	size_t page = (size_t) ptr / PAGE_SIZE;
+	for (size_t i = page; i < page + count; i++)
 	{
-		CLEAR_BIT(i);
+		bitmap_set_bit(bitmap, i, 0);
 	}
 }
