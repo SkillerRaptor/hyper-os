@@ -10,4 +10,4 @@ parted -s $KERNEL_HDD mkpart primary 1 100%
 $THIRD_PARTY_HOME/echfs/echfs-utils -m -p0 $KERNEL_HDD quick-format 32768
 $THIRD_PARTY_HOME/echfs/echfs-utils -m -p0 $KERNEL_HDD import Kernel.elf build/Kernel.elf
 $THIRD_PARTY_HOME/echfs/echfs-utils -m -p0 $KERNEL_HDD import limine.cfg limine.cfg
-$THIRD_PARTY_HOME/limine/limine-install $THIRD_PARTY_HOME/limine/limine.bin $KERNEL_HDD
+$THIRD_PARTY_HOME/limine/bin/limine-install $KERNEL_HDD

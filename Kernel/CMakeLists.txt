@@ -15,8 +15,6 @@ add_dependencies(Kernel.elf echfs limine)
 target_include_directories(Kernel.elf PRIVATE ${CMAKE_SOURCE_DIR}/Kernel/)
 target_link_libraries(Kernel.elf gcc)
 
-#file(COPY "${CMAKE_SOURCE_DIR}/limine.cfg" DESTINATION "${CMAKE_BINARY_DIR}/Kernel")
-
 add_custom_command(
         TARGET Kernel.elf
         COMMAND ${CMAKE_COMMAND} -E env THIRD_PARTY_HOME=${CMAKE_SOURCE_DIR}/ThirdParty
