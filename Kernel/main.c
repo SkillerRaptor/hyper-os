@@ -1,7 +1,7 @@
 #include <stddef.h>
 
 #include <boot/stivale2.h>
-#include <utilities/serial.h>
+#include <drivers/pcspkr.h>
 #include <drivers/ps2/ps2_keyboard.h>
 #include <drivers/ps2/ps2_mouse.h>
 #include <memory/kalloc.h>
@@ -12,11 +12,11 @@
 #include <system/idt.h>
 #include <system/pic.h>
 #include <system/pit.h>
-
 #include <utilities/builtins.h>
 #include <utilities/logger.h>
+#include <utilities/serial.h>
 
-// TODO: PC Speaker
+
 // TODO: APIC
 // TODO: Syscall
 // TODO: Ring 3
@@ -69,10 +69,13 @@ void main(struct stivale2_struct* stivale2_struct)
 	
 	ps2_keyboard_init();
 	ps2_mouse_init();
+	pcspkr_init();
 	
 	info("HyperOS booted successful!");
 	
 	asm volatile ("sti");
+	
+	pcspkr_beep(500);
 	
 	for (;;)
 	{
