@@ -1,7 +1,10 @@
 # HyperOS
 ![](https://img.shields.io/badge/license-MIT-yellow)
 
-HyperOS is a small x86_64 operating system written in the C language.
+HyperOS is a small x86_64 operating system written in C99.
+
+## Building
+You can look at the [build guide](https://github.com/SkillerRaptor/HyperOS/blob/master/Resources/Documentations/Build-Guide.md) in order to build the operating system.
 
 ## Current Features
  -  Basic Timer
@@ -30,4 +33,4 @@ HyperOS is a small x86_64 operating system written in the C language.
 ## Screenshots
 
 ## License
-HyperOS is distributed unter the [MIT](https://choosealicense.com/licenses/mit/) license.
+HyperOS is distributed under the [MIT](https://github.com/SkillerRaptor/HyperOS/blob/master/LICENSE) license.
