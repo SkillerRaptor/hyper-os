@@ -4,7 +4,7 @@
 HyperOS is a small x86_64 operating system written in C99.
 
 ## Building
-You can look at the [build guide](https://github.com/SkillerRaptor/HyperOS/blob/master/Resources/Documentations/Build-Guide.md) in order to build the operating system.
+You can look at the [build guide](https://github.com/SkillerRaptor/HyperOS/blob/master/resources/documentation/build_guide.md) in order to build the operating system.
 
 ## Current Features
  -  Basic Timer
