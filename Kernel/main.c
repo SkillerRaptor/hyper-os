@@ -16,16 +16,6 @@
 #include <utilities/logger.h>
 #include <utilities/serial.h>
 
-
-// TODO: APIC
-// TODO: Syscall
-// TODO: Ring 3
-// TODO: TSS
-// TODO: Scheduler
-// TODO: Filesystem
-// TODO: GUI
-// TODO: PCI
-
 void main(struct stivale2_struct* stivale2_struct)
 {
 	stivale2_struct = (void*) stivale2_struct + PHYSICAL_MEMORY_OFFSET;
