@@ -2,7 +2,9 @@
 
 KERNEL_HDD=./build/Kernel.hdd
 
-mkdir build
+rm -r ./build
+mkdir ./build
+rm -f ../Kernel.hdd
 rm -f $KERNEL_HDD
 dd if=/dev/zero bs=1M count=0 seek=64 of=$KERNEL_HDD
 parted -s $KERNEL_HDD mklabel msdos
