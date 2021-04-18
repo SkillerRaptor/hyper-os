@@ -1,9 +1,9 @@
 #include "pcspkr.h"
 
+#include <lib/logger.h>
+#include <lib/time.h>
 #include <system/io_service.h>
 #include <system/pit.h>
-#include <utilities/logger.h>
-#include <utilities/time.h>
 
 #define PCSPKR_SOUND_PORT 0x61
 #define PCSPKR_COMMAND_PORT 0x42

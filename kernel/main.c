@@ -12,9 +12,9 @@
 #include <system/idt.h>
 #include <system/pic.h>
 #include <system/pit.h>
-#include <utilities/builtins.h>
-#include <utilities/logger.h>
-#include <utilities/serial.h>
+#include <lib/builtins.h>
+#include <lib/logger.h>
+#include <lib/serial.h>
 
 void main(struct stivale2_struct* stivale2_struct)
 {

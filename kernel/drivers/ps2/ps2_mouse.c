@@ -1,6 +1,6 @@
 #include "ps2_mouse.h"
 
-#include <utilities/logger.h>
+#include <lib/logger.h>
 
 void ps2_mouse_init(void)
 {

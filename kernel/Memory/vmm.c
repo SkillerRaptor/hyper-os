@@ -4,7 +4,7 @@
 #include "memory.h"
 #include "pmm.h"
 
-#include <utilities/logger.h>
+#include <lib/logger.h>
 
 struct pagemap* kernel_pagemap;
 

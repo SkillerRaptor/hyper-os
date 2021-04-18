@@ -1,5 +1,5 @@
-#ifndef HYPEROS_KERNEL_UTILITIES_MATH_H_
-#define HYPEROS_KERNEL_UTILITIES_MATH_H_
+#ifndef HYPEROS_KERNEL_LIB_MATH_H_
+#define HYPEROS_KERNEL_LIB_MATH_H_
 
 #define DIV_ROUNDUP(A, B) ({    \
     typeof(A) _a_ = A;          \
@@ -19,4 +19,4 @@
     (_a_ / _b_) * _b_;      \
 })
 
-#endif // HYPEROS_KERNEL_UTILITIES_MATH_H_
+#endif // HYPEROS_KERNEL_LIB_MATH_H_

@@ -3,7 +3,7 @@
 #include "io_service.h"
 #include "pic.h"
 
-#include <utilities/logger.h>
+#include <lib/logger.h>
 
 #define PIT_IRQ_MASK 0x0
 #define PIT_COMMAND_PORT 0x43

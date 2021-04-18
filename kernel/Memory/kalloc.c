@@ -3,9 +3,9 @@
 #include "memory.h"
 #include "pmm.h"
 
-#include <utilities/builtins.h>
-#include <utilities/logger.h>
-#include <utilities/math.h>
+#include <lib/builtins.h>
+#include <lib/logger.h>
+#include <lib/math.h>
 
 struct allocation_metadata
 {

@@ -1,6 +1,6 @@
 #include "gdt.h"
 
-#include <utilities/logger.h>
+#include <lib/logger.h>
 
 #include <stdint.h>
 

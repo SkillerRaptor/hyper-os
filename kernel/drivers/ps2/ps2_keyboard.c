@@ -1,9 +1,9 @@
 #include "ps2_keyboard.h"
 
 #include <drivers/qwertz.h>
+#include <lib/logger.h>
 #include <system/io_service.h>
 #include <system/pic.h>
-#include <utilities/logger.h>
 
 #define PS2_KEYBOARD_IRQ_MASK 0x1
 #define PS2_KEYBOARD_KEY_PORT 0x60

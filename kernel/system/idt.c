@@ -6,7 +6,7 @@
 #include "pit.h"
 
 #include <drivers/ps2/ps2_keyboard.h>
-#include <utilities/logger.h>
+#include <lib/logger.h>
 
 #include <stddef.h>
 #include <stdint.h>

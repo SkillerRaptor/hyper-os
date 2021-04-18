@@ -3,9 +3,9 @@
 #include "bitmap.h"
 #include "memory.h"
 
-#include <utilities/builtins.h>
-#include <utilities/logger.h>
-#include <utilities/math.h>
+#include <lib/builtins.h>
+#include <lib/logger.h>
+#include <lib/math.h>
 
 static uint8_t* bitmap;
 static size_t last_used_index = 0;

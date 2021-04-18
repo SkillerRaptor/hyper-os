@@ -1,5 +1,5 @@
-#ifndef HYPEROS_KERNEL_UTILITIES_LOGGER_H_
-#define HYPEROS_KERNEL_UTILITIES_LOGGER_H_
+#ifndef HYPEROS_KERNEL_LIB_LOGGER_H_
+#define HYPEROS_KERNEL_LIB_LOGGER_H_
 
 #define COLOR_FOREGROUND_BLACK "\033[30m"
 #define COLOR_FOREGROUND_RED "\033[31m"
@@ -26,4 +26,4 @@ void warning(const char* format, ...);
 void error(const char* format, ...);
 void debug(const char* format, ...);
 
-#endif // HYPEROS_KERNEL_UTILITIES_LOGGER_H_
+#endif // HYPEROS_KERNEL_LIB_LOGGER_H_

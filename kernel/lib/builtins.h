@@ -1,5 +1,5 @@
-#ifndef HYPEROS_KERNEL_UTILITIES_BUILTINS_H_
-#define HYPEROS_KERNEL_UTILITIES_BUILTINS_H_
+#ifndef HYPEROS_KERNEL_LIB_BUILTINS_H_
+#define HYPEROS_KERNEL_LIB_BUILTINS_H_
 
 #include <stddef.h>
 
@@ -14,4 +14,4 @@ int strcmp(const char* first, const char* second);
 int strncmp(const char* first, const char* second, size_t n);
 size_t strlen(const char* string);
 
-#endif // HYPEROS_KERNEL_UTILITIES_BUILTINS_H_
+#endif // HYPEROS_KERNEL_LIB_BUILTINS_H_

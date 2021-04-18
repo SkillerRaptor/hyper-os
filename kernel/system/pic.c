@@ -2,7 +2,7 @@
 
 #include "io_service.h"
 
-#include <utilities/logger.h>
+#include <lib/logger.h>
 
 #define PIC_ICW1_ICW4 (1 << 0)
 #define PIC_ICW1_INIT (1 << 4)

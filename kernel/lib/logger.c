@@ -1,6 +1,6 @@
 #include "logger.h"
 
-#include <utilities/serial.h>
+#include "serial.h"
 
 #include <stdarg.h>
 
