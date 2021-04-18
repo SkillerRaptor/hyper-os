@@ -1,3 +1,5 @@
+<img src="./resources/branding/branding.png" align="right" width="150"/>
+
 # HyperOS
 ![](https://img.shields.io/badge/license-MIT-yellow)
 
