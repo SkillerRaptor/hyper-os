@@ -15,7 +15,7 @@ set(CMAKE_ASM_COMPILER "${TOOLS}/bin/${TARGET}-${ARCH}-as")
 set(CMAKE_C_COMPILER "${TOOLS}/bin/${TARGET}-${ARCH}-gcc")
 set(CMAKE_LINKER "${TOOLS}/bin/${TARGET}-${ARCH}-ld")
 
-add_subdirectory(ThirdParty)
+add_subdirectory(thirdparty)
 
 add_subdirectory(kernel)
-add_subdirectory(userland)
+#add_subdirectory(userland)
