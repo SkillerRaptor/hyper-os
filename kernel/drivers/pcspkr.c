@@ -14,6 +14,7 @@ void pcspkr_init(void)
 	
 	uint16_t pcspkr_value = io_inb(PCSPKR_SOUND_PORT) | 0x1;
 	io_outb(PCSPKR_SOUND_PORT, pcspkr_value);
+	info(" PC Speaker was activated!");
 	
 	info("Initializing PC Speaker finished!");
 }

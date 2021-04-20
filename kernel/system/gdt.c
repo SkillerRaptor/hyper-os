@@ -27,12 +27,12 @@ struct gdt_entry
 	uint16_t base_low;
 	uint8_t base_mid;
 	uint8_t access;
-	uint8_t limit_high: 4;
-	uint8_t flags: 4;
+	uint8_t limit_high : 4;
+	uint8_t flags : 4;
 	uint8_t base_high;
 } __attribute__((packed));
 
-struct entries
+struct gdt_entries
 {
 	struct gdt_entry null_entry;
 	struct gdt_entry kernel_entries[2];
@@ -46,7 +46,7 @@ struct gdt_pointer
 	uint64_t address;
 } __attribute__((packed));
 
-static struct entries entries;
+static struct gdt_entries entries;
 static struct gdt_pointer pointer;
 
 static void gdt_create_descriptor(
@@ -67,7 +67,6 @@ void gdt_init(void)
 		0,
 		GDT_ACCESS_ATTRIBUTE_NULL,
 		GDT_FLAG_ATTRIBUTE_NULL);
-	
 	info(" Null descriptor created!");
 	
 	/* Kernel Code */
@@ -87,7 +86,6 @@ void gdt_init(void)
 		0xFFFFFFFF,
 		kernel_code_access_attributes,
 		kernel_code_flag_attributes);
-	
 	info(" Kernel code descriptor created!");
 	
 	/* Kernel Data */
@@ -106,7 +104,6 @@ void gdt_init(void)
 		0xFFFFFFFF,
 		kernel_data_access_attributes,
 		kernel_data_flag_attributes);
-	
 	info(" Kernel data descriptor created!");
 	
 	pointer.size = sizeof(entries) - 1;
