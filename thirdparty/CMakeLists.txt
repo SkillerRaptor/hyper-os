@@ -16,12 +16,12 @@ add_custom_command(
         TARGET limine
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_SOURCE_DIR}/limine.cfg ${CMAKE_BINARY_DIR}/Kernel/limine.cfg
+        ${CMAKE_SOURCE_DIR}/limine.cfg ${CMAKE_BINARY_DIR}/kernel/limine.cfg
 )
 
 add_custom_command(
         TARGET limine
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_SOURCE_DIR}/ThirdParty/limine/bin/limine.sys ${CMAKE_BINARY_DIR}/Kernel/limine.sys
+        ${CMAKE_CURRENT_SOURCE_DIR}/limine/bin/limine.sys ${CMAKE_BINARY_DIR}/kernel/limine.sys
 )

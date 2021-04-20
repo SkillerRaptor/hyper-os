@@ -15,6 +15,10 @@ set(CMAKE_ASM_COMPILER "${TOOLS}/bin/${TARGET}-${ARCH}-as")
 set(CMAKE_C_COMPILER "${TOOLS}/bin/${TARGET}-${ARCH}-gcc")
 set(CMAKE_LINKER "${TOOLS}/bin/${TARGET}-${ARCH}-ld")
 
+if ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
+    message(FATAL_ERROR "You are not allowed to use MSVC!")
+endif ()
+
 add_subdirectory(thirdparty)
 
 add_subdirectory(kernel)
