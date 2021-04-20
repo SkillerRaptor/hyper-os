@@ -6,10 +6,13 @@
 #include <lib/builtins.h>
 #include <lib/logger.h>
 #include <lib/math.h>
+#include <synchronization/spinlock.h>
 
 static uint8_t* bitmap;
 static size_t last_used_index = 0;
 static uintptr_t highest_page = 0;
+
+static spinlock lock;
 
 void pmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_entries)
 {
@@ -107,6 +110,8 @@ static void* pmm_inner_alloc(size_t count, size_t limit)
 
 void* pmm_alloc(size_t count)
 {
+	spinlock_lock(&lock);
+	
 	size_t l = last_used_index;
 	void* ret = pmm_inner_alloc(count, highest_page / PAGE_SIZE);
 	if (ret == NULL)
@@ -114,6 +119,8 @@ void* pmm_alloc(size_t count)
 		last_used_index = 0;
 		ret = pmm_inner_alloc(count, l);
 	}
+	
+	spinlock_unlock(&lock);
 	
 	return ret;
 }
@@ -139,9 +146,13 @@ void* pmm_calloc(size_t count)
 
 void pmm_free(void* ptr, size_t count)
 {
+	spinlock_lock(&lock);
+	
 	size_t page = (size_t) ptr / PAGE_SIZE;
 	for (size_t i = page; i < page + count; i++)
 	{
 		bitmap_set_bit(bitmap, i, 0);
 	}
+	
+	spinlock_unlock(&lock);
 }

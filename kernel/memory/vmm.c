@@ -129,13 +129,19 @@ static uintptr_t* virtual2pte(struct pagemap* pagemap, uintptr_t virt_addr, uint
 
 uint8_t vmm_map_page(struct pagemap* pagemap, uintptr_t virtual_address, uintptr_t physical_address, uintptr_t flags)
 {
+	spinlock_lock(&pagemap->lock);
+	
 	uintptr_t* pte = virtual2pte(pagemap, virtual_address, 1);
 	if (pte == NULL)
 	{
+		spinlock_unlock(&pagemap->lock);
+		
 		return 0;
 	}
 	
 	*pte = physical_address | flags;
+	
+	spinlock_unlock(&pagemap->lock);
 	
 	return 1;
 }

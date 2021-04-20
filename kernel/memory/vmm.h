@@ -2,11 +2,13 @@
 #define HYPEROS_KERNEL_MEMORY_VMM_H_
 
 #include <boot/stivale2.h>
+#include <synchronization/spinlock.h>
 
 #include <stddef.h>
 
 struct pagemap
 {
+	spinlock lock;
 	uintptr_t top_level;
 };
 
