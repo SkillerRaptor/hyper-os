@@ -34,23 +34,23 @@ You can look at the [build guide](https://github.com/SkillerRaptor/HyperOS/blob/
  -  Userland (Ring 3)
 
 ## Roadmap
- 1.  Scheduler
- 2.  Symmetric Multiprocessing (SMP)
- 3.  Userland (Ring 3)
- 4.  Basic System Calls
- 4.  Advanced Programmable Interrupt Controller (APIC)
- 5.  Reworking PS/2 Keyboard
- 6.  Adding PS/2 Mouse
- 7.  Peripheral Component Interconnect (PCI)
- 8.  Advance Host Controller Interface (AHCI)
- 9.  Filesystem (ext2)
- 10. Advanced System Calls
- 11. Parsing ELF
- 12. LibC
- 13. LibGUI
- 14. Applications
- 15. Games
- 16. Non-Volatile Memory Express (NVMe)
+ 1.  Advanced Programmable Interrupt Controller (APIC)
+ 2.  Scheduler
+ 3.  Symmetric Multiprocessing (SMP)
+ 4.  Userland (Ring 3)
+ 5.  Basic System Calls
+ 6.  Reworking PS/2 Keyboard
+ 7.  Adding PS/2 Mouse
+ 8.  Peripheral Component Interconnect (PCI)
+ 9.  Advance Host Controller Interface (AHCI)
+ 10.  Filesystem (ext2)
+ 11. Advanced System Calls
+ 12. Parsing ELF
+ 13. LibC
+ 14. LibGUI
+ 15. Applications
+ 16. Games
+ 17. Non-Volatile Memory Express (NVMe)
 
 ## Screenshots
 
