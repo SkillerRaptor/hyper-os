@@ -1,0 +1,8 @@
+LIBRARIES := $(wildcard */.)
+
+.PHONY: all
+all: $(LIBRARIES)
+
+.PHONY: $(LIBRARIES)
+$(LIBRARIES):
+	$(MAKE) -C $@ ABSOLUTE_PATH=$(ABSOLUTE_PATH)

@@ -1,22 +1,42 @@
-#ifndef HYPEROS_KERNEL_BOOT_STIVALE_H_
-#define HYPEROS_KERNEL_BOOT_STIVALE_H_
+#ifndef HYPEROS_KERNEL_STIVALE2_H_
+#define HYPEROS_KERNEL_STIVALE2_H_
 
 #include <stdint.h>
 
-struct stivale2_tag
-{
-	uint64_t identifier;
-	uint64_t next;
-} __attribute__((packed));
-
-/* --- Header --------------------------------------------------------------- */
-/*  Information passed from the kernel to the bootloader                      */   
+#define STIVALE2_BOOTLOADER_BRAND_SIZE 64
+#define STIVALE2_BOOTLOADER_VERSION_SIZE 64
+#define STIVALE2_MODULE_STRING_SIZE 128
 
 #define STIVALE2_HEADER_TAG_FRAMEBUFFER_ID 0x3ecc1bc43d0f7971
 #define STIVALE2_HEADER_TAG_FRAMEBUFFER_MTRR_ID 0x4c7bb07731282e00
 #define STIVALE2_HEADER_TAG_SMP_ID 0x1ab015085f3273df
 #define STIVALE2_HEADER_TAG_LEVEL_5_PAGING_ID 0x932f477032007e8f
 
+#define STIVALE2_STRUCT_TAG_CMDLINE_ID 0xe5e76a1b4597a781
+#define STIVALE2_STRUCT_TAG_MEMORY_MAP_ID 0x2187f79e8612de07
+#define STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID 0x506461d2950408fa
+#define STIVALE2_STRUCT_TAG_FRAMEBUFFER_MTRR_ID 0x6bc1a78ebe871172
+#define STIVALE2_STRUCT_TAG_MODULES_ID 0x4b6fe466aade04ce
+#define STIVALE2_STRUCT_TAG_RSDP_ID 0x9e1786930a375e78
+#define STIVALE2_STRUCT_TAG_EPOCH_ID 0x566a7bed888e1407
+#define STIVALE2_STRUCT_TAG_FIRMWARE_ID 0x359d837855e3858c
+#define STIVALE2_STRUCT_TAG_SMP_ID 0x34d1d96339647025
+#define STIVALE2_STRUCT_TAG_PXE_SERVER_INFO 0x29d1e96239247032
+
+/*
+ * -- Tag --
+ * Identifier for tags
+ */
+struct stivale2_tag
+{
+	uint64_t identifier;
+	uint64_t next;
+} __attribute__((packed));
+
+/*
+ * -- Header --
+ * Information passed from the kernel to the bootloader
+ */
 struct stivale2_header
 {
 	uint64_t entry_point;
@@ -39,24 +59,10 @@ struct stivale2_header_tag_smp
 	uint64_t flags;
 } __attribute__((packed));
 
-/* --- Struct --------------------------------------------------------------- */
-/*  Information passed from the bootloader to the kernel                      */
-
-#define STIVALE2_BOOTLOADER_BRAND_SIZE 64
-#define STIVALE2_BOOTLOADER_VERSION_SIZE 64
-#define STIVALE2_MODULE_STRING_SIZE 128
-
-#define STIVALE2_STRUCT_TAG_CMDLINE_ID 0xe5e76a1b4597a781
-#define STIVALE2_STRUCT_TAG_MEMORY_MAP_ID 0x2187f79e8612de07
-#define STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID 0x506461d2950408fa
-#define STIVALE2_STRUCT_TAG_FRAMEBUFFER_MTRR_ID 0x6bc1a78ebe871172
-#define STIVALE2_STRUCT_TAG_MODULES_ID 0x4b6fe466aade04ce
-#define STIVALE2_STRUCT_TAG_RSDP_ID 0x9e1786930a375e78
-#define STIVALE2_STRUCT_TAG_EPOCH_ID 0x566a7bed888e1407
-#define STIVALE2_STRUCT_TAG_FIRMWARE_ID 0x359d837855e3858c
-#define STIVALE2_STRUCT_TAG_SMP_ID 0x34d1d96339647025
-#define STIVALE2_STRUCT_TAG_PXE_SERVER_INFO 0x29d1e96239247032
-
+/*
+ * -- Struct --
+ * Information passed from the bootloader to the kernel
+ */
 struct stivale2_struct
 {
 	char bootloader_brand[STIVALE2_BOOTLOADER_BRAND_SIZE];

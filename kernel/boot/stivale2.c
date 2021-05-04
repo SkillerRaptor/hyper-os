@@ -1,6 +1,6 @@
 #include "stivale2.h"
 
-#include <memory/memory.h>
+#include <mm/memory.h>
 
 #include <stddef.h>
 

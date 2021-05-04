@@ -2,19 +2,34 @@
 
 #include "memory.h"
 
-void bitmap_set_bit(uint8_t* bitmap, uint64_t index, uint8_t value)
+void bitmap_set_bit(struct bitmap bitmap, size_t index, uint8_t value)
 {
+	if (index > (bitmap.size * BYTE_SIZE))
+	{
+		return;
+	}
+	
+	size_t byte_index = index / BYTE_SIZE;
+	size_t bit_index = index % BYTE_SIZE;
+	
 	if (value != 0)
 	{
-		bitmap[index / BYTE_SIZE] |= (uint8_t) (1u << (index % BYTE_SIZE));
+		bitmap.data[byte_index] |= (uint8_t) (1u << (bit_index));
 	}
 	else
 	{
-		bitmap[index / BYTE_SIZE] &= (uint8_t) ~(1u << (index % BYTE_SIZE));
+		bitmap.data[byte_index] &= (uint8_t) ~(1u << (bit_index));
 	}
 }
 
-uint8_t bitmap_get_bit(uint8_t* bitmap, uint64_t index)
+uint8_t bitmap_is_bit(struct bitmap bitmap, size_t index)
 {
-	return 0 != (bitmap[index / BYTE_SIZE] & (1u << (index % BYTE_SIZE)));
+	if (index > (bitmap.size * BYTE_SIZE))
+	{
+		return 0;
+	}
+	
+	size_t byte_index = index / BYTE_SIZE;
+	size_t bit_index = index % BYTE_SIZE;
+	return 0 != (bitmap.data[byte_index] & (1u << (bit_index));
 }
