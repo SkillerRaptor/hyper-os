@@ -7,21 +7,21 @@ OBJS := $(patsubst ./%,$(BUILD_PATH)/%,$(OBJS))
 
 KERNEL_ELF = $(ABSOLUTE_PATH)/kernel.elf
 
-CC = x86_64-elf-gcc
-LD = x86_64-elf-gcc
+CC = clang
+LD = clang
 AS = nasm
 
 STANDARD_FLAGS := -nostdlib
 FILE_FLAGS := -ffreestanding -fno-stack-protector -fno-ident
 WARNING_FLAGS := -Wextra -Wall -Wundef -Wcast-qual -Wwrite-strings -Werror
-FLAVOR_FLAGS := -fomit-frame-pointer -mno-red-zone -mno-sse -mno-sse2 -mno-80387 -mno-mmx -mcmodel=kernel -m64 -ffunction-sections -fdata-sections -fmerge-all-constants -fno-unroll-loops -falign-functions=1 -fno-pie -fno-pic
+FLAVOR_FLAGS := -fomit-frame-pointer -mno-red-zone -mno-sse -mno-sse2 -mno-80387 -mno-mmx -mcmodel=kernel -m64 -ffunction-sections -fdata-sections -fmerge-all-constants -fno-unroll-loops -fno-pie -fno-pic
 OPTIMIZATION_FLAGS := -Os -fno-asynchronous-unwind-tables
 INCLUDE_FLAGS := -I.
 
 C_FLAGS := $(STANDARD_FLAGS) $(FILE_FLAGS) $(WARNING_FLAGS) $(FLAVOR_FLAGS) $(OPTIMIZATION_FLAGS) $(INCLUDE_FLAGS)
 NASM_FLAGS := -felf64
 
-LINKER_FLAGS := -T linker.ld -ffreestanding -static -nostdlib -no-pie -nodefaultlibs -nostartfiles -z max-page-size=0x1000
+LINKER_FLAGS := -T linker.ld --target=x86_64-pc-none-elf -ffreestanding -static -nostdlib -fno-pie -fno-pic -nodefaultlibs -nostartfiles -z max-page-size=0x1000
 
 .PHONY: all
 all: $(OBJS) $(KERNEL_ELF)
