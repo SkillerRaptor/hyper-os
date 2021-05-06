@@ -21,7 +21,7 @@ jobs:
       - name: Update environment
         run: |
           sudo apt update -qq
-          sudo apt install -y gcc clang gdb build-essential
+          sudo apt install -y gcc clang gdb build-essential nasm
 
       - name: Build Project Files
         run: |
