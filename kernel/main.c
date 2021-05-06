@@ -8,13 +8,13 @@
 #include <memory/pmm.h>
 #include <memory/memory.h>
 #include <memory/vmm.h>
-#include <system/apic.h>
+//#include <system/apic.h>
 #include <system/gdt.h>
 #include <system/idt.h>
-#include <system/pci.h>
+//#include <system/pci.h>
 #include <system/pic.h>
 #include <system/pit.h>
-#include <system/smp.h>
+//#include <system/smp.h>
 #include <lib/builtins.h>
 #include <lib/logger.h>
 #include <lib/serial.h>
@@ -30,10 +30,10 @@ __attribute__((noreturn)) void main(struct stivale2_struct* stivale2_struct)
 	gdt_init();
 	
 	pic_remap(0x20, 0x28);
-	apic_init();
+	//apic_init();
 	idt_init();
 	
-	pci_init();
+	//pci_init();
 	
 	pit_init(100);
 	
@@ -42,9 +42,9 @@ __attribute__((noreturn)) void main(struct stivale2_struct* stivale2_struct)
 	pmm_init(memory_map_tag->memory_map, memory_map_tag->entries);
 	vmm_init(memory_map_tag->memory_map, memory_map_tag->entries);
 	
-	struct stivale2_struct_tag_smp* smp_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_SMP_ID);
+	//struct stivale2_struct_tag_smp* smp_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_SMP_ID);
 	
-	smp_init(smp_tag);
+	//smp_init(smp_tag);
 	
 	struct stivale2_struct_tag_framebuffer* framebuffer_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
 	
