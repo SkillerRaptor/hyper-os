@@ -1,5 +1,5 @@
-#ifndef HYPEROS_KERNEL_STIVALE2_H_
-#define HYPEROS_KERNEL_STIVALE2_H_
+#ifndef HYPEROS_KERNEL_BOOT_STIVALE2_H_
+#define HYPEROS_KERNEL_BOOT_STIVALE2_H_
 
 #include <stdint.h>
 
@@ -181,6 +181,10 @@ struct stivale2_struct_tag_pxe_server_info
 	uint32_t server_ip;
 } __attribute__((packed));
 
+/*
+ * -- Function --
+ * Useful stivale functions
+ */
 void* stivale2_get_tag(struct stivale2_struct* stivale2_struct, uint64_t id);
 
 #endif // HYPEROS_KERNEL_BOOT_STIVALE_H_

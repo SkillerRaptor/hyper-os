@@ -12,7 +12,7 @@ void pcspkr_init(void)
 {
 	info("Initializing PC Speaker...");
 	
-	uint16_t pcspkr_value = io_inb(PCSPKR_SOUND_PORT) | 0x1;
+	uint8_t pcspkr_value = io_inb(PCSPKR_SOUND_PORT) | 0x1;
 	io_outb(PCSPKR_SOUND_PORT, pcspkr_value);
 	info(" PC Speaker was activated!");
 	
@@ -21,7 +21,7 @@ void pcspkr_init(void)
 
 void pcspkr_set_frequency(uint32_t frequency)
 {
-	asm volatile("cli");
+	__asm__ volatile("cli");
 	
 	uint32_t divisor = PIT_MAX_FREQUENCY / frequency;
 	
@@ -32,7 +32,7 @@ void pcspkr_set_frequency(uint32_t frequency)
 	io_outb(PIT_DATA_PORT, low_byte);
 	io_outb(PIT_DATA_PORT, high_byte);
 	
-	asm volatile("sti");
+	__asm__ volatile("sti");
 }
 
 void pcspkr_play(uint32_t frequency)
@@ -46,9 +46,9 @@ void pcspkr_play(uint32_t frequency)
 	}
 }
 
-void pcspkr_stop()
+void pcspkr_stop(void)
 {
-	uint16_t pcspkr_value = io_inb(PCSPKR_SOUND_PORT) & 0xFC;
+	uint8_t pcspkr_value = io_inb(PCSPKR_SOUND_PORT) & 0xFC;
 	io_outb(PCSPKR_SOUND_PORT, pcspkr_value);
 	pcspkr_set_frequency(1);
 }

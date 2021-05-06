@@ -10,7 +10,7 @@ struct bitmap
 	size_t size;
 };
 
-void bitmap_set_bit(struct bitmap bitmap, size_t index, uint8_t value);
-uint8_t bitmap_is_bit(struct bitmap bitmap, size_t index);
+void bitmap_set_bit(struct bitmap* bitmap, size_t index, uint8_t value);
+uint8_t bitmap_get_bit(struct bitmap* bitmap, size_t index);
 
 #endif // HYPEROS_KERNEL_MEMORY_BITMAP_H_

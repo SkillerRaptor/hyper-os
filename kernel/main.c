@@ -19,9 +19,9 @@
 #include <lib/logger.h>
 #include <lib/serial.h>
 
-void main(struct stivale2_struct* stivale2_struct)
+__attribute__((noreturn)) void main(struct stivale2_struct* stivale2_struct)
 {
-	stivale2_struct = (void*) stivale2_struct + PHYSICAL_MEMORY_OFFSET;
+	stivale2_struct = (void*) ((uint8_t*) stivale2_struct + PHYSICAL_MEMORY_OFFSET);
 	
 	serial_init();
 	
@@ -48,7 +48,6 @@ void main(struct stivale2_struct* stivale2_struct)
 	
 	struct stivale2_struct_tag_framebuffer* framebuffer_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
 	
-	//<editor-fold desc="Testing memory">
 	void* backbuffer = kmalloc(framebuffer_tag->framebuffer_height * framebuffer_tag->framebuffer_pitch);
 	
 	uint8_t* screen = (uint8_t*) backbuffer;
@@ -95,7 +94,6 @@ void main(struct stivale2_struct* stivale2_struct)
 	
 	memcpy((void*)framebuffer_tag->framebuffer_addr, (void*)backbuffer, framebuffer_tag->framebuffer_height * framebuffer_tag->framebuffer_pitch);
 	kfree(backbuffer);
-	//</editor-fold>
 	
 	ps2_keyboard_init();
 	ps2_mouse_init();
@@ -103,12 +101,12 @@ void main(struct stivale2_struct* stivale2_struct)
 	
 	info("HyperOS booted successful!");
 	
-	asm volatile ("sti");
+	__asm__ volatile ("sti");
 	
 	pcspkr_beep(500);
 	
 	for (;;)
 	{
-		asm volatile ("hlt");
+		__asm__ volatile ("hlt");
 	}
 }

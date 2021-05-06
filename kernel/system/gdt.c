@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-#define GDT_ACCESS_ATTRIBUTE_NULL 0x00
+#define GDT_ACCESS_ATTRIBUTE_NULL (0 << 0)
 #define GDT_ACCESS_ATTRIBUTE_PRESENT (1 << 7)
 #define GDT_ACCESS_ATTRIBUTE_RING_3 (1 << 6 | 1 << 5)
 #define GDT_ACCESS_ATTRIBUTE_CODE_OR_DATA (1 << 4)
@@ -14,10 +14,10 @@
 #define GDT_ACCESS_ATTRIBUTE_READABLE (1 << 1)
 #define GDT_ACCESS_ATTRIBUTE_WRITEABLE (1 << 1)
 
-#define GDT_FLAG_ATTRIBUTE_NULL 0x00
-#define GDT_FLAG_ATTRIBUTE_GRANULARITY_1B 0x00
+#define GDT_FLAG_ATTRIBUTE_NULL (0 << 0)
+#define GDT_FLAG_ATTRIBUTE_GRANULARITY_1B (0 << 0)
 #define GDT_FLAG_ATTRIBUTE_GRANULARITY_4K (1 << 3)
-#define GDT_FLAG_ATTRIBUTE_SIZE_16_BIT 0x00
+#define GDT_FLAG_ATTRIBUTE_SIZE_16_BIT (0 << 0)
 #define GDT_FLAG_ATTRIBUTE_SIZE_32_BIT (1 << 2)
 #define GDT_FLAG_ATTRIBUTE_SIZE_64_BIT (1 << 1)
 
@@ -38,7 +38,7 @@ struct gdt_entries
 	struct gdt_entry kernel_entries[2];
 	// TODO: Userland Entry
 	// TODO: TSS Entry
-} __attribute__((packed));
+};
 
 struct gdt_pointer
 {
@@ -117,9 +117,9 @@ void gdt_init(void)
 
 void gdt_reload(void)
 {
-	asm volatile ("cli");
+	__asm__ volatile ("cli");
 	
-	asm volatile (
+	__asm__ volatile (
 	"lgdt %0\n"
 	"pushq %%rbp\n"
 	"movq %%rsp, %%rbp\n"

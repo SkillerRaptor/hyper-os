@@ -13,7 +13,7 @@ enum
 };
 
 static void log_string(int status, const char* format, va_list args);
-static char* string_convert(unsigned int number, int base);
+static char* string_convert(unsigned int number, unsigned int base);
 
 void info(const char* format, ...)
 {
@@ -87,7 +87,7 @@ static void log_string(int status, const char* format, va_list args)
 			case 'c':
 			{
 				int i = va_arg(args, int);
-				serial_write(i);
+				serial_write((char) i);
 				break;
 			}
 			case 'd':
@@ -98,7 +98,7 @@ static void log_string(int status, const char* format, va_list args)
 					i = -i;
 					serial_write('-');
 				}
-				serial_write_string(string_convert(i, 10));
+				serial_write_string(string_convert((unsigned int) i, 10));
 				break;
 			}
 			case 'o':
@@ -136,7 +136,7 @@ static void log_string(int status, const char* format, va_list args)
 	serial_write('\n');
 }
 
-static char* string_convert(unsigned int number, int base)
+static char* string_convert(unsigned int number, unsigned int base)
 {
 	static char representation[] = "0123456789ABCDEF";
 	

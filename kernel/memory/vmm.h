@@ -8,8 +8,9 @@
 
 struct pagemap
 {
-	spinlock lock;
 	uintptr_t top_level;
+	spinlock lock;
+	uint8_t zero[4];
 };
 
 void vmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_entries);

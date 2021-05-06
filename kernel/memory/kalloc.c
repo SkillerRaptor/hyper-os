@@ -7,6 +7,8 @@
 #include <lib/logger.h>
 #include <lib/math.h>
 
+#include <stdint.h>
+
 struct allocation_metadata
 {
 	size_t pages;
@@ -15,9 +17,9 @@ struct allocation_metadata
 
 void* kmalloc(size_t size)
 {
-	size_t page_count = DIV_ROUNDUP(size, PAGE_SIZE);
+	size_t page_count = math_div_roundup(size, PAGE_SIZE);
 	
-	void *ptr = (char*) pmm_calloc(page_count + 1);
+	uint8_t* ptr = (uint8_t*) pmm_calloc(page_count + 1);
 	
 	if (ptr == NULL)
 	{
@@ -26,7 +28,7 @@ void* kmalloc(size_t size)
 	
 	ptr += PHYSICAL_MEMORY_OFFSET;
 	
-	struct allocation_metadata* metadata = ptr;
+	struct allocation_metadata* metadata = (void*) ptr;
 	ptr += PAGE_SIZE;
 	
 	metadata->pages = page_count;
@@ -34,29 +36,29 @@ void* kmalloc(size_t size)
 	
 	debug("kmalloc: %d bytes allocated!", size);
 	
+	return (void*) ptr;
+}
+
+void* kcalloc(size_t element_count, size_t size)
+{
+	void* ptr = kmalloc(element_count * size);
+	memset(ptr, 0x0, element_count * size);
 	return ptr;
 }
 
-void* kcalloc(size_t num, size_t size)
+void* krealloc(void* pointer, size_t size)
 {
-	void* ptr = kmalloc(num * size);
-	memset(ptr, 0x0, num * size);
-	return ptr;
-}
-
-void* krealloc(void* ptr, size_t size)
-{
-	if (ptr == NULL)
+	if (pointer == NULL)
 	{
 		return kmalloc(size);
 	}
 	
-	struct allocation_metadata* metadata = ptr - PAGE_SIZE;
+	struct allocation_metadata* metadata = (void*) ((uint8_t*)pointer - PAGE_SIZE);
 	
-	if(DIV_ROUNDUP(metadata->size, PAGE_SIZE) == DIV_ROUNDUP(size, PAGE_SIZE))
+	if (math_div_roundup(metadata->size, PAGE_SIZE) == math_div_roundup(size, PAGE_SIZE))
 	{
 		metadata->size = size;
-		return ptr;
+		return pointer;
 	}
 	
 	void* new_ptr = kmalloc(size);
@@ -67,21 +69,21 @@ void* krealloc(void* ptr, size_t size)
 	
 	if (metadata->size > size)
 	{
-		memcpy(new_ptr, ptr, size);
+		memcpy(new_ptr, pointer, size);
 	}
 	else
 	{
-		memcpy(new_ptr, ptr, metadata->size);
+		memcpy(new_ptr, pointer, metadata->size);
 	}
 	
-	kfree(ptr);
+	kfree(pointer);
 	
 	return new_ptr;
 }
 
-void kfree(void* ptr)
+void kfree(void* pointer)
 {
-	struct allocation_metadata* metadata = ptr - PAGE_SIZE;
-	pmm_free((void*) metadata - PHYSICAL_MEMORY_OFFSET, metadata->pages + 1);
+	struct allocation_metadata* metadata = (void*) ((uint8_t*)pointer - PAGE_SIZE);
+	pmm_free((void*) ((uint8_t*) metadata - PHYSICAL_MEMORY_OFFSET), metadata->pages + 1);
 	debug("kmalloc: %d bytes freed!", metadata->size);
 }

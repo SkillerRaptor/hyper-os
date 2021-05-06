@@ -34,7 +34,7 @@ char serial_read(void)
 {
 	while (serial_received() == 0);
 	
-	return io_inb(SERIAL_PORT);
+	return (char) io_inb(SERIAL_PORT);
 }
 
 int serial_transmit_empty(void)
@@ -46,13 +46,13 @@ void serial_write(char c)
 {
 	while (serial_transmit_empty() == 0);
 	
-	io_outb(SERIAL_PORT, c);
+	io_outb(SERIAL_PORT, (uint8_t) c);
 }
 
 void serial_write_string(const char* str)
 {
 	while (*str)
 	{
-		io_outb(SERIAL_PORT, *str++);
+		io_outb(SERIAL_PORT, (uint8_t) *str++);
 	}
 }

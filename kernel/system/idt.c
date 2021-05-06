@@ -34,47 +34,47 @@ struct idt_pointer
 
 static struct idt_entry entries[256];
 
-static void idt_register_handler(size_t index, uint8_t flags, uintptr_t handler);
-static void idt_register_interrupt_handler(size_t index, uintptr_t handler);
-static void idt_register_trap_handler(size_t index, uintptr_t handler);
+void idt_register_handler(size_t index, uint8_t flags, uintptr_t handler);
+void idt_register_interrupt_handler(size_t index, uintptr_t handler);
+void idt_register_trap_handler(size_t index, uintptr_t handler);
 
-extern int interrupt_handler_0();
-extern int interrupt_handler_1();
-extern int interrupt_handler_2();
-extern int interrupt_handler_3();
-extern int interrupt_handler_4();
-extern int interrupt_handler_5();
-extern int interrupt_handler_6();
-extern int interrupt_handler_7();
-extern int interrupt_handler_8();
-extern int interrupt_handler_9();
-extern int interrupt_handler_10();
-extern int interrupt_handler_11();
-extern int interrupt_handler_12();
-extern int interrupt_handler_13();
-extern int interrupt_handler_14();
-extern int interrupt_handler_15();
+extern int interrupt_handler_0(void);
+extern int interrupt_handler_1(void);
+extern int interrupt_handler_2(void);
+extern int interrupt_handler_3(void);
+extern int interrupt_handler_4(void);
+extern int interrupt_handler_5(void);
+extern int interrupt_handler_6(void);
+extern int interrupt_handler_7(void);
+extern int interrupt_handler_8(void);
+extern int interrupt_handler_9(void);
+extern int interrupt_handler_10(void);
+extern int interrupt_handler_11(void);
+extern int interrupt_handler_12(void);
+extern int interrupt_handler_13(void);
+extern int interrupt_handler_14(void);
+extern int interrupt_handler_15(void);
 
-extern int exception_handler_0();
-extern int exception_handler_1();
-extern int exception_handler_2();
-extern int exception_handler_3();
-extern int exception_handler_4();
-extern int exception_handler_5();
-extern int exception_handler_6();
-extern int exception_handler_7();
-extern int exception_handler_8();
-extern int exception_handler_10();
-extern int exception_handler_11();
-extern int exception_handler_12();
-extern int exception_handler_13();
-extern int exception_handler_14();
-extern int exception_handler_16();
-extern int exception_handler_17();
-extern int exception_handler_18();
-extern int exception_handler_19();
-extern int exception_handler_20();
-extern int exception_handler_30();
+extern int exception_handler_0(void);
+extern int exception_handler_1(void);
+extern int exception_handler_2(void);
+extern int exception_handler_3(void);
+extern int exception_handler_4(void);
+extern int exception_handler_5(void);
+extern int exception_handler_6(void);
+extern int exception_handler_7(void);
+extern int exception_handler_8(void);
+extern int exception_handler_10(void);
+extern int exception_handler_11(void);
+extern int exception_handler_12(void);
+extern int exception_handler_13(void);
+extern int exception_handler_14(void);
+extern int exception_handler_16(void);
+extern int exception_handler_17(void);
+extern int exception_handler_18(void);
+extern int exception_handler_19(void);
+extern int exception_handler_20(void);
+extern int exception_handler_30(void);
 
 void idt_init(void)
 {
@@ -137,14 +137,14 @@ void idt_reload(void)
 		};
 	
 	/* Reloading IDT with new data */
-	asm volatile (
+	__asm__ volatile (
 	"lidt %0"
 	:
 	: "m"(pointer)
 	);
 }
 
-static void idt_register_handler(size_t index, uint8_t flags, uintptr_t handler)
+void idt_register_handler(size_t index, uint8_t flags, uintptr_t handler)
 {
 	entries[index].offset_low = (handler & 0x0000FFFF) >> 0;
 	entries[index].selector = KERNEL_CODE_SELECTOR;
@@ -155,12 +155,12 @@ static void idt_register_handler(size_t index, uint8_t flags, uintptr_t handler)
 	entries[index].zero = 0;
 }
 
-static void idt_register_interrupt_handler(size_t index, uintptr_t handler)
+void idt_register_interrupt_handler(size_t index, uintptr_t handler)
 {
 	idt_register_handler(index, IDT_TYPE_PRESENT | IDT_TYPE_INTERRUPT_GATE, handler);
 }
 
-static void idt_register_trap_handler(size_t index, uintptr_t handler)
+void idt_register_trap_handler(size_t index, uintptr_t handler)
 {
 	idt_register_handler(index, IDT_TYPE_PRESENT | IDT_TYPE_TRAP_GATE, handler);
 }
@@ -247,202 +247,202 @@ void c_interrupt_handler_15()
 	pic_send_end_of_interrupt(15);
 }
 
-void c_exception_handler_0()
+__attribute__((noreturn)) void c_exception_handler_0()
 {
 	error("Exception handler 0 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_1()
+__attribute__((noreturn)) void c_exception_handler_1()
 {
 	error("Exception handler 1 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_2()
+__attribute__((noreturn)) void c_exception_handler_2()
 {
 	error("Exception handler 2 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_3()
+__attribute__((noreturn)) void c_exception_handler_3()
 {
 	error("Exception handler 3 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_4()
+__attribute__((noreturn)) void c_exception_handler_4()
 {
 	error("Exception handler 4 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_5()
+__attribute__((noreturn)) void c_exception_handler_5()
 {
 	error("Exception handler 5 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_6()
+__attribute__((noreturn)) void c_exception_handler_6()
 {
 	error("Exception handler 6 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_7()
+__attribute__((noreturn)) void c_exception_handler_7()
 {
 	error("Exception handler 7 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_8()
+__attribute__((noreturn)) void c_exception_handler_8()
 {
 	error("Exception handler 8 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_10()
+__attribute__((noreturn)) void c_exception_handler_10()
 {
 	error("Exception handler 10 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_11()
+__attribute__((noreturn)) void c_exception_handler_11()
 {
 	error("Exception handler 11 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_12()
+__attribute__((noreturn)) void c_exception_handler_12()
 {
 	error("Exception handler 12 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_13()
+__attribute__((noreturn)) void c_exception_handler_13()
 {
 	error("Exception handler 13 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_14()
+__attribute__((noreturn)) void c_exception_handler_14()
 {
 	error("Exception handler 14 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_16()
+__attribute__((noreturn)) void c_exception_handler_16()
 {
 	error("Exception handler 16 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_17()
+__attribute__((noreturn)) void c_exception_handler_17()
 {
 	error("Exception handler 17 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_18()
+__attribute__((noreturn)) void c_exception_handler_18()
 {
 	error("Exception handler 18 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_19()
+__attribute__((noreturn)) void c_exception_handler_19()
 {
 	error("Exception handler 19 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_20()
+__attribute__((noreturn)) void c_exception_handler_20()
 {
 	error("Exception handler 20 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }
 
-void c_exception_handler_30()
+__attribute__((noreturn)) void c_exception_handler_30()
 {
 	error("Exception handler 30 was triggered!");
 	for (;;)
 	{
-		asm ("cli");
-		asm ("hlt");
+		__asm__ ("cli");
+		__asm__ ("hlt");
 	}
 }

@@ -6,7 +6,7 @@
 
 #include <lib/logger.h>
 
-struct pagemap* kernel_pagemap;
+static struct pagemap* kernel_pagemap;
 
 void vmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_entries)
 {
@@ -47,11 +47,11 @@ void vmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_en
 struct pagemap* vmm_create_new_pagemap(void)
 {
 	struct pagemap* pagemap = kmalloc(sizeof(struct pagemap));
-	pagemap->top_level = (uintptr_t) pmm_calloc(1);
+	pagemap->top_level = (uintptr_t) (uint64_t*) pmm_calloc(1);
 	if (kernel_pagemap != NULL)
 	{
-		uintptr_t* top_level = (void*) pagemap->top_level + PHYSICAL_MEMORY_OFFSET;
-		uintptr_t* kernel_top_level = (void*) kernel_pagemap->top_level + PHYSICAL_MEMORY_OFFSET;
+		uintptr_t* top_level = (void*) ((uint8_t*) pagemap->top_level + PHYSICAL_MEMORY_OFFSET);
+		uintptr_t* kernel_top_level = (void*) ((uint8_t*) kernel_pagemap->top_level + PHYSICAL_MEMORY_OFFSET);
 		for (size_t i = 256; i < 512; i++)
 		{
 			top_level[i] = kernel_top_level[i];
@@ -62,7 +62,7 @@ struct pagemap* vmm_create_new_pagemap(void)
 
 void vmm_switch_pagemap(struct pagemap* pagemap)
 {
-	asm volatile (
+	__asm__ volatile (
 	"mov %%cr3, %0"
 	:
 	: "r" (pagemap->top_level)
@@ -85,16 +85,16 @@ static uintptr_t* get_next_level(uintptr_t* current_level, size_t entry, uint8_t
 			return NULL;
 		}
 		
-		ret = (uintptr_t) pmm_calloc(1);
+		ret = (uintptr_t) (uint64_t*) pmm_calloc(1);
 		if (ret == 0)
 		{
 			return NULL;
 		}
 		
-		current_level[entry] = ret | 0b111;
+		current_level[entry] = ret | (1 << 0 | 1 << 1 | 1 << 2);
 	}
 	
-	return (void*) ret + PHYSICAL_MEMORY_OFFSET;
+	return (void*) (ret + PHYSICAL_MEMORY_OFFSET);
 }
 
 static uintptr_t* virtual2pte(struct pagemap* pagemap, uintptr_t virt_addr, uint8_t allocate)
@@ -104,7 +104,7 @@ static uintptr_t* virtual2pte(struct pagemap* pagemap, uintptr_t virt_addr, uint
 	uintptr_t pml2_entry = (virt_addr & ((uintptr_t) 0x1FF << 21)) >> 21;
 	uintptr_t pml1_entry = (virt_addr & ((uintptr_t) 0x1FF << 12)) >> 12;
 	
-	uintptr_t* pml4 = (void*) pagemap->top_level + PHYSICAL_MEMORY_OFFSET;
+	uintptr_t* pml4 = (void*) (pagemap->top_level + PHYSICAL_MEMORY_OFFSET);
 	
 	uintptr_t* pml3 = get_next_level(pml4, pml4_entry, allocate);
 	if (pml3 == NULL)

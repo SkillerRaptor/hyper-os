@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 
-uint16_t qwertz_keyboard_map[128] =
+static uint16_t qwertz_keyboard_map[128] =
 {
 	VIRTUAL_KEY_UNKNOWN, VIRTUAL_KEY_UNKNOWN,
 	VIRTUAL_KEY_1, VIRTUAL_KEY_2, VIRTUAL_KEY_3, VIRTUAL_KEY_4, VIRTUAL_KEY_5,

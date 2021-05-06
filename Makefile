@@ -33,6 +33,7 @@ dependencies:
 
 .PHONY: $(KERNEL_HDD)
 $(KERNEL_HDD):
+	@rm kernel.hdd
 	@dd if=/dev/zero bs=1M count=0 seek=64 of=$(KERNEL_HDD)
 	@parted -s $(KERNEL_HDD) mklabel msdos
 	@parted -s $(KERNEL_HDD) mkpart primary 1 100%

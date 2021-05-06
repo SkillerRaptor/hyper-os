@@ -81,7 +81,7 @@ void pic_set_interrupt_request_mask(uint8_t interrupt_request_line)
 		interrupt_request_line -= 0x8;
 	}
 	
-	value = io_inb(port) | (1 << interrupt_request_line);
+	value = (uint8_t) (io_inb(port) | (1 << interrupt_request_line));
 	io_outb(port, value);
 }
 
@@ -100,7 +100,7 @@ void pic_clear_interrupt_request_mask(uint8_t interrupt_request_line)
 		interrupt_request_line -= 0x8;
 	}
 	
-	value = io_inb(port) & ~(1 << interrupt_request_line);
+	value = (uint8_t) (io_inb(port) & ~(1 << interrupt_request_line));
 	io_outb(port, value);
 }
 
@@ -108,12 +108,12 @@ uint16_t pic_get_in_service_register(void)
 {
 	io_outb(MASTER_COMMAND_SELECTOR, PIC_IN_SERVICE_REGISTER_CODE);
 	io_outb(SLAVE_COMMAND_SELECTOR, PIC_IN_SERVICE_REGISTER_CODE);
-	return (io_inb(SLAVE_COMMAND_SELECTOR) << 8) | io_inb(MASTER_COMMAND_SELECTOR);
+	return (uint16_t)((io_inb(SLAVE_COMMAND_SELECTOR) << 8) | io_inb(MASTER_COMMAND_SELECTOR));
 }
 
 uint16_t pic_get_interrupt_request_register(void)
 {
 	io_outb(MASTER_COMMAND_SELECTOR, PIC_INTERRUPT_REQUEST_REGISTER_CODE);
 	io_outb(SLAVE_COMMAND_SELECTOR, PIC_INTERRUPT_REQUEST_REGISTER_CODE);
-	return (io_inb(SLAVE_COMMAND_SELECTOR) << 8) | io_inb(MASTER_COMMAND_SELECTOR);
+	return (uint16_t)((io_inb(SLAVE_COMMAND_SELECTOR) << 8) | io_inb(MASTER_COMMAND_SELECTOR));
 }

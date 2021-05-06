@@ -1,6 +1,6 @@
 #include "stivale2.h"
 
-#include <mm/memory.h>
+#include <memory/memory.h>
 
 #include <stddef.h>
 
@@ -39,7 +39,7 @@ static struct stivale2_header header =
 
 void* stivale2_get_tag(struct stivale2_struct* stivale2_struct, uint64_t id)
 {
-	struct stivale2_tag* current_tag = (void*) stivale2_struct->tags + PHYSICAL_MEMORY_OFFSET;
+	struct stivale2_tag* current_tag = (void*) ((uint8_t*) stivale2_struct->tags + PHYSICAL_MEMORY_OFFSET);
 	for (;;)
 	{
 		if (current_tag == NULL)
@@ -52,6 +52,6 @@ void* stivale2_get_tag(struct stivale2_struct* stivale2_struct, uint64_t id)
 			return current_tag;
 		}
 		
-		current_tag = (void*) current_tag->next + PHYSICAL_MEMORY_OFFSET;
+		current_tag = (void*) ((uint8_t*) current_tag->next + PHYSICAL_MEMORY_OFFSET);
 	}
 }
