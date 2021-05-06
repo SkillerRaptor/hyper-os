@@ -13,7 +13,7 @@ AS = nasm
 
 STANDARD_FLAGS := -nostdlib
 FILE_FLAGS := -ffreestanding -fno-stack-protector -fno-ident
-WARNING_FLAGS := -Weverything -Wall -Werror -Wextra -Wundef -Wcast-qual -Wwrite-strings -Wno-atomic-implicit-seq-cst -Wno-unused-macros -Wno-unused-function -Wno-missing-prototypes
+WARNING_FLAGS := -Weverything -Wall -Werror -Wextra -Wundef -Wcast-qual -Wwrite-strings -Wno-unused-macros -Wno-unused-function -Wno-missing-prototypes
 FLAVOR_FLAGS := -fomit-frame-pointer -mno-red-zone -mno-sse -mno-sse2 -mno-80387 -mno-mmx -mcmodel=kernel -m64 -ffunction-sections -fdata-sections -fmerge-all-constants -fno-unroll-loops -fno-pie -fno-pic
 OPTIMIZATION_FLAGS := -Os -fno-asynchronous-unwind-tables
 INCLUDE_FLAGS := -I.

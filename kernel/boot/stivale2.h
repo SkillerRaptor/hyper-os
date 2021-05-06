@@ -107,7 +107,6 @@ struct stivale2_struct_tag_commandline
 	struct stivale2_tag tag;
 	uint64_t commandline;
 } __attribute__((packed));
-EMORY_
 
 struct stivale2_memory_map_entry
 {

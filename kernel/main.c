@@ -92,7 +92,7 @@ __attribute__((noreturn)) void main(struct stivale2_struct* stivale2_struct)
 		}
 	}
 	
-	memcpy((void*)framebuffer_tag->framebuffer_addr, (void*)backbuffer, framebuffer_tag->framebuffer_height * framebuffer_tag->framebuffer_pitch);
+	memcpy((void*)framebuffer_tag->framebuffer_address, (void*)backbuffer, framebuffer_tag->framebuffer_height * framebuffer_tag->framebuffer_pitch);
 	kfree(backbuffer);
 	
 	ps2_keyboard_init();
