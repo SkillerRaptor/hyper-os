@@ -23,7 +23,47 @@ jobs:
           sudo apt update -qq
           sudo apt install -y gcc clang gdb build-essential nasm
 
+      - name: Cache Files
+        uses: actions/cache@v2
+        id: cache-cross-compiler
+        env:
+          cache-name: cache-cross-compiler
+        with:
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
+          path: ~/CrossCompiler
+
+      - name: Build Cross Compiler
+        if: steps.cache-cross-compiler.outputs.cache-hit != 'true'
+        run: |
+          export PREFIX="$HOME/CrossCompiler/opt/cross"
+          export TARGET=x86_64-elf
+          export PATH="$PREFIX/bin:$PATH"
+          mkdir -p $HOME/CrossCompiler/opt/cross
+          mkdir -p $HOME/CrossCompiler/src
+          sudo apt install build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo libisl-dev
+          cd $HOME/CrossCompiler/src
+          sudo wget -c https://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.gz -O - | sudo tar -xz
+          mkdir build-binutils
+          cd build-binutils
+          ../binutils-2.35/configure --target=$TARGET --prefix="$PREFIX" --with-sysroot --disable-nls --disable-werror
+          make
+          make install
+          cd $HOME/CrossCompiler/src
+          which -- $TARGET-as || echo $TARGET-as is not in the PATH
+          sudo wget -c https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz -O - | sudo tar -xz
+          mkdir build-gcc
+          cd build-gcc
+          ../gcc-10.2.0/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --enable-languages=c,c++ --without-headers
+          make all-gcc
+          make all-target-libgcc
+          make install-gcc
+          make install-target-libgcc
+
       - name: Build Project Files
         run: |
+          export PREFIX="$HOME/CrossCompiler/opt/cross"
+          export TARGET=x86_64-elf
+          export PATH="$PREFIX/bin:$PATH"
+          make deps
           make
           make clean
