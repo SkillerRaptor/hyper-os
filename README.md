@@ -2,7 +2,6 @@
 
 # HyperOS
 
-[![Build](https://github.com/SkillerRaptor/HyperOS/workflows/build/badge.svg)](https://github.com/SkillerRaptor/HyperOS/blob/master/.github/workflows/build.yml)
 [![License](https://img.shields.io/badge/license-MIT-yellow)](https://github.com/SkillerRaptor/HyperOS/blob/master/LICENSE)
 
 HyperOS is a small x86_64 operating system written in C99.
