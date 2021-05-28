@@ -41,5 +41,5 @@ $(KERNEL_HDD):
 	@thirdparty/echfs/echfs-utils -m -p0 $(KERNEL_HDD) quick-format 32768
 	@thirdparty/echfs/echfs-utils -m -p0 $(KERNEL_HDD) import kernel.elf kernel.elf
 	@thirdparty/echfs/echfs-utils -m -p0 $(KERNEL_HDD) import limine.cfg limine.cfg
-	@thirdparty/echfs/echfs-utils -m -p0 $(KERNEL_HDD) import thirdparty/limine/bin/limine.sys limine.sys
-	@thirdparty/limine/bin/limine-install $(KERNEL_HDD);
+	@thirdparty/echfs/echfs-utils -m -p0 $(KERNEL_HDD) import thirdparty/limine/limine.sys limine.sys
+	@thirdparty/limine/limine-install-linux-x86_64 $(KERNEL_HDD)

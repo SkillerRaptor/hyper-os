@@ -4,31 +4,14 @@
 
 #include <stdint.h>
 
-#define GDT_ACCESS_ATTRIBUTE_NULL (0 << 0)
-#define GDT_ACCESS_ATTRIBUTE_PRESENT (1 << 7)
-#define GDT_ACCESS_ATTRIBUTE_RING_3 (1 << 6 | 1 << 5)
-#define GDT_ACCESS_ATTRIBUTE_CODE_OR_DATA (1 << 4)
-#define GDT_ACCESS_ATTRIBUTE_EXECUTABLE (1 << 3)
-#define GDT_ACCESS_ATTRIBUTE_GROWS_DOWN (1 << 2)
-#define GDT_ACCESS_ATTRIBUTE_ALLOW_LOWER (1 << 2)
-#define GDT_ACCESS_ATTRIBUTE_READABLE (1 << 1)
-#define GDT_ACCESS_ATTRIBUTE_WRITEABLE (1 << 1)
-
-#define GDT_FLAG_ATTRIBUTE_NULL (0 << 0)
-#define GDT_FLAG_ATTRIBUTE_GRANULARITY_1B (0 << 0)
-#define GDT_FLAG_ATTRIBUTE_GRANULARITY_4K (1 << 3)
-#define GDT_FLAG_ATTRIBUTE_SIZE_16_BIT (0 << 0)
-#define GDT_FLAG_ATTRIBUTE_SIZE_32_BIT (1 << 2)
-#define GDT_FLAG_ATTRIBUTE_SIZE_64_BIT (1 << 1)
-
 struct gdt_entry
 {
 	uint16_t limit_low;
 	uint16_t base_low;
 	uint8_t base_mid;
 	uint8_t access;
-	uint8_t limit_high : 4;
-	uint8_t flags : 4;
+	uint8_t limit_high: 4;
+	uint8_t flags: 4;
 	uint8_t base_high;
 } __attribute__((packed));
 
@@ -36,7 +19,7 @@ struct gdt_entries
 {
 	struct gdt_entry null_entry;
 	struct gdt_entry kernel_entries[2];
-	// TODO: Userland Entry
+	struct gdt_entry userland_entries[2];
 	// TODO: TSS Entry
 };
 
@@ -49,77 +32,30 @@ struct gdt_pointer
 static struct gdt_entries entries;
 static struct gdt_pointer pointer;
 
-static void gdt_create_descriptor(
-	struct gdt_entry* entry,
-	uint32_t base,
-	uint32_t limit,
-	uint8_t access,
-	uint8_t flags);
+static void gdt_create_descriptor(struct gdt_entry* entry, uint32_t base, uint32_t limit, uint8_t access, uint8_t flags);
 
 void gdt_init(void)
 {
-	info("Initializing GDT...");
+	info("GDT: Initializing...");
 	
-	/* Null Entry */
-	gdt_create_descriptor(
-		&entries.null_entry,
-		0,
-		0,
-		GDT_ACCESS_ATTRIBUTE_NULL,
-		GDT_FLAG_ATTRIBUTE_NULL);
-	info(" Null descriptor created!");
+	gdt_create_descriptor( &entries.null_entry, 0x00000000, 0x00000000, 0x00, 0x00);
 	
-	/* Kernel Code */
-	uint8_t kernel_code_access_attributes = 0x00000000;
-	kernel_code_access_attributes |= GDT_ACCESS_ATTRIBUTE_PRESENT;
-	kernel_code_access_attributes |= GDT_ACCESS_ATTRIBUTE_CODE_OR_DATA;
-	kernel_code_access_attributes |= GDT_ACCESS_ATTRIBUTE_EXECUTABLE;
-	kernel_code_access_attributes |= GDT_ACCESS_ATTRIBUTE_READABLE;
-	
-	uint8_t kernel_code_flag_attributes = 0x00000000;
-	kernel_code_flag_attributes |= GDT_FLAG_ATTRIBUTE_GRANULARITY_4K;
-	kernel_code_flag_attributes |= GDT_FLAG_ATTRIBUTE_SIZE_64_BIT;
-	
-	gdt_create_descriptor(
-		&entries.kernel_entries[0],
-		0x00000000,
-		0xFFFFFFFF,
-		kernel_code_access_attributes,
-		kernel_code_flag_attributes);
-	info(" Kernel code descriptor created!");
-	
-	/* Kernel Data */
-	uint8_t kernel_data_access_attributes = 0x00000000;
-	kernel_data_access_attributes |= GDT_ACCESS_ATTRIBUTE_PRESENT;
-	kernel_data_access_attributes |= GDT_ACCESS_ATTRIBUTE_CODE_OR_DATA;
-	kernel_data_access_attributes |= GDT_ACCESS_ATTRIBUTE_WRITEABLE;
-	
-	uint8_t kernel_data_flag_attributes = 0x00000000;
-	kernel_data_flag_attributes |= GDT_FLAG_ATTRIBUTE_GRANULARITY_4K;
-	kernel_data_flag_attributes |= GDT_FLAG_ATTRIBUTE_SIZE_32_BIT;
-	
-	gdt_create_descriptor(
-		&entries.kernel_entries[1],
-		0x00000000,
-		0xFFFFFFFF,
-		kernel_data_access_attributes,
-		kernel_data_flag_attributes);
-	info(" Kernel data descriptor created!");
+	gdt_create_descriptor(&entries.kernel_entries[0], 0x00000000, 0xFFFFFFFF, 0x9A, 0x0A);
+	gdt_create_descriptor(&entries.kernel_entries[1], 0x00000000, 0xFFFFFFFF, 0x92, 0x0C);
 	
 	pointer.size = sizeof(entries) - 1;
 	pointer.address = (uintptr_t) &entries;
 	
 	gdt_reload();
-	info(" GDT was reloaded!");
 	
-	info("Initializing GDT finished!");
+	info("GDT: Initializing finished!");
 }
 
 void gdt_reload(void)
 {
-	__asm__ volatile ("cli");
+	asm volatile ("cli");
 	
-	__asm__ volatile (
+	asm volatile (
 	"lgdt %0\n"
 	"pushq %%rbp\n"
 	"movq %%rsp, %%rbp\n"
@@ -142,12 +78,7 @@ void gdt_reload(void)
 	);
 }
 
-static void gdt_create_descriptor(
-	struct gdt_entry* entry,
-	uint32_t base,
-	uint32_t limit,
-	uint8_t access,
-	uint8_t flags)
+static void gdt_create_descriptor(struct gdt_entry* entry, uint32_t base, uint32_t limit, uint8_t access, uint8_t flags)
 {
 	entry->base_low = base & 0x0000FFFF;
 	entry->base_mid = (base & 0x00FF0000) >> 16;

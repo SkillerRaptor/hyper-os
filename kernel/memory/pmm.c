@@ -14,17 +14,16 @@ static uintptr_t highest_page = 0;
 
 static spinlock lock;
 
-void pmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_entries)
+void pmm_init(struct stivale2_mmap_entry* memory_map, size_t memory_map_entries)
 {
-	info("Initializing PMM...");
+	info("PMM: Initializing...");
 	
-	/* Find biggest memory map entry */
 	for (size_t i = 0; i < memory_map_entries; i++)
 	{
-		debug("[Entry %d] [%x - %x]: Size: %x - Type: %x", i, memory_map[i].base,
-		      memory_map[i].base + memory_map[i].length, memory_map[i].length, memory_map[i].type);
+		debug("[Entry %d] [%x - %x]: Size: %x - Type: %x", i, memory_map[i].base, memory_map[i].base + memory_map[i].length,
+		      memory_map[i].length, memory_map[i].type);
 		
-		if (memory_map[i].type != STIVALE2_MEMORY_MAP_USABLE)
+		if (memory_map[i].type != STIVALE2_MMAP_USABLE)
 		{
 			continue;
 		}
@@ -36,13 +35,10 @@ void pmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_en
 		}
 	}
 	
-	info(" The biggest memory map entry was found!");
-	
-	/* Find place to put bitmap in */
 	size_t bitmap_size = math_div_roundup(highest_page, PAGE_SIZE) / 8;
 	for (size_t i = 0; i < memory_map_entries; i++)
 	{
-		if (memory_map[i].type != STIVALE2_MEMORY_MAP_USABLE)
+		if (memory_map[i].type != STIVALE2_MMAP_USABLE)
 		{
 			continue;
 		}
@@ -61,12 +57,9 @@ void pmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_en
 		}
 	}
 	
-	info(" The bitmap was placed into a memory map entry!");
-	
-	/* Free usable memory */
 	for (size_t i = 0; i < memory_map_entries; i++)
 	{
-		if (memory_map[i].type != STIVALE2_MEMORY_MAP_USABLE)
+		if (memory_map[i].type != STIVALE2_MMAP_USABLE)
 		{
 			continue;
 		}
@@ -77,12 +70,10 @@ void pmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_en
 		}
 	}
 	
-	info(" The usable memory was marked as free!");
-	
-	info("Initializing PMM finished!");
+	info("PMM: Initializing finished!");
 }
 
-static void* pmm_inner_alloc(size_t count, size_t limit)
+static void* pmm_internal_allocate(size_t count, size_t limit)
 {
 	size_t p = 0;
 	
@@ -109,16 +100,16 @@ static void* pmm_inner_alloc(size_t count, size_t limit)
 	return NULL;
 }
 
-void* pmm_alloc(size_t count)
+void* pmm_allocate(size_t count)
 {
 	spinlock_lock(&lock);
 	
-	size_t l = last_used_index;
-	void* ret = pmm_inner_alloc(count, highest_page / PAGE_SIZE);
+	size_t last_index = last_used_index;
+	void* ret = pmm_internal_allocate(count, highest_page / PAGE_SIZE);
 	if (ret == NULL)
 	{
 		last_used_index = 0;
-		ret = pmm_inner_alloc(count, l);
+		ret = pmm_internal_allocate(count, last_index);
 	}
 	
 	spinlock_unlock(&lock);
@@ -126,18 +117,16 @@ void* pmm_alloc(size_t count)
 	return ret;
 }
 
-void* pmm_calloc(size_t count)
+void* pmm_callocate(size_t count)
 {
-	uint8_t* ret = (uint8_t*) pmm_alloc(count);
+	uint8_t* ret = (uint8_t*) pmm_allocate(count);
 	
 	if (ret == NULL)
 	{
 		return NULL;
 	}
 	
-	uint64_t* ptr = NULL;
-	memcpy(ptr, ret + PHYSICAL_MEMORY_OFFSET, sizeof(uint64_t*));
-	
+	uint64_t* ptr = (uint64_t*) (ret + PHYSICAL_MEMORY_OFFSET);
 	for (size_t i = 0; i < count * (PAGE_SIZE / sizeof(uint64_t)); i++)
 	{
 		ptr[i] = 0x0;

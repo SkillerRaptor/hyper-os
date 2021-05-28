@@ -11,11 +11,14 @@ CC = x86_64-elf-gcc
 LD = x86_64-elf-gcc
 AS = nasm
 
+CC = /mnt/e/Programme/CrossCompiler/opt/bin/x86_64-elf-gcc
+LD = /mnt/e/Programme/CrossCompiler/opt/bin/x86_64-elf-gcc
+
 STANDARD_FLAGS := -nostdlib
 FILE_FLAGS := -ffreestanding -fno-stack-protector -fno-ident
-WARNING_FLAGS := -Wall -Werror -Wextra -Wundef -Wcast-qual -Wwrite-strings -Wno-atomic-implicit-seq-cst -Wno-unused-macros -Wno-unused-function -Wno-missing-prototypes
+WARNING_FLAGS := -Wall -Werror -Wextra -Wundef -Wcast-qual -Wwrite-strings
 FLAVOR_FLAGS := -fomit-frame-pointer -mno-red-zone -mno-sse -mno-sse2 -mno-80387 -mno-mmx -mcmodel=kernel -m64 -ffunction-sections -fdata-sections -fmerge-all-constants -fno-unroll-loops -fno-pie -fno-pic
-OPTIMIZATION_FLAGS := -Os -fno-asynchronous-unwind-tables
+OPTIMIZATION_FLAGS := -Os
 INCLUDE_FLAGS := -I.
 
 C_FLAGS := $(STANDARD_FLAGS) $(FILE_FLAGS) $(WARNING_FLAGS) $(FLAVOR_FLAGS) $(OPTIMIZATION_FLAGS) $(INCLUDE_FLAGS)

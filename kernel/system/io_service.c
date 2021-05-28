@@ -1,10 +1,8 @@
 #include "io_service.h"
 
-#define IO_WAIT_PORT 0x80
-
 void io_outb(uint16_t port, uint8_t value)
 {
-	__asm__ volatile (
+	asm volatile (
 	"outb %0, %1"
 	:
 	: "a"(value), "Nd"(port)
@@ -13,15 +11,15 @@ void io_outb(uint16_t port, uint8_t value)
 
 uint8_t io_inb(uint16_t port)
 {
-	uint8_t ret;
-	__asm__ volatile (
+	uint8_t return_value = 0;
+	asm volatile (
 	"inb %1, %0"
-	: "=a"(ret) : "Nd"(port)
+	: "=a"(return_value) : "Nd"(port)
 	);
-	return ret;
+	return return_value;
 }
 
 void io_wait(void)
 {
-	io_outb(IO_WAIT_PORT, 0x0);
+	io_outb(0x80, 0x00);
 }

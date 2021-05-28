@@ -21,8 +21,10 @@ void pcspkr_init(void)
 
 void pcspkr_set_frequency(uint32_t frequency)
 {
-	__asm__ volatile("cli");
+	(void) frequency;
+	asm volatile("cli");
 	
+	/*
 	uint32_t divisor = PIT_MAX_FREQUENCY / frequency;
 	
 	uint8_t low_byte = (uint8_t) (divisor & 0xFF);
@@ -31,8 +33,9 @@ void pcspkr_set_frequency(uint32_t frequency)
 	io_outb(PCSPKR_COMMAND_PORT, PIT_CHANNEL_2 | PIT_LOW_AND_HIGH_BYTE | PIT_SQUARE_WAVE_GENERATOR);
 	io_outb(PIT_DATA_PORT, low_byte);
 	io_outb(PIT_DATA_PORT, high_byte);
+	 */
 	
-	__asm__ volatile("sti");
+	asm volatile("sti");
 }
 
 void pcspkr_play(uint32_t frequency)

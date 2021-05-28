@@ -8,15 +8,12 @@
 
 static struct pagemap* kernel_pagemap;
 
-void vmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_entries)
+void vmm_init(struct stivale2_mmap_entry* memory_map, size_t memory_map_entries)
 {
-	info("Initializing VMM...");
+	info("VMM: Initializing...");
 	
 	kernel_pagemap = vmm_create_new_pagemap();
 	
-	info(" The kernel pagemap was created!");
-	
-	/* Map memory */
 	for (uintptr_t p = 0; p < 0x100000000; p += PAGE_SIZE)
 	{
 		vmm_map_page(kernel_pagemap, PHYSICAL_MEMORY_OFFSET + p, p, 0x03);
@@ -35,19 +32,15 @@ void vmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_en
 		}
 	}
 	
-	info(" The memory for the kernel pagemap was mapped!");
-	
 	vmm_switch_pagemap(kernel_pagemap);
 	
-	info(" The pagemap was switched to the kernel pagemap!");
-	
-	info("Initializing VMM finished!");
+	info("VMM: Initializing finished!");
 }
 
 struct pagemap* vmm_create_new_pagemap(void)
 {
 	struct pagemap* pagemap = kmalloc(sizeof(struct pagemap));
-	pagemap->top_level = (uintptr_t) (uint64_t*) pmm_calloc(1);
+	pagemap->top_level = (uintptr_t) pmm_callocate(1);
 	if (kernel_pagemap != NULL)
 	{
 		uintptr_t* top_level = (void*) ((uint8_t*) pagemap->top_level + PHYSICAL_MEMORY_OFFSET);
@@ -62,7 +55,7 @@ struct pagemap* vmm_create_new_pagemap(void)
 
 void vmm_switch_pagemap(struct pagemap* pagemap)
 {
-	__asm__ volatile (
+	asm volatile (
 	"mov %%cr3, %0"
 	:
 	: "r" (pagemap->top_level)
@@ -80,12 +73,12 @@ static uintptr_t* get_next_level(uintptr_t* current_level, size_t entry, uint8_t
 	}
 	else
 	{
-		if (allocate == 0)
+		if (!allocate)
 		{
 			return NULL;
 		}
 		
-		ret = (uintptr_t) (uint64_t*) pmm_calloc(1);
+		ret = (uintptr_t) pmm_callocate(1);
 		if (ret == 0)
 		{
 			return NULL;

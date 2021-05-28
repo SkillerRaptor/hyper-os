@@ -21,7 +21,7 @@
 
 __attribute__((noreturn)) void main(struct stivale2_struct* stivale2_struct)
 {
-	stivale2_struct = (void*) ((uint8_t*) stivale2_struct + PHYSICAL_MEMORY_OFFSET);
+	stivale2_struct = (void*) stivale2_struct + PHYSICAL_MEMORY_OFFSET;
 	
 	serial_init();
 	
@@ -37,13 +37,12 @@ __attribute__((noreturn)) void main(struct stivale2_struct* stivale2_struct)
 	
 	pit_init(100);
 	
-	struct stivale2_struct_tag_memory_map* memory_map_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_MEMORY_MAP_ID);
+	struct stivale2_struct_tag_memmap* memory_map_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_MEMMAP_ID);
 	
-	pmm_init(memory_map_tag->memory_map, memory_map_tag->entries);
-	vmm_init(memory_map_tag->memory_map, memory_map_tag->entries);
+	pmm_init(memory_map_tag->memmap, memory_map_tag->entries);
+	vmm_init(memory_map_tag->memmap, memory_map_tag->entries);
 	
 	//struct stivale2_struct_tag_smp* smp_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_SMP_ID);
-	
 	//smp_init(smp_tag);
 	
 	struct stivale2_struct_tag_framebuffer* framebuffer_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
@@ -92,7 +91,7 @@ __attribute__((noreturn)) void main(struct stivale2_struct* stivale2_struct)
 		}
 	}
 	
-	memcpy((void*)framebuffer_tag->framebuffer_address, (void*)backbuffer, framebuffer_tag->framebuffer_height * framebuffer_tag->framebuffer_pitch);
+	memcpy((void*) framebuffer_tag->framebuffer_addr, (void*) backbuffer, framebuffer_tag->framebuffer_height * framebuffer_tag->framebuffer_pitch);
 	kfree(backbuffer);
 	
 	ps2_keyboard_init();
@@ -101,12 +100,12 @@ __attribute__((noreturn)) void main(struct stivale2_struct* stivale2_struct)
 	
 	info("HyperOS booted successful!");
 	
-	__asm__ volatile ("sti");
+	asm volatile ("sti");
 	
 	pcspkr_beep(500);
 	
 	for (;;)
 	{
-		__asm__ volatile ("hlt");
+		asm volatile ("hlt");
 	}
 }

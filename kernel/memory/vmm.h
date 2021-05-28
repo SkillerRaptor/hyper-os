@@ -13,7 +13,7 @@ struct pagemap
 	uint8_t zero[4];
 };
 
-void vmm_init(struct stivale2_memory_map_entry* memory_map, size_t memory_map_entries);
+void vmm_init(struct stivale2_mmap_entry* memory_map, size_t memory_map_entries);
 
 struct pagemap* vmm_create_new_pagemap(void);
 void vmm_switch_pagemap(struct pagemap* pagemap);
