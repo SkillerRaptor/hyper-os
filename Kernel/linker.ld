@@ -22,7 +22,9 @@ SECTIONS
         *(.ctors)
         constructors_end = .;
 
+        destructors_start = .;
         *(.dtors)
+        destructors_end = .;
 
         *(.rodata*)
     }

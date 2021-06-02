@@ -32,7 +32,7 @@ namespace Kernel
 			uint32_t oem_revision;
 			uint32_t creator_id;
 			uint32_t creator_revision;
-		};
+		} __attribute__((packed));
 		
 	private:
 		struct RSDT

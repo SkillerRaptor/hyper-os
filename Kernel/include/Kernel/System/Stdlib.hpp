@@ -6,6 +6,8 @@ namespace Kernel
 {
 	extern "C"
 	{
+		extern void* __dso_handle;
+		
 		void* memcpy(void* destination, const void* source, size_t num);
 		void* memset(void* destination, int value, size_t num);
 		void* memmove(void* destination, const void* source, size_t num);
@@ -19,7 +21,7 @@ namespace Kernel
 		
 		void __stack_chk_fail() __attribute__((used));
 		void __stack_chk_fail_local() __attribute__((used));
-		int __cxa_atexit(void (* destructor)(void*), void* arg, void* dso) __attribute__((used));
+		int __cxa_atexit(void (* destructor)(void*), void* object_ptr, void* dso) __attribute__((used));
 		void __cxa_pure_virtual() __attribute__((used));
 	}
 }

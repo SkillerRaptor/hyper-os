@@ -5,6 +5,7 @@
 #include <Kernel/Memory/PhysicalMemoryManager.hpp>
 #include <Kernel/Memory/VirtualMemoryManager.hpp>
 #include <Kernel/System/ACPI.hpp>
+#include <Kernel/System/APIC.hpp>
 #include <Kernel/System/GDT.hpp>
 #include <Kernel/System/IDT.hpp>
 #include <Kernel/System/PIC.hpp>
@@ -36,9 +37,10 @@ namespace Kernel
 		
 		auto* rsdp_tag = reinterpret_cast<stivale2_struct_tag_rsdp*>(stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_RSDP_ID));
 		ACPI::initialize(reinterpret_cast<ACPI::RSDP*>(rsdp_tag->rsdp + AK::s_physical_memory_offset));
+		APIC::initialize();
 		
 		auto* smp_tag = reinterpret_cast<stivale2_struct_tag_smp*>(stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_SMP_ID));
-		
+		//SMP::initialize();
 		
 		auto* framebuffer_tag = reinterpret_cast<stivale2_struct_tag_framebuffer*>(stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID));
 		auto* screen = reinterpret_cast<uint8_t*>(framebuffer_tag->framebuffer_addr);

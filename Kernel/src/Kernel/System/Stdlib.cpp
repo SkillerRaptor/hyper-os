@@ -4,6 +4,8 @@
 
 namespace Kernel
 {
+	void* __dso_handle __attribute__((visibility("hidden")));
+	
 	void* memcpy(void* destination, const void* source, size_t num)
 	{
 		auto* _destination = reinterpret_cast<uint8_t*>(destination);
@@ -150,7 +152,7 @@ namespace Kernel
 		VERIFY_NOT_REACHED();
 	}
 	
-	int __cxa_atexit(void (* destructor)(void*), void* arg, void* dso)
+	int __cxa_atexit(void (*)(void*), void*, void*)
 	{
 		VERIFY_NOT_REACHED();
 		return 0;

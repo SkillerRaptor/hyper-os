@@ -2,6 +2,7 @@
 #include <AK/Logger.hpp>
 #include <Kernel/System/Stdlib.hpp>
 #include <Kernel/System/ACPI.hpp>
+#include <Kernel/System/MADT.hpp>
 
 namespace Kernel
 {
@@ -13,23 +14,9 @@ namespace Kernel
 		AK::Logger::info("ACPI: Initializing...");
 		
 		ACPI::detect_rsdt(rsdp);
+		MADT::initialize();
 		
 		AK::Logger::info("ACPI: Initializing finished!");
-	}
-	
-	void ACPI::detect_rsdt(ACPI::RSDP* rsdp)
-	{
-		if (rsdp->revision < 2 && !rsdp->xsdt_address)
-		{
-			s_use_xsdt = false;
-			s_rsdt = reinterpret_cast<ACPI::RSDT*>(rsdp->rsdt_address + AK::s_physical_memory_offset);
-			AK::Logger::debug("ACPI: Found RSDT at %x", reinterpret_cast<uintptr_t>(s_rsdt));
-			return;
-		}
-		
-		s_use_xsdt = true;
-		s_rsdt = reinterpret_cast<ACPI::RSDT*>(rsdp->xsdt_address + AK::s_physical_memory_offset);
-		AK::Logger::debug("ACPI: Found XSDT at %x", reinterpret_cast<uintptr_t>(s_rsdt));
 	}
 	
 	void* ACPI::find_sdt(const char* signature, size_t index)
@@ -48,6 +35,21 @@ namespace Kernel
 		
 		AK::Logger::error("ACPI: '%s' not found!", signature);
 		return nullptr;
+	}
+	
+	void ACPI::detect_rsdt(ACPI::RSDP* rsdp)
+	{
+		if (rsdp->revision < 2 && !rsdp->xsdt_address)
+		{
+			s_use_xsdt = false;
+			s_rsdt = reinterpret_cast<ACPI::RSDT*>(rsdp->rsdt_address + AK::s_physical_memory_offset);
+			AK::Logger::debug("ACPI: Found RSDT at %x", reinterpret_cast<uintptr_t>(s_rsdt));
+			return;
+		}
+		
+		s_use_xsdt = true;
+		s_rsdt = reinterpret_cast<ACPI::RSDT*>(rsdp->xsdt_address + AK::s_physical_memory_offset);
+		AK::Logger::debug("ACPI: Found XSDT at %x", reinterpret_cast<uintptr_t>(s_rsdt));
 	}
 	
 	ACPI::SDT* ACPI::get_sdt(size_t index)

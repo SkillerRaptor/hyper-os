@@ -59,6 +59,12 @@ namespace AK
 					Serial::write(Logger::convert_string(i, 10));
 					break;
 				}
+				case 'u':
+				{
+					unsigned int i = va_arg(args, unsigned int);
+					Serial::write(Logger::convert_string(i, 10));
+					break;
+				}
 				case 'o':
 				{
 					unsigned int i = va_arg(args, unsigned int);

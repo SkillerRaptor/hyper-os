@@ -2,6 +2,7 @@
 
 #include <AK/Assertion.hpp>
 #include <AK/Iterator.hpp>
+#include <AK/Utility.hpp>
 
 namespace AK
 {
@@ -21,6 +22,59 @@ namespace AK
 		using ConstIterator = SimpleIterator<const Vector, const ValueType>;
 	
 	public:
+		Vector()
+		{
+			reallocate(2);
+		}
+		
+		~Vector()
+		{
+			clear();
+			delete[] m_data;
+		}
+		
+		void push_back(const T& value)
+		{
+			if (m_size >= m_capacity)
+			{
+				reallocate(m_capacity + m_capacity / 2);
+			}
+			
+			m_data[m_size] = move(value);
+			++m_size;
+		}
+		
+		template <typename... Args>
+		T& emplace_back(Args&& ... args)
+		{
+			if (m_size >= m_capacity)
+			{
+				reallocate(m_capacity + m_capacity / 2);
+			}
+			
+			new (&m_data[m_size]) T(forward<Args>(args)...);
+			return m_data[m_size++];
+		}
+		
+		void pop_back()
+		{
+			if (m_size > 0)
+			{
+				--m_size;
+				m_data[m_size].~T();
+			}
+		}
+		
+		void clear()
+		{
+			for (size_t i = 0; i < m_size; ++i)
+			{
+				m_data[i].~T();
+			}
+			
+			m_size = 0;
+		}
+		
 		Iterator begin() noexcept
 		{
 			return Iterator::begin(*this);
@@ -96,6 +150,31 @@ namespace AK
 		SizeType max_size() const noexcept
 		{
 			return m_size;
+		}
+	
+	private:
+		void reallocate(size_t capacity)
+		{
+			T* data = new T[capacity];
+			
+			if (capacity < m_size)
+			{
+				m_size = capacity;
+			}
+			
+			for (size_t i = 0; i < m_size; ++i)
+			{
+				data[i] = move(m_data[i]);
+			}
+			
+			for (size_t i = 0; i < m_size; ++i)
+			{
+				m_data[i].~T();
+			}
+			
+			delete[] m_data;
+			m_data = data;
+			m_capacity = capacity;
 		}
 	
 	private:
