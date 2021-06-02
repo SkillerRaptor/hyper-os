@@ -42,4 +42,29 @@ namespace Kernel
 		
 		AK::Logger::info("MADT: Initializing finished!");
 	}
+	
+	MADT::Entry* MADT::entry()
+	{
+		return s_entry;
+	}
+	
+	AK::Vector<MADT::LAPIC*> MADT::lapics()
+	{
+		return s_lapics;
+	}
+	
+	AK::Vector<MADT::IOAPIC*> MADT::ioapics()
+	{
+		return s_ioapics;
+	}
+	
+	AK::Vector<MADT::ISO*> MADT::isos()
+	{
+		return s_isos;
+	}
+	
+	AK::Vector<MADT::NMI*> MADT::nmis()
+	{
+		return s_nmis;
+	}
 }

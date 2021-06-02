@@ -6,7 +6,17 @@ namespace Kernel
 {
 	extern "C"
 	{
+		static constexpr const size_t s_atexit_max_functions{ 128 };
+		
+		typedef unsigned uarch_t;
 		extern void* __dso_handle;
+		
+		struct atexit_func_entry_t
+		{
+			void (* destructor_function)(void*);
+			void* object_ptr;
+			void* dso_handle;
+		};
 		
 		void* memcpy(void* destination, const void* source, size_t num);
 		void* memset(void* destination, int value, size_t num);
@@ -21,7 +31,7 @@ namespace Kernel
 		
 		void __stack_chk_fail() __attribute__((used));
 		void __stack_chk_fail_local() __attribute__((used));
-		int __cxa_atexit(void (* destructor)(void*), void* object_ptr, void* dso) __attribute__((used));
+		int __cxa_atexit(void (* destructor_function)(void*), void* object_pointer, void* dso_handle) __attribute__((used));
 		void __cxa_pure_virtual() __attribute__((used));
 	}
 }

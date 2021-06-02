@@ -2,6 +2,7 @@
 
 #include <AK/Assertion.hpp>
 #include <AK/Iterator.hpp>
+#include <AK/Logger.hpp>
 #include <AK/Utility.hpp>
 
 namespace AK
@@ -34,6 +35,17 @@ namespace AK
 		}
 		
 		void push_back(const T& value)
+		{
+			if (m_size >= m_capacity)
+			{
+				reallocate(m_capacity + m_capacity / 2);
+			}
+			
+			m_data[m_size] = value;
+			++m_size;
+		}
+		
+		void push_back(T&& value)
 		{
 			if (m_size >= m_capacity)
 			{

@@ -14,8 +14,8 @@
 namespace Kernel
 {
 	using ConstructorFunction = void (*)();
-	ConstructorFunction constructors_start;
-	ConstructorFunction constructors_end;
+	extern "C" ConstructorFunction constructors_start[];
+	extern "C" ConstructorFunction constructors_end[];
 	
 	extern "C" __attribute__((noreturn)) void main(stivale2_struct* bootloader_data)
 	{
@@ -30,7 +30,7 @@ namespace Kernel
 		PhysicalMemoryManager::initialize(memory_map_tag->memmap, memory_map_tag->entries);
 		VirtualMemoryManager::initialize(memory_map_tag->memmap, memory_map_tag->entries);
 		
-		for (ConstructorFunction* constructor = &constructors_start; constructor < &constructors_end; ++constructor)
+		for (ConstructorFunction* constructor = constructors_start; constructor < constructors_end; ++constructor)
 		{
 			(*constructor)();
 		}

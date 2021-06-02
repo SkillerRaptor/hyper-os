@@ -1,9 +1,11 @@
 #pragma once
 
+#include <AK/Logger.hpp>
+
 extern "C"
 {
-	__attribute__((noreturn)) inline void abort() {}
-	__attribute__((noreturn)) inline void _abort() {}
+	__attribute__((noreturn)) inline void abort() { AK::Logger::error("ABORT!"); asm volatile("hlt"); }
+	__attribute__((noreturn)) inline void _abort() { AK::Logger::error("ABORT!"); asm volatile("hlt"); }
 }
 
 #ifdef DEBUG

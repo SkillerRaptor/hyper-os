@@ -1,10 +1,13 @@
 #include <AK/Assertion.hpp>
+#include <AK/Logger.hpp>
 #include <Kernel/System/Stdlib.hpp>
-#include <stdint.h>
 
 namespace Kernel
 {
 	void* __dso_handle __attribute__((visibility("hidden")));
+	
+	atexit_func_entry_t __atexit_funcs[s_atexit_max_functions];
+	uarch_t __atexit_func_count = 0;
 	
 	void* memcpy(void* destination, const void* source, size_t num)
 	{
@@ -101,7 +104,7 @@ namespace Kernel
 	
 	int strcmp(const char* first, const char* second)
 	{
-		for (size_t i = 0; ; i++)
+		for (size_t i = 0;; i++)
 		{
 			char first_char = first[i];
 			char second_char = second[i];
@@ -144,22 +147,33 @@ namespace Kernel
 	
 	void __stack_chk_fail()
 	{
+		AK::Logger::error("__stack_chk_fail");
 		VERIFY_NOT_REACHED();
 	}
 	
 	void __stack_chk_fail_local()
 	{
+		AK::Logger::error("__stack_chk_fail_local");
 		VERIFY_NOT_REACHED();
 	}
 	
-	int __cxa_atexit(void (*)(void*), void*, void*)
+	int __cxa_atexit(void (* destructor_function)(void*), void* object_pointer, void* dso_handle)
 	{
-		VERIFY_NOT_REACHED();
+		if (__atexit_func_count >= s_atexit_max_functions)
+		{
+			return -1;
+		}
+		
+		__atexit_funcs[__atexit_func_count].destructor_function = destructor_function;
+		__atexit_funcs[__atexit_func_count].object_ptr = object_pointer;
+		__atexit_funcs[__atexit_func_count].dso_handle = dso_handle;
+		__atexit_func_count++;
 		return 0;
 	}
 	
 	void __cxa_pure_virtual()
 	{
+		AK::Logger::error("__cxa_pure_virtual");
 		VERIFY_NOT_REACHED();
 	}
 }

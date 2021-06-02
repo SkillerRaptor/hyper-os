@@ -60,6 +60,12 @@ namespace Kernel
 	public:
 		static void initialize();
 	
+		static Entry* entry();
+		static AK::Vector<LAPIC*> lapics();
+		static AK::Vector<IOAPIC*> ioapics();
+		static AK::Vector<ISO*> isos();
+		static AK::Vector<NMI*> nmis();
+		
 	private:
 		static Entry* s_entry;
 		static AK::Vector<LAPIC*> s_lapics;
