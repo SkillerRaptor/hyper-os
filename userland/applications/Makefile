@@ -1,8 +1,0 @@
-APPLICATIONS := $(wildcard */.)
-
-.PHONY: all
-all: $(APPLICATIONS)
-
-.PHONY: $(APPLICATIONS)
-$(APPLICATIONS):
-	make -C $@ ABSOLUTE_PATH=$(ABSOLUTE_PATH)
