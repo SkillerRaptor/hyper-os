@@ -43,9 +43,12 @@ namespace Kernel
 		
 	public:
 		static void initialize(RSDP* rsdp);
+		
+		static void* find_sdt(const char* signature, size_t index);
 	
 	private:
 		static void detect_rsdt(RSDP* rsdp);
+		static SDT* get_sdt(size_t index);
 	
 	private:
 		static bool s_use_xsdt;
