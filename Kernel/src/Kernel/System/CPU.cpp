@@ -1,5 +1,7 @@
 #include <AK/Logger.hpp>
+#include <Kernel/System/APIC.hpp>
 #include <Kernel/System/CPU.hpp>
+#include <Kernel/System/PIC.hpp>
 
 namespace Kernel
 {
@@ -7,7 +9,8 @@ namespace Kernel
 	{
 		AK::Logger::info("CPU: Initializing...");
 		
-		
+		PIC::disable();
+		APIC::lapic_enable(0xFF);
 		
 		AK::Logger::info("CPU: Initializing finished!");
 	}
