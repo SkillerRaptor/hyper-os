@@ -45,17 +45,17 @@ namespace AK
 	
 	void Serial::write(const StringView& string)
 	{
-		for (size_t i = 0; i < string.length(); ++i)
+		for (const char c : string)
 		{
-			Serial::write(string[i]);
+			Serial::write(c);
 		}
 	}
 	
 	void Serial::write(const String& string)
 	{
-		for (size_t i = 0; i < string.length(); ++i)
+		for (const char c : string)
 		{
-			Serial::write(string[i]);
+			Serial::write(c);
 		}
 	}
 }

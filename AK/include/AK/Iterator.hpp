@@ -19,6 +19,79 @@ namespace AK
 		friend ContainerType;
 	
 	public:
+		constexpr const ValueType& operator*() const
+		{
+			return m_container[m_position];
+		}
+		
+		constexpr ValueType& operator*()
+		{
+			return m_container[m_position];
+		}
+		
+		constexpr const ValueType* operator->() const
+		{
+			return &m_container[m_position];
+		}
+		
+		constexpr ValueType* operator->()
+		{
+			return &m_container[m_position];
+		}
+		
+		constexpr SimpleIterator operator++()
+		{
+			++m_position;
+			return *this;
+		}
+		
+		constexpr SimpleIterator operator++(int)
+		{
+			++m_position;
+			return SimpleIterator{ m_container, m_position - 1 };
+		}
+		
+		constexpr SimpleIterator operator--()
+		{
+			--m_position;
+			return *this;
+		}
+		
+		constexpr SimpleIterator operator--(int)
+		{
+			--m_position;
+			return SimpleIterator{ m_container, m_position + 1 };
+		}
+		
+		constexpr bool operator==(SimpleIterator other) const
+		{
+			return m_position == other.m_position;
+		}
+		
+		constexpr bool operator!=(SimpleIterator other) const
+		{
+			return m_position != other.m_position;
+		}
+		
+		constexpr bool operator<(SimpleIterator other) const
+		{
+			return m_position < other.m_position;
+		}
+		
+		constexpr bool operator>(SimpleIterator other) const
+		{
+			return m_position > other.m_position;
+		}
+		
+		constexpr bool operator<=(SimpleIterator other) const
+		{
+			return m_position <= other.m_position;
+		}
+		
+		constexpr bool operator>=(SimpleIterator other) const
+		{
+			return m_position >= other.m_position;
+		}
 	
 	private:
 		constexpr SimpleIterator(ContainerType& container, SizeType position)
