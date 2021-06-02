@@ -17,8 +17,8 @@ namespace AK
 		using SizeType = size_t;
 		using DifferenceType = ptrdiff_t;
 		
-		using Iterator = SimpleIterator<Vector, T>;
-		using ConstIterator = SimpleIterator<const Vector, const T>;
+		using Iterator = SimpleIterator<Vector, ValueType>;
+		using ConstIterator = SimpleIterator<const Vector, const ValueType>;
 	
 	public:
 		Iterator begin() noexcept

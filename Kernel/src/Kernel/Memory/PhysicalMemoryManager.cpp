@@ -1,6 +1,7 @@
+#include <AK/Logger.hpp>
 #include <AK/Math.hpp>
-#include <Kernel/Memory/PhysicalMemoryManager.hpp>
 #include <AK/Memory.hpp>
+#include <Kernel/Memory/PhysicalMemoryManager.hpp>
 
 namespace Kernel
 {
@@ -10,8 +11,12 @@ namespace Kernel
 	
 	void PhysicalMemoryManager::initialize(stivale2_mmap_entry* memory_map, size_t memory_map_entries)
 	{
+		AK::Logger::info("PMM: Initializing...");
+		
 		for (size_t i = 0; i < memory_map_entries; ++i)
 		{
+			AK::Logger::debug("[Entry %d] [%x - %x]: Size: %x - Type: %x", i, memory_map[i].base, memory_map[i].base + memory_map[i].length, memory_map[i].length, memory_map[i].type);
+			
 			if (memory_map[i].type != STIVALE2_MMAP_USABLE)
 			{
 				continue;
@@ -58,6 +63,8 @@ namespace Kernel
 				s_bitmap.reset((memory_map[i].base + j) / AK::s_page_size);
 			}
 		}
+		
+		AK::Logger::info("PMM: Initializing finished!");
 	}
 	
 	void* PhysicalMemoryManager::allocate(size_t num)

@@ -1,3 +1,4 @@
+#include <AK/Logger.hpp>
 #include <Kernel/System/GDT.hpp>
 #include <Kernel/System/IDT.hpp>
 #include <Kernel/System/PIC.hpp>
@@ -8,47 +9,49 @@ namespace Kernel
 	
 	extern "C"
 	{
-	extern int interrupt_handler_0();
-	extern int interrupt_handler_1();
-	extern int interrupt_handler_2();
-	extern int interrupt_handler_3();
-	extern int interrupt_handler_4();
-	extern int interrupt_handler_5();
-	extern int interrupt_handler_6();
-	extern int interrupt_handler_7();
-	extern int interrupt_handler_8();
-	extern int interrupt_handler_9();
-	extern int interrupt_handler_10();
-	extern int interrupt_handler_11();
-	extern int interrupt_handler_12();
-	extern int interrupt_handler_13();
-	extern int interrupt_handler_14();
-	extern int interrupt_handler_15();
-	
-	extern int exception_handler_0();
-	extern int exception_handler_1();
-	extern int exception_handler_2();
-	extern int exception_handler_3();
-	extern int exception_handler_4();
-	extern int exception_handler_5();
-	extern int exception_handler_6();
-	extern int exception_handler_7();
-	extern int exception_handler_8();
-	extern int exception_handler_10();
-	extern int exception_handler_11();
-	extern int exception_handler_12();
-	extern int exception_handler_13();
-	extern int exception_handler_14();
-	extern int exception_handler_16();
-	extern int exception_handler_17();
-	extern int exception_handler_18();
-	extern int exception_handler_19();
-	extern int exception_handler_20();
-	extern int exception_handler_30();
+		extern int interrupt_handler_0();
+		extern int interrupt_handler_1();
+		extern int interrupt_handler_2();
+		extern int interrupt_handler_3();
+		extern int interrupt_handler_4();
+		extern int interrupt_handler_5();
+		extern int interrupt_handler_6();
+		extern int interrupt_handler_7();
+		extern int interrupt_handler_8();
+		extern int interrupt_handler_9();
+		extern int interrupt_handler_10();
+		extern int interrupt_handler_11();
+		extern int interrupt_handler_12();
+		extern int interrupt_handler_13();
+		extern int interrupt_handler_14();
+		extern int interrupt_handler_15();
+		
+		extern int exception_handler_0();
+		extern int exception_handler_1();
+		extern int exception_handler_2();
+		extern int exception_handler_3();
+		extern int exception_handler_4();
+		extern int exception_handler_5();
+		extern int exception_handler_6();
+		extern int exception_handler_7();
+		extern int exception_handler_8();
+		extern int exception_handler_10();
+		extern int exception_handler_11();
+		extern int exception_handler_12();
+		extern int exception_handler_13();
+		extern int exception_handler_14();
+		extern int exception_handler_16();
+		extern int exception_handler_17();
+		extern int exception_handler_18();
+		extern int exception_handler_19();
+		extern int exception_handler_20();
+		extern int exception_handler_30();
 	}
 	
 	void IDT::initialize()
 	{
+		AK::Logger::info("IDT: Initializing...!");
+		
 		IDT::register_interrupt_handler(32 + 0, (uintptr_t) interrupt_handler_0);
 		IDT::register_interrupt_handler(32 + 1, (uintptr_t) interrupt_handler_1);
 		IDT::register_interrupt_handler(32 + 2, (uintptr_t) interrupt_handler_2);
@@ -88,6 +91,8 @@ namespace Kernel
 		IDT::register_trap_handler(30, (uintptr_t) exception_handler_30);
 		
 		IDT::reload();
+		
+		AK::Logger::info("IDT: Initializing finished!");
 	}
 	
 	void IDT::reload()

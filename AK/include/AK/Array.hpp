@@ -18,8 +18,8 @@ namespace AK
 		using SizeType = size_t;
 		using DifferenceType = ptrdiff_t;
 		
-		using Iterator = SimpleIterator<Array, T>;
-		using ConstIterator = SimpleIterator<const Array, const T>;
+		using Iterator = SimpleIterator<Array, ValueType>;
+		using ConstIterator = SimpleIterator<const Array, const ValueType>;
 	
 	public:
 		constexpr Array() = default;

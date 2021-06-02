@@ -1,6 +1,6 @@
-#include <Kernel/System/IoService.hpp>
+#include <AK/IoService.hpp>
 
-namespace Kernel
+namespace AK
 {
 	void IoService::outb(uint16_t port, uint8_t value)
 	{

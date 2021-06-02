@@ -1,3 +1,4 @@
+#include <AK/Logger.hpp>
 #include <AK/Memory.hpp>
 #include <Kernel/Memory/PhysicalMemoryManager.hpp>
 #include <Kernel/Memory/VirtualMemoryManager.hpp>
@@ -8,6 +9,8 @@ namespace Kernel
 	
 	void VirtualMemoryManager::initialize(stivale2_mmap_entry* memory_map, size_t memory_map_entries)
 	{
+		AK::Logger::info("VMM: Initializing...");
+		
 		s_kernel_page_map = VirtualMemoryManager::create_page_map();
 		
 		for (uintptr_t p = 0; p < 0x100000000; p += AK::s_page_size)
@@ -29,6 +32,8 @@ namespace Kernel
 		}
 		
 		VirtualMemoryManager::switch_page_map(s_kernel_page_map);
+		
+		AK::Logger::info("VMM: Initializing finished!");
 	}
 	
 	PageMap* VirtualMemoryManager::create_page_map()

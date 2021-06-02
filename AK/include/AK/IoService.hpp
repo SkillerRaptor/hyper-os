@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-namespace Kernel
+namespace AK
 {
 	class IoService
 	{

@@ -1,3 +1,4 @@
+#include <AK/Logger.hpp>
 #include <Kernel/System/GDT.hpp>
 
 namespace Kernel
@@ -7,6 +8,8 @@ namespace Kernel
 	
 	void GDT::initialize()
 	{
+		AK::Logger::info("GDT: Initializing...");
+		
 		GDT::create_descriptor(
 			&s_entries.null_entry,
 			0x00000000,
@@ -46,6 +49,8 @@ namespace Kernel
 		s_pointer.address = reinterpret_cast<uintptr_t>(&s_entries);
 		
 		GDT::reload();
+		
+		AK::Logger::info("GDT: Initializing finished!");
 	}
 	
 	void GDT::reload()

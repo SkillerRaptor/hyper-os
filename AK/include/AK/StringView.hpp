@@ -1,5 +1,6 @@
 #pragma once
 
+#include <AK/Iterator.hpp>
 #include <stddef.h>
 
 namespace AK
@@ -14,6 +15,9 @@ namespace AK
 		using ConstPointer = const ValueType*;
 		using SizeType = size_t;
 		using DifferenceType = ptrdiff_t;
+		
+		using Iterator = SimpleIterator<StringView, ValueType>;
+		using ConstIterator = SimpleIterator<const StringView, const ValueType>;
 	
 	public:
 		constexpr StringView() = default;
@@ -42,14 +46,44 @@ namespace AK
 		{
 		}
 		
-		constexpr const char* begin() const
+		constexpr Iterator begin() noexcept
 		{
-			return m_string;
+			return Iterator::begin(*this);
 		}
 		
-		constexpr const char* end() const
+		constexpr ConstIterator begin() const noexcept
 		{
-			return m_string + m_size;
+			return ConstIterator::begin(*this);
+		}
+		
+		constexpr ConstIterator cbegin() const noexcept
+		{
+			return ConstIterator::begin(*this);
+		}
+		
+		constexpr Iterator end() noexcept
+		{
+			return Iterator::end(*this);
+		}
+		
+		constexpr ConstIterator end() const noexcept
+		{
+			return ConstIterator::end(*this);
+		}
+		
+		constexpr ConstIterator cend() const noexcept
+		{
+			return ConstIterator::end(*this);
+		}
+		
+		constexpr const char& at(size_t position) const
+		{
+			return m_string[position];
+		}
+		
+		const char& operator[](size_t position) const
+		{
+			return m_string[position];
 		}
 		
 		constexpr const char* data() const
@@ -57,7 +91,17 @@ namespace AK
 			return m_string;
 		}
 		
+		constexpr size_t length() const
+		{
+			return m_size;
+		}
+		
 		constexpr size_t size() const
+		{
+			return m_size;
+		}
+		
+		constexpr size_t max_size() const
 		{
 			return m_size;
 		}
@@ -65,16 +109,6 @@ namespace AK
 		constexpr bool empty() const
 		{
 			return m_size == 0;
-		}
-		
-		constexpr const char& at(size_t index) const
-		{
-			return m_string[index];
-		}
-		
-		const char& operator[](size_t index) const
-		{
-			return m_string[index];
 		}
 	
 	private:

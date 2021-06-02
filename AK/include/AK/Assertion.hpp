@@ -2,8 +2,8 @@
 
 extern "C"
 {
-	__attribute__((noreturn)) void abort() {}
-	__attribute__((noreturn)) void _abort() {}
+	__attribute__((noreturn)) inline void abort() {}
+	__attribute__((noreturn)) inline void _abort() {}
 }
 
 #ifdef DEBUG
