@@ -27,7 +27,8 @@ namespace AK
 	{
 		if (position > (m_size * s_byte_size))
 		{
-			return *this;
+			// TODO: Check if position is in range
+			//return *this;
 		}
 		
 		uint64_t byte_index{ position / s_byte_size };
@@ -58,7 +59,8 @@ namespace AK
 	{
 		if (position > (m_size * s_byte_size))
 		{
-			return *this;
+			// TODO: Check if position is in range
+			//return *this;
 		}
 		
 		uint64_t byte_index{ position / s_byte_size };
@@ -83,7 +85,8 @@ namespace AK
 	{
 		if (position > (m_size * s_byte_size))
 		{
-			return *this;
+			// TODO: Check if position is in range
+			//return *this;
 		}
 		
 		uint64_t byte_index{ position / s_byte_size };
@@ -98,7 +101,8 @@ namespace AK
 	{
 		if (position > (m_size * s_byte_size))
 		{
-			return false;
+			// TODO: Check if position is in range
+			//return false;
 		}
 		
 		uint64_t byte_index{ position / s_byte_size };

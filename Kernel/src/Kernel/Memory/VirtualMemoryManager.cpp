@@ -64,19 +64,25 @@ namespace Kernel
 	
 	bool VirtualMemoryManager::map_page(PageMap* page_map, uintptr_t physical_address, uintptr_t virtual_address, uintptr_t flags)
 	{
+		page_map->spinlock.lock();
+		
 		uintptr_t* pte = virtual2pte(page_map, virtual_address, true);
 		if (pte == nullptr)
 		{
+			page_map->spinlock.unlock();
 			return false;
 		}
 		
 		*pte = physical_address | flags;
+		
+		page_map->spinlock.unlock();
 		
 		return true;
 	}
 	
 	uintptr_t* VirtualMemoryManager::get_next_level(uintptr_t* current_level, size_t entry, bool allocate)
 	{
+		
 		if (current_level[entry] & 0x1)
 		{
 			uintptr_t level_entry = current_level[entry] & ~((uintptr_t) 0xFFF);
@@ -128,5 +134,10 @@ namespace Kernel
 		}
 		
 		return &pml1[pml1_entry];
+	}
+	
+	PageMap* VirtualMemoryManager::kernel_page_map()
+	{
+		return s_kernel_page_map;
 	}
 }

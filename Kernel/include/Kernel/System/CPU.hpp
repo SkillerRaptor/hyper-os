@@ -8,7 +8,7 @@ namespace Kernel
 	class CPU
 	{
 	public:
-		static void initialize(stivale2_smp_info* smp_info);
+		__attribute__((noreturn)) static void initialize();
 		
 		static uint64_t read_timestamp();
 		static void invalidate_page(void* m);

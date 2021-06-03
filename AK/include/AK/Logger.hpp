@@ -1,9 +1,10 @@
 #pragma once
 
+#include <AK/Spinlock.hpp>
 #include <AK/String.hpp>
 #include <AK/StringView.hpp>
 #include <stdarg.h>
-#include <STDINT.h>
+#include <stdint.h>
 
 namespace AK
 {
@@ -29,6 +30,9 @@ namespace AK
 		static void debug(const char* string, ...);
 	
 	private:
-		static char* convert_string(uint32_t number, int32_t base);
+		static char* convert_string(uint64_t number, int64_t base);
+	
+	private:
+		static Spinlock s_spinlock;
 	};
 }

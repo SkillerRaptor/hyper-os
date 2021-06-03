@@ -2,12 +2,31 @@
 #include <AK/Math.hpp>
 #include <AK/Memory.hpp>
 #include <Kernel/Memory/PhysicalMemoryManager.hpp>
+#include <Kernel/System/Stdlib.hpp>
 
 namespace Kernel
 {
 	uintptr_t PhysicalMemoryManager::s_highest_page{ 0 };
 	size_t PhysicalMemoryManager::s_last_used_index{ 0 };
 	AK::Bitmap PhysicalMemoryManager::s_bitmap{};
+	AK::Spinlock PhysicalMemoryManager::s_spinlock{};
+	
+	void bitmap_set_bit(uint8_t* bitmap, uint64_t index, uint8_t value)
+	{
+		if (value != 0)
+		{
+			bitmap[index / 8] |= (uint8_t) (1u << (index % 8));
+		}
+		else
+		{
+			bitmap[index / 8] &= (uint8_t) ~(1u << (index % 8));
+		}
+	}
+	
+	uint8_t bitmap_get_bit(uint8_t* bitmap, uint64_t index)
+	{
+		return 0 != (bitmap[index / 8] & (1u << (index % 8)));
+	}
 	
 	void PhysicalMemoryManager::initialize(stivale2_mmap_entry* memory_map, size_t memory_map_entries)
 	{
@@ -58,7 +77,7 @@ namespace Kernel
 				continue;
 			}
 			
-			for (uintptr_t j{ 0 }; j < memory_map[i].length; j += AK::s_page_size)
+			for (uintptr_t j = 0; j < memory_map[i].length; j += AK::s_page_size)
 			{
 				s_bitmap.reset((memory_map[i].base + j) / AK::s_page_size);
 			}
@@ -69,6 +88,8 @@ namespace Kernel
 	
 	void* PhysicalMemoryManager::allocate(size_t num)
 	{
+		s_spinlock.lock();
+		
 		size_t limit = s_last_used_index;
 		void* ptr = internal_allocate(num, s_highest_page / AK::s_page_size);
 		if (ptr == nullptr)
@@ -76,6 +97,8 @@ namespace Kernel
 			s_last_used_index = 0;
 			ptr = internal_allocate(num, limit);
 		}
+		
+		s_spinlock.unlock();
 		
 		return ptr;
 	}
@@ -99,11 +122,15 @@ namespace Kernel
 	
 	void PhysicalMemoryManager::free(void* ptr, size_t num)
 	{
-		auto page = reinterpret_cast<size_t>(ptr) / AK::s_page_size;
+		s_spinlock.lock();
+		
+		size_t page = reinterpret_cast<size_t>(ptr) / AK::s_page_size;
 		for (size_t i = page; i < page + num; i++)
 		{
 			s_bitmap.reset(i);
 		}
+		
+		s_spinlock.unlock();
 	}
 	
 	void* PhysicalMemoryManager::internal_allocate(size_t num, size_t limit)
@@ -114,18 +141,20 @@ namespace Kernel
 		{
 			if (!s_bitmap.test(s_last_used_index++))
 			{
-				p = 0;
-				continue;
-			}
-			
-			if (++p == num)
-			{
-				size_t page = s_last_used_index - num;
-				for (size_t i = page; i < s_last_used_index; i++)
+				
+				if (++p == num)
 				{
-					s_bitmap.set(i);
+					size_t page = s_last_used_index - num;
+					for (size_t i = page; i < s_last_used_index; i++)
+					{
+						s_bitmap.set(i);
+					}
+					return reinterpret_cast<void*>(page * AK::s_page_size);
 				}
-				return reinterpret_cast<void*>(page * AK::s_page_size);
+			}
+			else
+			{
+				p = 0;
 			}
 		}
 		

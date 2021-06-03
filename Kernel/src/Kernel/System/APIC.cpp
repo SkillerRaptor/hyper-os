@@ -14,14 +14,12 @@ namespace Kernel
 	
 	void APIC::lapic_write(uint32_t reg, uint32_t data)
 	{
-		auto lapic_mmio_base = reinterpret_cast<uintptr_t>((CPU::read_msr(s_apic_base_msr) & 0xFFFFF000) + AK::s_physical_memory_offset);
-		*reinterpret_cast<volatile uint32_t*>(lapic_mmio_base + reg) = data;
+		*reinterpret_cast<volatile uint32_t*>(APIC::lapic_mmio_base() + reg) = data;
 	}
 	
 	uint32_t APIC::lapic_read(uint32_t reg)
 	{
-		auto lapic_mmio_base = reinterpret_cast<uintptr_t>((CPU::read_msr(s_apic_base_msr) & 0xFFFFF000) + AK::s_physical_memory_offset);
-		return *reinterpret_cast<volatile uint32_t*>(lapic_mmio_base + reg);
+		return *reinterpret_cast<volatile uint32_t*>(APIC::lapic_mmio_base() + reg);
 	}
 	
 	void APIC::lapic_enable(uint8_t spurious_vector)
@@ -32,5 +30,10 @@ namespace Kernel
 	void APIC::lapic_end_of_interrupt()
 	{
 		APIC::lapic_write(s_lapic_register_end_of_interrupt, 0);
+	}
+	
+	uintptr_t APIC::lapic_mmio_base()
+	{
+		return reinterpret_cast<uintptr_t>((CPU::read_msr(s_apic_base_msr) & 0xFFFFF000) + AK::s_physical_memory_offset);
 	}
 }

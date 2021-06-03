@@ -3,14 +3,20 @@
 
 namespace AK
 {
+	Spinlock Logger::s_spinlock{};
+	
 	void Logger::log(Logger::Level level, const char* string, ...)
 	{
+		s_spinlock.lock();
+		
 		va_list args;
 		va_start(args, string);
 		
 		vlog(level, string, args);
 		
 		va_end(args);
+		
+		s_spinlock.unlock();
 	}
 	
 	void Logger::vlog(Logger::Level level, const char* string, va_list args)
@@ -50,7 +56,7 @@ namespace AK
 				}
 				case 'd':
 				{
-					int i = va_arg(args, int);
+					int32_t i = va_arg(args, int32_t);
 					if (i < 0)
 					{
 						i = -i;
@@ -61,13 +67,13 @@ namespace AK
 				}
 				case 'u':
 				{
-					unsigned int i = va_arg(args, unsigned int);
+					uint64_t i = va_arg(args, uint64_t);
 					Serial::write(Logger::convert_string(i, 10));
 					break;
 				}
 				case 'o':
 				{
-					unsigned int i = va_arg(args, unsigned int);
+					uint64_t i = va_arg(args, uint64_t);
 					Serial::write(Logger::convert_string(i, 8));
 					break;
 				}
@@ -79,7 +85,7 @@ namespace AK
 				}
 				case 'x':
 				{
-					unsigned int i = va_arg(args, unsigned int);
+					uint64_t i = va_arg(args, uint64_t);
 					Serial::write("0x");
 					Serial::write(Logger::convert_string(i, 16));
 					break;
@@ -102,45 +108,61 @@ namespace AK
 	
 	void Logger::info(const char* string, ...)
 	{
+		s_spinlock.lock();
+		
 		va_list args;
 		va_start(args, string);
 		
 		vlog(Logger::Level::Info, string, args);
 		
 		va_end(args);
+		
+		s_spinlock.unlock();
 	}
 	
 	void Logger::warning(const char* string, ...)
 	{
+		s_spinlock.lock();
+		
 		va_list args;
 		va_start(args, string);
 		
 		vlog(Logger::Level::Warning, string, args);
 		
 		va_end(args);
+		
+		s_spinlock.unlock();
 	}
 	
 	void Logger::error(const char* string, ...)
 	{
+		s_spinlock.lock();
+		
 		va_list args;
 		va_start(args, string);
 		
 		vlog(Logger::Level::Error, string, args);
 		
 		va_end(args);
+		
+		s_spinlock.unlock();
 	}
 	
 	void Logger::debug(const char* string, ...)
 	{
+		s_spinlock.lock();
+		
 		va_list args;
 		va_start(args, string);
 		
 		vlog(Logger::Level::Debug, string, args);
 		
 		va_end(args);
+		
+		s_spinlock.unlock();
 	}
 	
-	char* Logger::convert_string(uint32_t number, int32_t base)
+	char* Logger::convert_string(uint64_t number, int64_t base)
 	{
 		static char representation[] = "0123456789ABCDEF";
 		

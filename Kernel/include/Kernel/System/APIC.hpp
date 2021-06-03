@@ -17,5 +17,8 @@ namespace Kernel
 		
 		static void lapic_enable(uint8_t spurious_vector);
 		static void lapic_end_of_interrupt();
+		
+	private:
+		static uintptr_t lapic_mmio_base();
 	};
 }

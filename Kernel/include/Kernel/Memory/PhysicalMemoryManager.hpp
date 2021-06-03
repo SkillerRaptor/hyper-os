@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AK/Bitmap.hpp>
+#include <AK/Spinlock.hpp>
 #include <Kernel/Boot/Stivale.hpp>
 #include <stddef.h>
 
@@ -23,5 +24,6 @@ namespace Kernel
 		static uintptr_t s_highest_page;
 		static size_t s_last_used_index;
 		static AK::Bitmap s_bitmap;
+		static AK::Spinlock s_spinlock;
 	};
 }

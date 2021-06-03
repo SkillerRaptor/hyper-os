@@ -9,6 +9,7 @@
 #include <Kernel/System/GDT.hpp>
 #include <Kernel/System/IDT.hpp>
 #include <Kernel/System/PIC.hpp>
+#include <Kernel/System/SMP.hpp>
 #include <stddef.h>
 
 namespace Kernel
@@ -54,7 +55,7 @@ namespace Kernel
 		APIC::initialize();
 		
 		auto* smp_tag = reinterpret_cast<stivale2_struct_tag_smp*>(stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_SMP_ID));
-		//SMP::initialize();
+		SMP::initialize(smp_tag);
 		
 		auto* framebuffer_tag = reinterpret_cast<stivale2_struct_tag_framebuffer*>(stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID));
 		auto* screen = reinterpret_cast<uint8_t*>(framebuffer_tag->framebuffer_addr);

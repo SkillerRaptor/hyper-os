@@ -1,18 +1,27 @@
 #include <AK/Logger.hpp>
+#include <Kernel/Memory/VirtualMemoryManager.hpp>
 #include <Kernel/System/APIC.hpp>
 #include <Kernel/System/CPU.hpp>
+#include <Kernel/System/GDT.hpp>
+#include <Kernel/System/IDT.hpp>
 #include <Kernel/System/PIC.hpp>
 
 namespace Kernel
 {
-	void CPU::initialize(stivale2_smp_info* smp_info)
+	void CPU::initialize()
 	{
-		AK::Logger::info("CPU: Initializing...");
+		Kernel::GDT::reload();
+		Kernel::IDT::reload();
+		
+		Kernel::VirtualMemoryManager::switch_page_map(Kernel::VirtualMemoryManager::kernel_page_map());
 		
 		PIC::disable();
 		APIC::lapic_enable(0xFF);
 		
-		AK::Logger::info("CPU: Initializing finished!");
+		while (true)
+		{
+			asm volatile("nop");
+		}
 	}
 	
 	uint64_t CPU::read_timestamp()
