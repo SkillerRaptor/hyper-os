@@ -16,6 +16,7 @@ namespace Kernel
 		
 		for (size_t i = 0; i < num; i++)
 		{
+			asm volatile ("nop");
 			_destination[i] = _source[i];
 		}
 		
@@ -28,7 +29,8 @@ namespace Kernel
 		
 		for (size_t i = 0; i < num; i++)
 		{
-			_destination[i] = (uint8_t) value;
+			asm volatile ("nop");
+			_destination[i] = static_cast<uint8_t>(value);
 		}
 		
 		return destination;
@@ -43,6 +45,7 @@ namespace Kernel
 		{
 			for (size_t i = 0; i < num; i++)
 			{
+				asm volatile ("nop");
 				_destination[i] = _source[i];
 			}
 		}
@@ -50,6 +53,7 @@ namespace Kernel
 		{
 			for (size_t i = num; i > 0; i--)
 			{
+				asm volatile ("nop");
 				_destination[i - 1] = _source[i - 1];
 			}
 		}
@@ -66,6 +70,7 @@ namespace Kernel
 		{
 			if (_first[i] != _second[i])
 			{
+				asm volatile ("nop");
 				return _first[i] < _second[i] ? -1 : 1;
 			}
 		}
@@ -79,6 +84,7 @@ namespace Kernel
 		
 		for (i = 0; source[i]; i++)
 		{
+			asm volatile ("nop");
 			destination[i] = source[i];
 		}
 		destination[i] = 0;
@@ -92,10 +98,12 @@ namespace Kernel
 		
 		for (i = 0; i < num && source[i]; i++)
 		{
+			asm volatile ("nop");
 			destination[i] = source[i];
 		}
 		for (; i < num; i++)
 		{
+			asm volatile ("nop");
 			destination[i] = 0;
 		}
 		
