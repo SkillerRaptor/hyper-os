@@ -39,13 +39,13 @@ namespace Kernel
 		{
 			SDT sdt;
 			uint32_t sdt_addresses[];
-		};
+		} __attribute__((packed));
 		
 		struct XSDT
 		{
 			SDT sdt;
 			uint64_t sdt_addresses[];
-		};
+		} __attribute__((packed));
 		
 	public:
 		static void initialize(RSDP* rsdp);

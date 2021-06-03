@@ -7,6 +7,7 @@
 #include <Kernel/System/ACPI.hpp>
 #include <Kernel/System/APIC.hpp>
 #include <Kernel/System/GDT.hpp>
+#include <Kernel/System/HPET.hpp>
 #include <Kernel/System/IDT.hpp>
 #include <Kernel/System/PIC.hpp>
 #include <Kernel/System/SMP.hpp>
@@ -53,6 +54,7 @@ namespace Kernel
 		auto* rsdp_tag = reinterpret_cast<stivale2_struct_tag_rsdp*>(stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_RSDP_ID));
 		ACPI::initialize(reinterpret_cast<ACPI::RSDP*>(rsdp_tag->rsdp + AK::s_physical_memory_offset));
 		APIC::initialize();
+		HPET::initialize();
 		
 		auto* smp_tag = reinterpret_cast<stivale2_struct_tag_smp*>(stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_SMP_ID));
 		SMP::initialize(smp_tag);
