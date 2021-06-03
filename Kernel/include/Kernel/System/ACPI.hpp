@@ -18,7 +18,7 @@ namespace Kernel
 			uint32_t length;
 			uint64_t xsdt_address;
 			uint8_t extended_checksum;
-			uint8_t reserved[3];
+			uint8_t reserved[2];
 		} __attribute__((packed));
 	
 		struct SDT
@@ -38,7 +38,13 @@ namespace Kernel
 		struct RSDT
 		{
 			SDT sdt;
-			char pointer_start[];
+			uint32_t sdt_addresses[];
+		};
+		
+		struct XSDT
+		{
+			SDT sdt;
+			uint64_t sdt_addresses[];
 		};
 		
 	public:
@@ -51,7 +57,7 @@ namespace Kernel
 		static SDT* get_sdt(size_t index);
 	
 	private:
-		static bool s_use_xsdt;
 		static RSDT* s_rsdt;
+		static XSDT* s_xsdt;
 	};
 }
