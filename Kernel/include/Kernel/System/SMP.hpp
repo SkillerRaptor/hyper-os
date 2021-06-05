@@ -1,6 +1,8 @@
 #pragma once
 
+#include <AK/Vector.hpp>
 #include <Kernel/Boot/Stivale.hpp>
+#include <Kernel/System/CPU.hpp>
 
 namespace Kernel
 {
@@ -9,8 +11,10 @@ namespace Kernel
 	public:
 		static void initialize(stivale2_struct_tag_smp* smp_tag);
 	
+		static AK::Vector<CPU::LocalData>& cpus();
+		
 	private:
-		static uint32_t s_bsp_lapic_id;
+		static AK::Vector<CPU::LocalData> s_cpus;
 	};
 }
 

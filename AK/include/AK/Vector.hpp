@@ -87,6 +87,16 @@ namespace AK
 			m_size = 0;
 		}
 		
+		void reserve(size_t capacity)
+		{
+			reallocate(capacity);
+		}
+		
+		void resize(size_t size)
+		{
+			// TODO: Implement resize!
+		}
+		
 		Iterator begin() noexcept
 		{
 			return Iterator::begin(*this);

@@ -4,10 +4,12 @@
 #include <Kernel/System/CPU.hpp>
 #include <Kernel/System/GDT.hpp>
 #include <Kernel/System/IDT.hpp>
-#include <Kernel/System/PIC.hpp>
+#include <Kernel/System/SMP.hpp>
 
 namespace Kernel
 {
+	uint64_t CPU::s_current_cpu{ 0 };
+	
 	void CPU::initialize()
 	{
 		Kernel::GDT::reload();
@@ -15,8 +17,10 @@ namespace Kernel
 		
 		Kernel::VirtualMemoryManager::switch_page_map(Kernel::VirtualMemoryManager::kernel_page_map());
 		
-		PIC::disable();
-		APIC::lapic_enable(0xFF);
+		APIC::lapic_write(APIC::s_apic_base_msr, (APIC::lapic_read(APIC::s_apic_base_msr) | 0x800) & ~(APIC::s_lapic_enable));
+		APIC::lapic_enable();
+		
+		AK::Logger::debug("Current processor id: %u", APIC::lapic_processor_id());
 		
 		while (true)
 		{
@@ -71,5 +75,40 @@ namespace Kernel
 		);
 		
 		return (static_cast<uint64_t>(high) << 32) | low;
+	}
+	
+	void CPU::write_user_fs(uintptr_t value)
+	{
+		CPU::write_msr(0xC0000100, value);
+	}
+	
+	uintptr_t CPU::user_fs()
+	{
+		return CPU::read_msr(0xC0000100);
+	}
+	
+	void CPU::write_user_gs(uintptr_t value)
+	{
+		CPU::write_msr(0xC0000101, value);
+	}
+	
+	uintptr_t CPU::user_gs()
+	{
+		return CPU::read_msr(0xC0000101);
+	}
+	
+	void CPU::write_kernel_gs(uintptr_t value)
+	{
+		CPU::write_msr(0xC0000102, value);
+	}
+	
+	uintptr_t CPU::kernel_gs()
+	{
+		return CPU::read_msr(0xC0000102);
+	}
+	
+	CPU::LocalData CPU::current_cpu()
+	{
+		return SMP::cpus()[s_current_cpu];
 	}
 }

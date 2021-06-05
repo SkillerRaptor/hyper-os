@@ -34,6 +34,7 @@ namespace Kernel
 	void PIC::disable()
 	{
 		AK::IoService::outb(s_slave_data_selector, s_disable_code);
+		AK::IoService::wait();
 		AK::IoService::outb(s_master_data_selector, s_disable_code);
 	}
 	
