@@ -70,5 +70,3 @@ add_executable(Kernel.elf ${SOURCES} ${HEADERS} ${ASM_SOURCES})
 add_dependencies(Kernel.elf echfs)
 target_link_libraries(Kernel.elf PRIVATE AK)
 target_include_directories(Kernel.elf PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/ThirdParty/stivale)
-
-add_custom_target

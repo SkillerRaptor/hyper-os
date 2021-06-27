@@ -20,7 +20,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 #-------------------------------------------------------------------------------------------
 # Toolchain
 #-------------------------------------------------------------------------------------------
-set(TOOLCHAIN_PREFIX ${CMAKE_SOURCE_DIR}/Toolchain/CrossCompiler/Tools/${ARCH}/bin)
+set(ARCH "x86_64")
+set(TOOLCHAIN_PREFIX ${CMAKE_SOURCE_DIR}/Toolchain/CrossCompiler/Tools/bin)
 set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}/${ARCH}-elf-gcc)
 set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}/${ARCH}-elf-g++)
 set(CMAKE_LINKER_COMPILER ${TOOLCHAIN_PREFIX}/${ARCH}-elf-ld)
