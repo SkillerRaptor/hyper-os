@@ -13,12 +13,18 @@ configure_error() {
 
 configure_step HyperOS echo "Configuring HyperOS..."
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  realpath() {
+    [[ $1 == /* ]] && echo "$1" || echo "$PWD/${1#./}"
+  }
+fi
+
 true_path="$(dirname "$(realpath "$0")")"
 root_path=$true_path/..
 pushd $root_path >/dev/null
 configure_step Bash mkdir -p Build || configure_error
 pushd Build >/dev/null
-configure_step CMake cmake ./../.. -G "Ninja" || build_error
+configure_step CMake cmake ./.. -G "Ninja" || build_error
 popd >/dev/null
 popd >/dev/null
 
