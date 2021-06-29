@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 %macro pushaq 0
     push rax
     push rbx

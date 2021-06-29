@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include <AK/Memory.hpp>
 #include <Kernel/Boot/Stivale.hpp>
 

@@ -129,13 +129,13 @@ build_step GCC mkdir -p "CrossCompiler/gcc_build" || build_error
 pushd "CrossCompiler/gcc_build" >/dev/null
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  build_step GCC ../../gcc/configure --target=$TARGET \
+  build_step GCC ../gcc/configure --target=$TARGET \
     --prefix="$PREFIX" \
     --disable-nls \
     --enable-languages=c,c++ \
     --without-headers || build_error
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-  build_step GCC ../../gcc/configure --target=$TARGET \
+  build_step GCC ../gcc/configure --target=$TARGET \
     --prefix="$PREFIX" \
     --disable-nls \
     --enable-languages=c,c++ \
