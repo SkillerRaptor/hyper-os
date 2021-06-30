@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#pragma once
+
+namespace std
+{
+	template <class T>
+	struct is_empty
+	{
+		static constexpr const bool value = __is_empty(T);
+	};
+
+	template <class T>
+	struct is_pod
+	{
+		static constexpr const bool value = __is_pod(T);
+	};
+
+	template <class T>
+	struct is_nothrow_swappable
+	{
+		static constexpr const bool value =
+			is_empty<T>::value || is_pod<T>::value;
+	};
+
+	template <class T>
+	constexpr const bool is_empty_v = is_empty<T>::value;
+
+	template <class T>
+	constexpr const bool is_pod_v = is_pod<T>::value;
+
+	template <class T>
+	constexpr const bool is_nothrow_swappable_v =
+		is_nothrow_swappable<T>::value;
+} // namespace std

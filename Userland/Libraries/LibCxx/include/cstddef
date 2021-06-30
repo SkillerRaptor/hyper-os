@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#pragma once
+
+#include <stddef.h>
+
+namespace std
+{
+	using ::size_t;
+	using ::ssize_t;
+	using ::ptrdiff_t;
+	
+	using nullptr_t = decltype(nullptr);
+} // namespace std
