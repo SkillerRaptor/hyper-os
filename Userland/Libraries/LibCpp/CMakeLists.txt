@@ -28,7 +28,8 @@ set(HEADERS
         include/functional
         include/iterator
         include/numbers
-        include/type_traits)
+        include/type_traits
+        include/utility)
 
 add_library(LibCpp STATIC ${SOURCES} ${HEADERS})
 target_include_directories(LibCpp INTERFACE include)
