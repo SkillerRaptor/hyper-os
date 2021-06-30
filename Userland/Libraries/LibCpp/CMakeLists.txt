@@ -18,7 +18,13 @@ set(SOURCES
 set(HEADERS
         include/array
         include/cassert
+        include/csetjmp
+        include/csignal
         include/cstddef
+        include/cstdint
+        include/cstdio
+        include/cstring
+        include/ctime
         include/iterator
         include/type_traits)
 

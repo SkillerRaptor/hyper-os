@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#pragma once
+
+#include <time.h>
+
+namespace std
+{
+	using ::gmtime;
+	using ::gmtime_r;
+	using ::localtime;
+	using ::localtime_r;
+	using ::strftime;
+	using ::time;
+	using ::time_t;
+	using ::timespec;
+} // namespace std
