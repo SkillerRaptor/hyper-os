@@ -1,5 +1,8 @@
 #!/bin/bash
 
+true_path="$(dirname "$(realpath "$0")")"
+root_path=$true_path/..
+
 build_step() {
   NAME=$1
   shift
@@ -13,23 +16,11 @@ build_error() {
 
 build_step HyperOS echo "Building HyperOS..."
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  realpath() {
-    [[ $1 == /* ]] && echo "$1" || echo "$PWD/${1#./}"
-  }
-
-  cores=$(sysctl -n hw.physicalcpu)
-elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  cores=$(nproc)
-fi
-
-true_path="$(dirname "$(realpath "$0")")"
-root_path=$true_path/..
-pushd $root_path >/dev/null
+pushd "$root_path" || build_error >/dev/null
 build_step Bash mkdir -p Build || build_error
-pushd Build >/dev/null
-build_step CMake cmake --build . --parallel $cores || build_error
-popd >/dev/null
-popd >/dev/null
+pushd Build || build_error >/dev/null
+build_step CMake cmake --build . --parallel "$(nproc)" || build_error
+popd || build_error >/dev/null
+popd || build_error >/dev/null
 
 build_step HyperOS echo "Building done!"
