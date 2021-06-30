@@ -14,5 +14,7 @@
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <functional>
 #include <iterator>
+#include <numbers>
 #include <type_traits>

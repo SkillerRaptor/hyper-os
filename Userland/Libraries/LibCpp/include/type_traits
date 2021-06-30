@@ -6,34 +6,496 @@
 
 #pragma once
 
+#include <cstddef>
+
 namespace std
 {
-	template <class T>
-	struct is_empty
+	template <typename T, T v>
+	struct integral_constant
 	{
-		static constexpr const bool value = __is_empty(T);
+	public:
+		using value_type = T;
+		using type = integral_constant<T, v>;
+
+	public:
+		static constexpr value_type value = v;
+
+		constexpr operator value_type() const
+		{
+			return value;
+		}
+
+		constexpr value_type operator()() const
+		{
+			return value;
+		}
 	};
 
-	template <class T>
-	struct is_pod
+	template <bool B>
+	using bool_constant = integral_constant<bool, B>;
+	using false_type = bool_constant<false>;
+	using true_type = bool_constant<true>;
+
+	template <bool, typename, typename>
+	struct conditional;
+
+	template <typename...>
+	struct __or;
+
+	template <>
+	struct __or<> : public false_type
 	{
-		static constexpr const bool value = __is_pod(T);
 	};
 
-	template <class T>
+	template <typename T1>
+	struct __or<T1> : public T1
+	{
+	};
+
+	template <typename T1, typename T2>
+	struct __or<T1, T2> : public conditional<T1::value, T1, T2>::type
+	{
+	};
+
+	template <typename T1, typename T2, typename T3, typename... Tn>
+	struct __or<T1, T2, T3, Tn...> : public conditional<T1::value, T1, __or<T2, T3, Tn...>>::type
+	{
+	};
+
+	template <typename...>
+	struct __and;
+
+	template <>
+	struct __and<> : public true_type
+	{
+	};
+
+	template <typename T1>
+	struct __and<T1> : public T1
+	{
+	};
+
+	template <typename T1, typename T2>
+	struct __and<T1, T2> : public conditional<T1::value, T2, T1>::type
+	{
+	};
+
+	template <typename T1, typename T2, typename T3, typename... Tn>
+	struct __and<T1, T2, T3, Tn...> : public conditional<T1::value, __and<T2, T3, Tn...>, T1>::type
+	{
+	};
+
+	template <typename T>
+	struct __not : public bool_constant<!static_cast<bool>(T::value)>
+	{
+	};
+
+	template <typename>
+	struct is_function;
+
+	template <typename>
+	struct is_const;
+
+	template <typename>
+	struct __is_void_helper : public false_type
+	{
+	};
+
+	template <>
+	struct __is_void_helper<void> : public true_type
+	{
+	};
+
+	template <typename T>
+	struct is_void : public __is_void_helper<T>::type
+	{
+	};
+
+	template <typename>
+	struct __is_null_pointer_helper : public false_type
+	{
+	};
+
+	template <>
+	struct __is_null_pointer_helper<nullptr_t> : public true_type
+	{
+	};
+
+	template <typename T>
+	struct is_null_pointer : public __is_null_pointer_helper<T>::type
+	{
+	};
+
+	template <typename>
+	struct __is_integral_helper : public false_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<bool> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<char> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<signed char> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<unsigned char> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<char8_t> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<char16_t> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<char32_t> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<short> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<unsigned short> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<int> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<unsigned int> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<long> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<unsigned long> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<long long> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<unsigned long long> : public true_type
+	{
+	};
+
+	template <typename T>
+	struct is_integral : public __is_integral_helper<T>::type
+	{
+	};
+
+	template <typename>
+	struct __is_floating_point_helper : public false_type
+	{
+	};
+
+	template <>
+	struct __is_floating_point_helper<float> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_floating_point_helper<double> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_floating_point_helper<long double> : public true_type
+	{
+	};
+
+	template <typename T>
+	struct is_floating_point : public __is_floating_point_helper<T>::type
+	{
+	};
+
+	template <typename>
+	struct __is_array_helper : public false_type
+	{
+	};
+
+	template <typename T>
+	struct __is_array_helper<T[]> : public true_type
+	{
+	};
+
+	template <typename T, size_t N>
+	struct __is_array_helper<T[N]> : public true_type
+	{
+	};
+
+	template <typename T>
+	struct is_array : public __is_array_helper<T>::value
+	{
+	};
+
+	template <typename>
+	struct __is_pointer_helper : public false_type
+	{
+	};
+
+	template <typename T>
+	struct __is_pointer_helper<T*> : public true_type
+	{
+	};
+
+	template <typename T>
+	struct is_pointer : public __is_pointer_helper<T>::type
+	{
+	};
+
+	template <typename>
+	struct __is_lvalue_reference_helper : public false_type
+	{
+	};
+
+	template <typename T>
+	struct __is_lvalue_reference_helper<T&> : public true_type
+	{
+	};
+
+	template <typename T>
+	struct is_lvalue_reference : public __is_lvalue_reference_helper<T>::type
+	{
+	};
+
+	template <typename>
+	struct __is_rvalue_reference_helper : public false_type
+	{
+	};
+
+	template <typename T>
+	struct __is_rvalue_reference_helper<T&&> : public true_type
+	{
+	};
+
+	template <typename T>
+	struct is_rvalue_reference : public __is_rvalue_reference_helper<T>::type
+	{
+	};
+
+	template <typename>
+	struct __is_member_object_pointer_helper : public false_type
+	{
+	};
+
+	template <typename T, typename C>
+	struct __is_member_object_pointer_helper<T C::*> : public __not<is_function<T>>::type
+	{
+	};
+
+	template <typename T>
+	struct is_member_object_pointer : public __is_member_object_pointer_helper<T>::type
+	{
+	};
+
+	template <typename>
+	struct __is_member_function_pointer_helper : public false_type
+	{
+	};
+
+	template <typename T, typename C>
+	struct __is_member_function_pointer_helper<T C::*> : public is_function<T>::type
+	{
+	};
+
+	template <typename T>
+	struct is_member_function_pointer : public __is_member_function_pointer_helper<T>::type
+	{
+	};
+
+	template <typename T>
+	struct is_enum : public bool_constant<__is_enum(T)>
+	{
+	};
+
+	template <typename T>
+	struct is_union : public bool_constant<__is_union(T)>
+	{
+	};
+
+	template <typename T>
+	struct is_typename : public bool_constant<__is_typename(T)>
+	{
+	};
+
+	template <typename T>
+	struct is_function : public bool_constant<!is_const<const T>::value>
+	{
+	};
+
+	template <typename T>
+	struct is_function<T&> : public false_type
+	{
+	};
+
+	template <typename T>
+	struct is_function<T&&> : public false_type
+	{
+	};
+
+	template <typename>
+	struct is_const : public false_type
+	{
+	};
+
+	template <typename T>
+	struct is_const<const T> : public true_type
+	{
+	};
+
+	template <typename T>
+	struct is_empty : public bool_constant<__is_empty(T)>
+	{
+	};
+
+	template <typename T>
+	struct is_pod : public bool_constant<__is_pod(T)>
+	{
+	};
+
+	template <typename T>
 	struct is_nothrow_swappable
 	{
-		static constexpr const bool value =
-			is_empty<T>::value || is_pod<T>::value;
+		static constexpr const bool value = is_empty<T>::value || is_pod<T>::value;
+	};
+
+	template <bool, class T = void>
+	struct enable_if
+	{
 	};
 
 	template <class T>
+	struct enable_if<true, T>
+	{
+		using type = T;
+	};
+
+	template <bool C, typename TrueType, typename FalseType>
+	struct conditional
+	{
+		using type = TrueType;
+	};
+
+	template <typename TrueType, typename FalseType>
+	struct conditional<false, TrueType, FalseType>
+	{
+		using type = FalseType;
+	};
+
+	template <bool B, typename T = void>
+	using enable_if_t = typename enable_if<B, T>::type;
+
+	template <bool B, typename T, typename F>
+	using conditional_t = typename conditional<B, T, F>::type;
+
+	template <typename... Tn>
+	struct conjunction : __and<Tn...>
+	{
+	};
+
+	template <typename... Tn>
+	struct disjunction : __or<Tn...>
+	{
+	};
+
+	template <typename T>
+	struct negation : __not<T>
+	{
+	};
+
+	template <typename T>
+	constexpr const bool is_void_v = is_void<T>::value;
+
+	template <typename T>
+	constexpr const bool is_null_pointer_v = is_null_pointer<T>::value;
+
+	template <typename T>
+	constexpr const bool is_integral_v = is_integral<T>::value;
+
+	template <typename T>
+	constexpr const bool is_floating_point_v = is_floating_point<T>::value;
+
+	template <typename T>
+	constexpr const bool is_array_v = is_array<T>::value;
+
+	template <typename T>
+	constexpr const bool is_pointer_v = is_pointer<T>::value;
+
+	template <typename T>
+	constexpr const bool is_lvalue_reference_v = is_lvalue_reference<T>::value;
+
+	template <typename T>
+	constexpr const bool is_rvalue_reference_v = is_rvalue_reference<T>::value;
+
+	template <typename T>
+	constexpr const bool is_member_object_pointer_v = is_member_object_pointer<T>::value;
+
+	template <typename T>
+	constexpr const bool is_member_function_pointer_v = is_member_function_pointer<T>::value;
+
+	template <typename T>
+	constexpr const bool is_enum_v = is_enum<T>::value;
+
+	template <typename T>
+	constexpr const bool is_union_v = is_union<T>::value;
+
+	template <typename T>
+	constexpr const bool is_typename_v = is_typename<T>::value;
+
+	template <typename T>
+	constexpr const bool is_function_v = is_function<T>::value;
+
+	template <typename T>
+	constexpr const bool is_const_v = is_const<T>::value;
+
+	template <typename T>
 	constexpr const bool is_empty_v = is_empty<T>::value;
 
-	template <class T>
+	template <typename T>
 	constexpr const bool is_pod_v = is_pod<T>::value;
 
-	template <class T>
-	constexpr const bool is_nothrow_swappable_v =
-		is_nothrow_swappable<T>::value;
+	template <typename T>
+	constexpr const bool is_nothrow_swappable_v = is_nothrow_swappable<T>::value;
+
+	template <typename... T>
+	constexpr bool conjunction_v = conjunction<T...>::value;
+
+	template <typename... T>
+	constexpr bool disjunction_v = disjunction<T...>::value;
+
+	template <typename T>
+	constexpr bool negation_v = negation<T>::value;
+
+	constexpr bool is_constant_evaluated() noexcept
+	{
+		return __builtin_is_constant_evaluated();
+	}
 } // namespace std
