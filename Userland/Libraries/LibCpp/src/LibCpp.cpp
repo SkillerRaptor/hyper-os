@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-/* temporary source file */
 #include <array>
 #include <cassert>
 #include <csetjmp>
