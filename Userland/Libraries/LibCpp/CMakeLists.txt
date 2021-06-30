@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.10)
 # LibCxx
 #-------------------------------------------------------------------------------------------
 set(SOURCES
-        src/libcxx.cpp)
+        src/LibCpp.cpp)
 
 set(HEADERS
         include/array
@@ -22,5 +22,5 @@ set(HEADERS
         include/iterator
         include/type_traits)
 
-add_library(libcxx STATIC ${SOURCES} ${HEADERS})
-target_include_directories(libcxx INTERFACE include)
+add_library(LibCpp STATIC ${SOURCES} ${HEADERS})
+target_include_directories(LibCpp INTERFACE include)
