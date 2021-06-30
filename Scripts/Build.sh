@@ -16,11 +16,11 @@ build_error() {
 
 build_step HyperOS echo "Building HyperOS..."
 
-pushd "$root_path" || build_error >/dev/null
+pushd "$root_path" >/dev/null || build_error
 build_step Bash mkdir -p Build || build_error
-pushd Build || build_error >/dev/null
+pushd Build >/dev/null || build_error
 build_step CMake cmake --build . --parallel "$(nproc)" || build_error
-popd || build_error >/dev/null
-popd || build_error >/dev/null
+popd >/dev/null || build_error
+popd >/dev/null || build_error
 
 build_step HyperOS echo "Building done!"

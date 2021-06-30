@@ -22,7 +22,7 @@ build_error() {
   exit
 }
 
-pushd "$current_path" || build_error >/dev/null
+pushd "$current_path" >/dev/null || build_error
 
 if [ -e "CrossCompiler/Tools/$arch/bin/$compiler_prefix-elf-g++" ]; then
   exit 0
@@ -93,7 +93,7 @@ export CXXFLAGS="-g0 -O3"
 
 build_step binutils echo "Building binutils..."
 build_step binutils mkdir -p "CrossCompiler/binutils_build/$arch" || build_error
-pushd "CrossCompiler/binutils_build/$arch" || build_error >/dev/null
+pushd "CrossCompiler/binutils_build/$arch" >/dev/null || build_error
 build_step binutils ../../binutils/configure --target=$TARGET \
   --prefix="$PREFIX" \
   --with-sysroot \
@@ -102,12 +102,12 @@ build_step binutils ../../binutils/configure --target=$TARGET \
 build_step binutils make || build_error
 build_step binutils make install || build_error
 build_step binutils echo "Building binutils finished!"
-popd || build_error >/dev/null
+popd >/dev/null || build_error
 
 build_step gcc echo "Building gcc..."
 build_step gcc mkdir -p "CrossCompiler/gcc_build/$arch" || build_error
-pushd "CrossCompiler/gcc_build/$arch" || build_error >/dev/null
-build_step gcc ../gcc/configure --target=$TARGET \
+pushd "CrossCompiler/gcc_build/$arch" >/dev/null || build_error
+build_step gcc ../../gcc/configure --target=$TARGET \
   --prefix="$PREFIX" \
   --disable-nls \
   --enable-languages=c,c++ \
@@ -118,7 +118,7 @@ build_step gcc make install-gcc || build_error
 build_step gcc make install-target-libgcc || build_error
 build_step gcc echo "Building gcc finished!"
 
-popd || build_error >/dev/null
-popd || build_error >/dev/null
+popd >/dev/null || build_error
+popd >/dev/null || build_error
 
 build_step HyperOS echo "Building cross-compiler for $compiler_prefix done!"

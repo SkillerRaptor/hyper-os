@@ -15,11 +15,11 @@ configure_error() {
 }
 
 configure_step HyperOS echo "Configuring HyperOS..."
-pushd "$root_path" || configure_error >/dev/null
+pushd "$root_path" >/dev/null || configure_error
 configure_step Bash mkdir -p Build || configure_error
-pushd Build || configure_error >/dev/null
+pushd Build >/dev/null || configure_error
 configure_step CMake cmake ./.. -G "Ninja" || build_error
-popd || configure_error >/dev/null
-popd || configure_error >/dev/null
+popd >/dev/null || configure_error
+popd >/dev/null || configure_error
 
 configure_step HyperOS echo "Configuring done!"
