@@ -13,10 +13,10 @@
 __BEGIN_DECLS
 
 #if defined(__x86_64__)
-typedef uint64_t size_t;
-typedef int64_t ssize_t;
-typedef int64_t ptrdiff_t;
-typedef int64_t intptr_t;
+typedef long unsigned int size_t;
+typedef long int ssize_t;
+typedef long int ptrdiff_t;
+typedef long int intptr_t;
 #elif defined(__i386__)
 typedef unsigned int size_t;
 typedef int ssize_t;
