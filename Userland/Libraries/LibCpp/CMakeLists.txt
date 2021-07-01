@@ -41,4 +41,4 @@ set(HEADERS
         include/details/stream_types.h)
 
 hyperos_add_library(cpp)
-target_link_libraries(cpp PUBLIC C)
+target_link_libraries(cpp PUBLIC c)
