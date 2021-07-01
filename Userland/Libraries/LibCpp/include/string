@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#pragma once
+
+#include <details/char_traits.h>
+
+namespace std
+{
+	template <typename T, typename Traits = char_traits<T>>
+	class basic_string
+	{
+	public:
+		using value_type = T;
+		using reference = value_type&;
+		using const_reference = const value_type&;
+		using pointer = value_type*;
+		using const_pointer = const value_type*;
+		using size_type = size_t;
+		using difference_type = ptrdiff_t;
+		using iterator = __legacy_iterator<pointer>;
+		using const_iterator = __legacy_iterator<const_pointer>;
+		using reverse_iterator = std::reverse_iterator<iterator>;
+		using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+		using traits_type = Traits;
+
+	public:
+		// TODO: Implement string
+	}
+
+	using string = basic_string<char>;
+	using wstring = basic_string<wchar_t>;
+	using u8string = basic_string<char8_t>;
+	using u16string = basic_string<char16_t>;
+	using u32string = basic_string<char32_t>;
+} // namespace std

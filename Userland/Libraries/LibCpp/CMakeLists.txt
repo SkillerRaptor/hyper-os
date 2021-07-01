@@ -25,11 +25,16 @@ set(HEADERS
         include/cstdio
         include/cstring
         include/ctime
+        include/cuchar
         include/functional
+        include/ios
         include/iterator
         include/numbers
+        include/string
+        include/string_view
         include/type_traits
-        include/utility)
+        include/utility
+        include/details/char_traits.h)
 
 add_library(LibCpp STATIC ${SOURCES} ${HEADERS})
-target_include_directories(LibCpp INTERFACE include)
+target_include_directories(LibCpp PUBLIC include)

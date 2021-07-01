@@ -13,8 +13,13 @@
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <cuchar>
 #include <functional>
+#include <ios>
 #include <iterator>
 #include <numbers>
+#include <string>
+#include <string_view>
 #include <type_traits>
 #include <utility>
+#include <details/char_traits.h>
