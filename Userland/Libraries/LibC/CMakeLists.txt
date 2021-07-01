@@ -35,8 +35,4 @@ set(HEADERS
         include/sys/cdefs.h
         include/sys/types.h)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffreestanding -fno-pie -fno-pic")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nostdlib -nostdinc -nodefaultlibs -nostartfiles")
-
-add_library(LibC STATIC ${SOURCES} ${HEADERS})
-target_include_directories(LibC PUBLIC include)
+hyperos_add_library(LibC)

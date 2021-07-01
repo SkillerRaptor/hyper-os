@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------------------
-# Copyright (c) 2021, SkillerRaptor <skillerraptor@protonmail.com>
+# Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
 #
 # SPDX-License-Identifier: MIT
 #-------------------------------------------------------------------------------------------
@@ -13,26 +13,28 @@ project(HyperOS LANGUAGES ASM_NASM C CXX)
 #-------------------------------------------------------------------------------------------
 # CXX Standard
 #-------------------------------------------------------------------------------------------
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+include(Utils/Utils.cmake)
 
 #-------------------------------------------------------------------------------------------
 # Toolchain
 #-------------------------------------------------------------------------------------------
 set(ARCH "x86_64")
-set(TOOLCHAIN_PREFIX ${CMAKE_SOURCE_DIR}/Toolchain/CrossCompiler/Tools/bin)
-set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}/${ARCH}-elf-gcc)
-set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}/${ARCH}-elf-g++)
-set(CMAKE_LINKER_COMPILER ${TOOLCHAIN_PREFIX}/${ARCH}-elf-ld)
-set(CMAKE_AS_COMPILER ${TOOLCHAIN_PREFIX}/${ARCH}-elf-as)
-set(CMAKE_AR_COMPILER ${TOOLCHAIN_PREFIX}/${ARCH}-elf-ar)
-set(CMAKE_ASM_COMPILER nasm)
+set(TOOLCHAIN_PREFIX "${CMAKE_SOURCE_DIR}/Toolchain/CrossCompiler/Tools/${ARCH}/bin")
+set(CMAKE_C_COMPILER "${TOOLCHAIN_PREFIX}/${ARCH}-elf-gcc")
+set(CMAKE_CXX_COMPILER "${TOOLCHAIN_PREFIX}/${ARCH}-elf-g++")
+set(CMAKE_LINKER_COMPILER "${TOOLCHAIN_PREFIX}/${ARCH}-elf-ld")
+set(CMAKE_AS_COMPILER "${TOOLCHAIN_PREFIX}/${ARCH}-elf-as")
+set(CMAKE_AR_COMPILER "${TOOLCHAIN_PREFIX}/${ARCH}-elf-ar")
+set(CMAKE_ASM_COMPILER "nasm")
 
 #-------------------------------------------------------------------------------------------
 # ThirdParty
 #-------------------------------------------------------------------------------------------
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty)
+add_subdirectory(${CMAKE_SOURCE_DIR}/ThirdParty)
 
 #-------------------------------------------------------------------------------------------
 # Warning Flags
@@ -57,7 +59,5 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wundef")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wwrite-strings")
 
-include_directories(.)
-
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/AK)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Kernel)
+add_subdirectory(Kernel)
+add_subdirectory(Userland)
