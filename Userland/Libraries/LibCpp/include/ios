@@ -7,23 +7,9 @@
 #pragma once
 
 #include <cstddef>
-#include <string>
+#include <details/char_traits.h>
+#include <details/stream_types.h>
 
 namespace std
 {
-	using streamoff = long long;
-	using streamsize = ptrdiff_t;
-
-	template <typename State>
-	class fpos
-	{
-	public:
-		// TODO: Implement fpos
-	};
-
-	using streampos = fpos<char_traits<char>::state_type>;
-	using wstreampos = fpos<char_traits<wchar_t>::state_type>;
-	using u8streampos = fpos<char_traits<char8_t>::state_type>;
-	using u16streampos = fpos<char_traits<char16_t>::state_type>;
-	using u32streampos = fpos<char_traits<char32_t>::state_type>;
 } // namespace std

@@ -83,7 +83,7 @@ namespace std
 		return pair<T1, T2>(forward<T1>(first), forward<T2>(second));
 	}
 
-	template <typename T, T...>
+	template <typename T, T... I>
 	struct integer_sequence
 	{
 		using value_type = T;
@@ -94,14 +94,14 @@ namespace std
 		}
 	};
 
-	template <size_t... I>
-	using index_sequence = integer_sequence<size_t, I...>;
-
 	template <typename T, T N>
 	using make_integer_sequence = integer_sequence<T, __integer_pack(N)...>;
 
-	template <typename T, T N>
-	using make_index_sequence = make_integer_sequence<T, N>;
+	template <size_t... I>
+	using index_sequence = integer_sequence<size_t, I...>;
+
+	template <size_t N>
+	using make_index_sequence = make_integer_sequence<size_t, N>;
 
 	template <typename... T>
 	using index_sequence_for = make_index_sequence<sizeof...(T)>;

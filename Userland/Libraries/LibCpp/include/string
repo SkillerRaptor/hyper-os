@@ -29,7 +29,7 @@ namespace std
 
 	public:
 		// TODO: Implement string
-	}
+	};
 
 	using string = basic_string<char>;
 	using wstring = basic_string<wchar_t>;

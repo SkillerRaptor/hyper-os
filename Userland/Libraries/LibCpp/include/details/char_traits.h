@@ -8,8 +8,8 @@
 
 #include <cstring>
 #include <cuchar>
-#include <ios>
 #include <type_traits>
+#include <details/stream_types.h>
 
 namespace std
 {
@@ -27,10 +27,10 @@ namespace std
 	{
 	public:
 		using char_type = T;
-		using int_type = typename _char_types<T>::int_type;
-		using pos_type = typename _char_types<T>::pos_type;
-		using off_type = typename _char_types<T>::off_type;
-		using state_type = typename _char_types<T>::state_type;
+		using int_type = typename _char_types<char_type>::int_type;
+		using pos_type = typename _char_types<char_type>::pos_type;
+		using off_type = typename _char_types<char_type>::off_type;
+		using state_type = typename _char_types<char_type>::state_type;
 
 	public:
 		static constexpr size_t length(const char_type* string)
@@ -52,7 +52,7 @@ namespace std
 				return length;
 			}
 
-			return std::strlen(__s);
+			return std::strlen(string);
 		}
 
 		// TODO: Implement char_traits
