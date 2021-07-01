@@ -13,7 +13,8 @@ cmake_minimum_required(VERSION 3.10)
 # LibCxx
 #-------------------------------------------------------------------------------------------
 set(SOURCES
-        src/LibCpp.cpp)
+        src/LibCpp.cpp
+        src/new.cpp)
 
 set(HEADERS
         include/array
@@ -23,12 +24,14 @@ set(HEADERS
         include/cstddef
         include/cstdint
         include/cstdio
+        include/cstdlib
         include/cstring
         include/ctime
         include/cuchar
         include/functional
         include/ios
         include/iterator
+        include/new
         include/numbers
         include/string
         include/string_view
