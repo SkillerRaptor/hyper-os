@@ -40,5 +40,5 @@ set(HEADERS
         include/details/char_traits.h
         include/details/stream_types.h)
 
-hyperos_add_library(LibCpp)
-target_link_libraries(LibCpp PUBLIC LibC)
+hyperos_add_library(cpp)
+target_link_libraries(cpp PUBLIC C)

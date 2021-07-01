@@ -35,4 +35,4 @@ set(HEADERS
         include/sys/cdefs.h
         include/sys/types.h)
 
-hyperos_add_library(LibC)
+hyperos_add_library(c)
