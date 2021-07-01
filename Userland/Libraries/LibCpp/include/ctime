@@ -10,12 +10,8 @@
 
 namespace std
 {
-	using ::gmtime;
-	using ::gmtime_r;
-	using ::localtime;
-	using ::localtime_r;
-	using ::strftime;
-	using ::time;
 	using ::time_t;
 	using ::timespec;
+
+	using ::time;
 } // namespace std

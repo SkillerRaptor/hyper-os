@@ -12,8 +12,6 @@ cmake_minimum_required(VERSION 3.10)
 #-------------------------------------------------------------------------------------------
 # LibCxx
 #-------------------------------------------------------------------------------------------
-set(CMAKE_CXX_STANDARD 20)
-
 set(SOURCES
         src/LibCpp.cpp)
 
@@ -39,5 +37,9 @@ set(HEADERS
         include/details/char_traits.h
         include/details/stream_types.h)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffreestanding -fno-pie -fno-pic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdlib -nostdinc -nostdinc++ -nodefaultlibs -nostartfiles")
+
 add_library(LibCpp STATIC ${SOURCES} ${HEADERS})
 target_include_directories(LibCpp PUBLIC include)
+target_link_libraries(LibCpp PUBLIC LibC)

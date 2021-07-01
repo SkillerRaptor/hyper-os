@@ -4,13 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-#pragma once
+#ifndef HYPEROS_LIBC_TYPES_H_
+#define HYPEROS_LIBC_TYPES_H_
 
-#include <signal.h>
+typedef int pid_t;
 
-namespace std
-{
-	using ::kill;
-	using ::signal;
-	using ::raise;
-} // namespace std
+#endif // HYPEROS_LIBC_TYPES_H_
