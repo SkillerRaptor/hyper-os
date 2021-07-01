@@ -43,12 +43,12 @@ namespace std
 			if (is_constant_evaluated())
 			{
 				size_t length = 0;
-				
+
 				while (*(string++))
 				{
 					++length;
 				}
-				
+
 				return length;
 			}
 

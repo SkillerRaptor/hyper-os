@@ -115,26 +115,26 @@ namespace std
 			--m_ptr;
 			return *this;
 		}
-		
+
 		__legacy_iterator operator++(int)
 		{
 			__legacy_iterator* temp = *this;
 			++m_ptr;
 			return temp;
 		}
-		
+
 		__legacy_iterator operator--(int)
 		{
 			__legacy_iterator* temp = *this;
 			--m_ptr;
 			return temp;
 		}
-		
+
 		__legacy_iterator operator-(difference_type value)
 		{
 			return { m_ptr - value };
 		}
-		
+
 		__legacy_iterator operator+(difference_type value)
 		{
 			return { m_ptr + value };
@@ -312,25 +312,20 @@ namespace std
 	}
 
 	template <class Iterator>
-	constexpr typename iterator_traits<Iterator>::difference_type
-		distance(Iterator first, Iterator last)
+	constexpr typename iterator_traits<Iterator>::difference_type distance(Iterator first, Iterator last)
 	{
 		return last - first;
 	}
 
 	template <class Iterator>
-	constexpr Iterator next(
-		Iterator iterator,
-		typename iterator_traits<Iterator>::difference_type distance = 1)
+	constexpr Iterator next(Iterator iterator, typename iterator_traits<Iterator>::difference_type distance = 1)
 	{
 		advance(iterator, distance);
 		return iterator;
 	}
 
 	template <class Iterator>
-	constexpr Iterator prev(
-		Iterator iterator,
-		typename iterator_traits<Iterator>::difference_type distance = 1)
+	constexpr Iterator prev(Iterator iterator, typename iterator_traits<Iterator>::difference_type distance = 1)
 	{
 		advance(iterator, -distance);
 		return iterator;

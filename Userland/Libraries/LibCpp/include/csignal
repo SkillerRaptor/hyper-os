@@ -11,6 +11,6 @@
 namespace std
 {
 	using ::kill;
-	using ::signal;
 	using ::raise;
+	using ::signal;
 } // namespace std

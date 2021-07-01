@@ -10,14 +10,14 @@
 
 namespace std
 {
+	using ::fclose;
 	using ::FILE;
 	using ::fopen;
-	using ::fclose;
-	
+
 	using ::fprintf;
 	using ::printf;
 	using ::snprintf;
 	using ::sprintf;
 	using ::vsnprintf;
 	using ::vsprintf;
-}
+} // namespace std
