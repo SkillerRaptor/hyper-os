@@ -25,10 +25,12 @@ set(KERNEL_SOURCES
         src/Kernel/Memory/PhysicalMemoryManager.cpp
         src/Kernel/Memory/VirtualMemoryManager.cpp
         src/Kernel/System/ACPI.cpp
+        src/Kernel/System/CPU.cpp
         src/Kernel/System/IDT.cpp
         src/Kernel/System/GDT.cpp
         src/Kernel/System/MADT.cpp
-        src/Kernel/System/PIC.cpp)
+        src/Kernel/System/PIC.cpp
+        src/Kernel/System/SMP.cpp)
 
 set(KERNEL_HEADERS
         include/Kernel/main.hpp
@@ -46,10 +48,12 @@ set(KERNEL_HEADERS
         include/Kernel/Memory/PhysicalMemoryManager.hpp
         include/Kernel/Memory/VirtualMemoryManager.hpp
         include/Kernel/System/ACPI.hpp
+        include/Kernel/System/CPU.hpp
         include/Kernel/System/IDT.hpp
         include/Kernel/System/GDT.hpp
         include/Kernel/System/MADT.hpp
-        include/Kernel/System/PIC.hpp)
+        include/Kernel/System/PIC.hpp
+        include/Kernel/System/SMP.hpp)
 
 if ("${ARCH}" STREQUAL "x86_64")
     set(ARCH_SOURCES

@@ -14,6 +14,7 @@
 #include <Kernel/System/IDT.hpp>
 #include <Kernel/System/GDT.hpp>
 #include <Kernel/System/PIC.hpp>
+#include <Kernel/System/SMP.hpp>
 
 #if defined(__x86_64__)
 #	include <Kernel/Arch/x86_64/Stivale.hpp>
@@ -66,7 +67,12 @@ namespace Kernel
 			reinterpret_cast<stivale2_struct_tag_rsdp*>(stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_RSDP_ID));
 
 		ACPI::initialize(reinterpret_cast<ACPI::RSDP*>(rsdp_tag->rsdp + s_physical_memory_offset));
+		
+		auto* smp_tag =
+			reinterpret_cast<stivale2_struct_tag_smp*>(stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_SMP_ID));
 
+		SMP::initialize(smp_tag);
+		
 		Logger::info("HyperOS booted successfully!");
 
 		__asm__ __volatile__("sti");
