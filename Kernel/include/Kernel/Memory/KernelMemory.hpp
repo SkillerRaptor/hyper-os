@@ -28,5 +28,5 @@ void operator delete[](void* ptr, size_t) noexcept;
 
 [[nodiscard]] void* operator new(size_t, void* ptr) noexcept;
 [[nodiscard]] void* operator new[](size_t, void* ptr) noexcept;
-void operator delete(void* ptr, void*) noexcept;
-void operator delete[](void* ptr, void*) noexcept;
+void operator delete(void*, void*) noexcept;
+void operator delete[](void*, void*) noexcept;

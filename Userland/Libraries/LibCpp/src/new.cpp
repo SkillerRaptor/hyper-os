@@ -42,12 +42,10 @@ void operator delete[](void* ptr, std::size_t) noexcept
 	return ptr;
 }
 
-void operator delete(void* ptr, void*) noexcept
+void operator delete(void*, void*) noexcept
 {
-	std::free(ptr);
 }
 
-void operator delete[](void* ptr, void*) noexcept
+void operator delete[](void*, void*) noexcept
 {
-	std::free(ptr);
 }

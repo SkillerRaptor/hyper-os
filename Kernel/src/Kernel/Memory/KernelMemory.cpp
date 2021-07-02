@@ -124,12 +124,10 @@ void operator delete[](void* ptr, size_t) noexcept
 	return ptr;
 }
 
-void operator delete(void* ptr, void*) noexcept
+void operator delete(void*, void*) noexcept
 {
-	Kernel::free(ptr);
 }
 
-void operator delete[](void* ptr, void*) noexcept
+void operator delete[](void*, void*) noexcept
 {
-	Kernel::free(ptr);
 }
