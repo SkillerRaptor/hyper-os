@@ -8,6 +8,7 @@
 #include <Kernel/Common/Memory.hpp>
 #include <Kernel/Common/String.hpp>
 #include <Kernel/System/ACPI.hpp>
+#include <Kernel/System/MADT.hpp>
 
 namespace Kernel
 {
@@ -19,6 +20,7 @@ namespace Kernel
 		Logger::info("ACPI: Initializing...");
 
 		ACPI::detect_rsdt(rsdp);
+		MADT::initialize();
 
 		Logger::info("ACPI: Initializing finished!");
 	}
@@ -68,7 +70,7 @@ namespace Kernel
 			return reinterpret_cast<ACPI::SDT*>(current_pointer[index] + s_physical_memory_offset);
 		}
 
-		auto* current_pointer = reinterpret_cast<uint64_t*>(s_rsdt->sdt_addresses);
+		auto* current_pointer = reinterpret_cast<uint32_t*>(s_rsdt->sdt_addresses);
 		return reinterpret_cast<ACPI::SDT*>(current_pointer[index] + s_physical_memory_offset);
 	}
 } // namespace Kernel
