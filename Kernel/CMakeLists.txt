@@ -14,6 +14,7 @@ cmake_minimum_required(VERSION 3.10)
 #-------------------------------------------------------------------------------------------
 set(KERNEL_SOURCES
         src/Kernel/main.cpp
+        src/Kernel/Common/CxxAbi.cpp
         src/Kernel/Common/IoService.cpp
         src/Kernel/Common/Logger.cpp
         src/Kernel/Common/Memory.cpp
@@ -31,6 +32,7 @@ set(KERNEL_SOURCES
 
 set(KERNEL_HEADERS
         include/Kernel/main.hpp
+        include/Kernel/Common/CxxAbi.hpp
         include/Kernel/Common/IoService.hpp
         include/Kernel/Common/Logger.hpp
         include/Kernel/Common/Math.hpp

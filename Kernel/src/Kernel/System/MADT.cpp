@@ -28,19 +28,19 @@ namespace Kernel
 			switch (*(ptr))
 			{
 			case 0:
-				Logger::debug("MADT: Found Processor Local APIC");
+				Logger::debug("MADT: Found local APIC #%u", s_lapics.size());
 				s_lapics.push_back(reinterpret_cast<MADT::LAPIC*>(ptr));
 				break;
 			case 1:
-				Logger::debug("MADT: Found I/O APIC");
+				Logger::debug("MADT: Found I/O APIC #%u", s_ioapics.size());
 				s_ioapics.push_back(reinterpret_cast<MADT::IOAPIC*>(ptr));
 				break;
 			case 2:
-				Logger::debug("MADT: Found IO/APIC Interrupt Source Override");
+				Logger::debug("MADT: Found ISO #%u", s_isos.size());
 				s_isos.push_back(reinterpret_cast<MADT::ISO*>(ptr));
 				break;
 			case 4:
-				Logger::debug("MADT: Found Local APIC Non-maskable interrupts");
+				Logger::debug("MADT: Found NMI #%u", s_nmis.size());
 				s_nmis.push_back(reinterpret_cast<MADT::NMI*>(ptr));
 				break;
 			}
