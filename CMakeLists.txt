@@ -17,18 +17,21 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-include(Utils/Utils.cmake)
-
 #-------------------------------------------------------------------------------------------
 # Toolchain
 #-------------------------------------------------------------------------------------------
-set(ARCH "x86_64")
+if ("${ARCH}" STREQUAL "x86_64")
+    set(COMPILER_PREFIX "x86_64")
+elseif ("${ARCH}" STREQUAL "x86_32")
+    set(COMPILER_PREFIX "i686")
+endif ()
+
 set(TOOLCHAIN_PREFIX "${CMAKE_SOURCE_DIR}/Toolchain/CrossCompiler/Tools/${ARCH}/bin")
-set(CMAKE_C_COMPILER "${TOOLCHAIN_PREFIX}/${ARCH}-elf-gcc")
-set(CMAKE_CXX_COMPILER "${TOOLCHAIN_PREFIX}/${ARCH}-elf-g++")
-set(CMAKE_LINKER_COMPILER "${TOOLCHAIN_PREFIX}/${ARCH}-elf-ld")
-set(CMAKE_AS_COMPILER "${TOOLCHAIN_PREFIX}/${ARCH}-elf-as")
-set(CMAKE_AR_COMPILER "${TOOLCHAIN_PREFIX}/${ARCH}-elf-ar")
+set(CMAKE_C_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-gcc")
+set(CMAKE_CXX_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-g++")
+set(CMAKE_LINKER_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-ld")
+set(CMAKE_AS_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-as")
+set(CMAKE_AR_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-ar")
 set(CMAKE_ASM_COMPILER "nasm")
 
 #-------------------------------------------------------------------------------------------
@@ -59,5 +62,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wundef")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wwrite-strings")
 
+#-------------------------------------------------------------------------------------------
+# Modules
+#-------------------------------------------------------------------------------------------
+include(Utils/Utils.cmake)
+
+#-------------------------------------------------------------------------------------------
+# Subdirectories
+#-------------------------------------------------------------------------------------------
 add_subdirectory(Kernel)
 add_subdirectory(Userland)
