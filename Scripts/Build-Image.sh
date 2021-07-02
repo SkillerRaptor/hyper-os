@@ -16,13 +16,13 @@ build_error() {
   exit
 }
 
-build_step HyperOS echo "Building HyperOS..."
+build_step HyperOS echo "Building image..."
 
 pushd "$root_path" >/dev/null || build_error
 build_step Bash mkdir -p Build/$arch || build_error
 pushd Build/$arch >/dev/null || build_error
-build_step CMake cmake --build . || build_error
+build_step CMake cmake --build . --target image || build_error
 popd >/dev/null || build_error
 popd >/dev/null || build_error
 
-build_step HyperOS echo "Building done!"
+build_step HyperOS echo "Building image done!"

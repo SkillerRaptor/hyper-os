@@ -17,6 +17,7 @@ configure_error() {
 }
 
 configure_step HyperOS echo "Configuring HyperOS..."
+
 pushd "$root_path" >/dev/null || configure_error
 configure_step Bash mkdir -p Build/$arch || configure_error
 pushd Build/$arch >/dev/null || configure_error

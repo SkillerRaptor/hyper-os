@@ -8,7 +8,7 @@
 # CMake Info
 #-------------------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.10)
-project(HyperOS LANGUAGES ASM_NASM C CXX)
+project(HyperOS LANGUAGES)
 
 #-------------------------------------------------------------------------------------------
 # CXX Standard
@@ -26,6 +26,9 @@ elseif ("${ARCH}" STREQUAL "x86_32")
     set(COMPILER_PREFIX "i686")
 endif ()
 
+set(CMAKE_C_COMPILER_FORCED ON)
+set(CMAKE_CXX_COMPILER_FORCED ON)
+
 set(TOOLCHAIN_PREFIX "${CMAKE_SOURCE_DIR}/Toolchain/CrossCompiler/Tools/${ARCH}/bin")
 set(CMAKE_C_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-gcc")
 set(CMAKE_CXX_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-g++")
@@ -33,6 +36,10 @@ set(CMAKE_LINKER_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-ld")
 set(CMAKE_AS_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-as")
 set(CMAKE_AR_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-ar")
 set(CMAKE_ASM_COMPILER "nasm")
+
+enable_language(ASM_NASM)
+enable_language(C)
+enable_language(CXX)
 
 #-------------------------------------------------------------------------------------------
 # ThirdParty
@@ -66,6 +73,31 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wwrite-strings")
 # Modules
 #-------------------------------------------------------------------------------------------
 include(Utils/Utils.cmake)
+
+#-------------------------------------------------------------------------------------------
+# Install
+#-------------------------------------------------------------------------------------------
+install(DIRECTORY Base/ DESTINATION ${CMAKE_BINARY_DIR}/Root)
+
+#-------------------------------------------------------------------------------------------
+# Custom Targets
+#-------------------------------------------------------------------------------------------
+add_custom_target(
+        run
+        COMMAND ${CMAKE_COMMAND} -E env
+        "HYPEROS_BINARY_DIR=${CMAKE_BINARY_DIR}"
+        "HYPEROS_COMPILER_PREFIX=${COMPILER_PREFIX}"
+        ${CMAKE_SOURCE_DIR}/Meta/Run.sh
+        USES_TERMINAL)
+
+add_custom_target(
+        image
+        COMMAND ${CMAKE_COMMAND} -E env
+        "HYPEROS_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
+        "HYPEROS_BINARY_DIR=${CMAKE_BINARY_DIR}"
+        "HYPEROS_ARCH=${ARCH}"
+        ${CMAKE_SOURCE_DIR}/Meta/Build-Image.sh
+        USES_TERMINAL)
 
 #-------------------------------------------------------------------------------------------
 # Subdirectories

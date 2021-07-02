@@ -71,21 +71,5 @@ target_include_directories(kernel PRIVATE include)
 #-------------------------------------------------------------------------------------------
 # Install
 #-------------------------------------------------------------------------------------------
-set(KERNEL_HDD ${CMAKE_BINARY_DIR}/Root/boot/kernel.hdd)
-set(ECHFS_COMMAND ${CMAKE_SOURCE_DIR}/ThirdParty/echfs/echfs-utils)
-set(LIMINE_INSTALL_COMMAND ${CMAKE_SOURCE_DIR}/ThirdParty/limine/limine-install-linux-${ARCH})
-set(LIMINE_SYS_PATH ${CMAKE_SOURCE_DIR}/ThirdParty/limine/limine.sys)
-
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/Base/ DESTINATION ${CMAKE_BINARY_DIR}/Root)
 install(TARGETS kernel DESTINATION ${CMAKE_BINARY_DIR}/Root/boot)
 install(FILES src/Kernel/Arch/${ARCH}/limine.cfg DESTINATION ${CMAKE_BINARY_DIR}/Root/boot)
-
-install(CODE "execute_process(COMMAND bash -c \"rm -f ${KERNEL_HDD}\" OUTPUT_QUIET ERROR_QUIET)")
-install(CODE "execute_process(COMMAND bash -c \"dd if=/dev/zero bs=1M count=0 seek=64 of=${KERNEL_HDD}\" OUTPUT_QUIET ERROR_QUIET)")
-install(CODE "execute_process(COMMAND bash -c \"parted -s ${KERNEL_HDD} mklabel msdos\" OUTPUT_QUIET ERROR_QUIET)")
-install(CODE "execute_process(COMMAND bash -c \"parted -s ${KERNEL_HDD} mkpart primary 1 100%\" OUTPUT_QUIET ERROR_QUIET)")
-install(CODE "execute_process(COMMAND bash -c \"${ECHFS_COMMAND} -m -p0 ${KERNEL_HDD} quick-format 32768\" OUTPUT_QUIET ERROR_QUIET)")
-install(CODE "execute_process(COMMAND bash -c \"${ECHFS_COMMAND} -m -p0 ${KERNEL_HDD} import ${CMAKE_BINARY_DIR}/Root/boot/kernel kernel\" OUTPUT_QUIET ERROR_QUIET)")
-install(CODE "execute_process(COMMAND bash -c \"${ECHFS_COMMAND} -m -p0 ${KERNEL_HDD} import ${CMAKE_BINARY_DIR}/Root/boot/limine.cfg limine.cfg\" OUTPUT_QUIET ERROR_QUIET)")
-install(CODE "execute_process(COMMAND bash -c \"${ECHFS_COMMAND} -m -p0 ${KERNEL_HDD} import ${LIMINE_SYS_PATH} limine.sys\" OUTPUT_QUIET ERROR_QUIET)")
-install(CODE "execute_process(COMMAND bash -c \"${LIMINE_INSTALL_COMMAND} ${KERNEL_HDD}\" OUTPUT_QUIET ERROR_QUIET)")
