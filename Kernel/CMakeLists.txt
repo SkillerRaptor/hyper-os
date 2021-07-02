@@ -18,10 +18,12 @@ set(KERNEL_SOURCES
         src/Kernel/Common/Logger.cpp
         src/Kernel/Common/Memory.cpp
         src/Kernel/Common/Serial.cpp
+        src/Kernel/Common/String.cpp
         src/Kernel/Memory/Bitmap.cpp
         src/Kernel/Memory/KernelMemory.cpp
         src/Kernel/Memory/PhysicalMemoryManager.cpp
         src/Kernel/Memory/VirtualMemoryManager.cpp
+        src/Kernel/System/ACPI.cpp
         src/Kernel/System/IDT.cpp
         src/Kernel/System/GDT.cpp
         src/Kernel/System/PIC.cpp)
@@ -33,10 +35,12 @@ set(KERNEL_HEADERS
         include/Kernel/Common/Math.hpp
         include/Kernel/Common/Memory.hpp
         include/Kernel/Common/Serial.hpp
+        include/Kernel/Common/String.hpp
         include/Kernel/Memory/Bitmap.hpp
         include/Kernel/Memory/KernelMemory.hpp
         include/Kernel/Memory/PhysicalMemoryManager.hpp
         include/Kernel/Memory/VirtualMemoryManager.hpp
+        include/Kernel/System/ACPI.hpp
         include/Kernel/System/IDT.hpp
         include/Kernel/System/GDT.hpp
         include/Kernel/System/PIC.hpp)
