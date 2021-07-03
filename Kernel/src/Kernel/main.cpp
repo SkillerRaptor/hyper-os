@@ -10,13 +10,13 @@
 #include <Kernel/Common/Memory.hpp>
 #include <Kernel/Common/Serial.hpp>
 #include <Kernel/Drivers/HPET.hpp>
+#include <Kernel/Interrupts/APIC.hpp>
+#include <Kernel/Interrupts/IDT.hpp>
+#include <Kernel/Interrupts/PIC.hpp>
 #include <Kernel/Memory/PhysicalMemoryManager.hpp>
 #include <Kernel/Memory/VirtualMemoryManager.hpp>
 #include <Kernel/System/ACPI.hpp>
-#include <Kernel/System/APIC.hpp>
-#include <Kernel/System/IDT.hpp>
 #include <Kernel/System/GDT.hpp>
-#include <Kernel/System/PIC.hpp>
 #include <Kernel/System/SMP.hpp>
 
 namespace Kernel

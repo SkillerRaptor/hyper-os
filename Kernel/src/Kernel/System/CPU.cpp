@@ -5,8 +5,8 @@
  */
 
 #include <Kernel/Common/Logger.hpp>
+#include <Kernel/Interrupts/IDT.hpp>
 #include <Kernel/System/GDT.hpp>
-#include <Kernel/System/IDT.hpp>
 #include <Kernel/System/CPU.hpp>
 
 namespace Kernel

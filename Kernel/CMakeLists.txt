@@ -15,7 +15,6 @@ cmake_minimum_required(VERSION 3.10)
 set(SOURCES
         src/Kernel/main.cpp
         src/Kernel/Arch/Stivale.cpp
-        src/Kernel/Arch/Interrupts.asm
         src/Kernel/Common/CxxAbi.cpp
         src/Kernel/Common/IoService.cpp
         src/Kernel/Common/Logger.cpp
@@ -24,18 +23,19 @@ set(SOURCES
         src/Kernel/Common/Serial.cpp
         src/Kernel/Common/String.cpp
         src/Kernel/Drivers/HPET.cpp
+        src/Kernel/Interrupts/Interrupts.asm
+        src/Kernel/Interrupts/APIC.cpp
+        src/Kernel/Interrupts/IDT.cpp
+        src/Kernel/Interrupts/PIC.cpp
         src/Kernel/Memory/Bitmap.cpp
         src/Kernel/Memory/KernelMemory.cpp
         src/Kernel/Memory/PhysicalMemoryManager.cpp
         src/Kernel/Memory/VirtualMemoryManager.cpp
         src/Kernel/Synchronization/Spinlock.cpp
         src/Kernel/System/ACPI.cpp
-        src/Kernel/System/APIC.cpp
         src/Kernel/System/CPU.cpp
-        src/Kernel/System/IDT.cpp
         src/Kernel/System/GDT.cpp
         src/Kernel/System/MADT.cpp
-        src/Kernel/System/PIC.cpp
         src/Kernel/System/SMP.cpp)
 
 set(HEADERS
@@ -54,18 +54,18 @@ set(HEADERS
         include/Kernel/Common/Utility.hpp
         include/Kernel/Common/Vector.hpp
         include/Kernel/Drivers/HPET.hpp
+        include/Kernel/Interrupts/APIC.hpp
+        include/Kernel/Interrupts/IDT.hpp
+        include/Kernel/Interrupts/PIC.hpp
         include/Kernel/Memory/Bitmap.hpp
         include/Kernel/Memory/KernelMemory.hpp
         include/Kernel/Memory/PhysicalMemoryManager.hpp
         include/Kernel/Memory/VirtualMemoryManager.hpp
         include/Kernel/Synchronization/Spinlock.hpp
         include/Kernel/System/ACPI.hpp
-        include/Kernel/System/APIC.hpp
         include/Kernel/System/CPU.hpp
-        include/Kernel/System/IDT.hpp
         include/Kernel/System/GDT.hpp
         include/Kernel/System/MADT.hpp
-        include/Kernel/System/PIC.hpp
         include/Kernel/System/SMP.hpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-pie -fno-pic -fno-rtti -fno-exceptions -ffreestanding -fbuiltin")
@@ -80,8 +80,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ffreestanding -static -no
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fno-pie -fno-pic -nodefaultlibs -nostartfiles")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -z max-page-size=0x1000")
 
-set(CMAKE_ASM_NASM_OBJECT_FORMAT elf64)
-set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
+set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -f elf64 -i \"${CMAKE_CURRENT_SOURCE_DIR}/src/\" -o <OBJECT> <SOURCE>")
 
 add_executable(kernel ${SOURCES} ${HEADERS} ${ASM_SOURCES})
 add_dependencies(kernel echfs limine stivale)

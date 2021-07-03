@@ -6,7 +6,7 @@
 
 #include <Kernel/Common/IoService.hpp>
 #include <Kernel/Common/Logger.hpp>
-#include <Kernel/System/PIC.hpp>
+#include <Kernel/Interrupts/PIC.hpp>
 
 namespace Kernel
 {

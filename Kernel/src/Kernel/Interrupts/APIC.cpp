@@ -7,10 +7,10 @@
 #include <Kernel/Common/Logger.hpp>
 #include <Kernel/Common/Memory.hpp>
 #include <Kernel/Common/MMIO.hpp>
-#include <Kernel/System/APIC.hpp>
+#include <Kernel/Interrupts/APIC.hpp>
+#include <Kernel/Interrupts/IDT.hpp>
+#include <Kernel/Interrupts/PIC.hpp>
 #include <Kernel/System/CPU.hpp>
-#include <Kernel/System/IDT.hpp>
-#include <Kernel/System/PIC.hpp>
 
 namespace Kernel
 {
