@@ -92,6 +92,14 @@ add_custom_target(
         USES_TERMINAL)
 
 add_custom_target(
+        debug
+        COMMAND ${CMAKE_COMMAND} -E env
+        "HYPEROS_BINARY_DIR=${CMAKE_BINARY_DIR}"
+        "HYPEROS_COMPILER_PREFIX=${COMPILER_PREFIX}"
+        ${CMAKE_SOURCE_DIR}/Meta/Debug.sh
+        USES_TERMINAL)
+
+add_custom_target(
         image
         COMMAND ${CMAKE_COMMAND} -E env
         "HYPEROS_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
