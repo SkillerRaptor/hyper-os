@@ -33,6 +33,7 @@ set(SOURCES
         src/Kernel/System/CPU.cpp
         src/Kernel/System/IDT.cpp
         src/Kernel/System/GDT.cpp
+        src/Kernel/System/HPET.cpp
         src/Kernel/System/MADT.cpp
         src/Kernel/System/PIC.cpp
         src/Kernel/System/SMP.cpp)
@@ -62,6 +63,7 @@ set(HEADERS
         include/Kernel/System/CPU.hpp
         include/Kernel/System/IDT.hpp
         include/Kernel/System/GDT.hpp
+        include/Kernel/System/HPET.hpp
         include/Kernel/System/MADT.hpp
         include/Kernel/System/PIC.hpp
         include/Kernel/System/SMP.hpp)

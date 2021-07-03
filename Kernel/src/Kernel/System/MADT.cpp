@@ -9,7 +9,7 @@
 
 namespace Kernel
 {
-	MADT::Entry* MADT::s_entry{ nullptr };
+	MADT::Table* MADT::s_table{ nullptr };
 	Vector<MADT::LAPIC*> MADT::s_lapics{};
 	Vector<MADT::IOAPIC*> MADT::s_ioapics{};
 	Vector<MADT::ISO*> MADT::s_isos{};
@@ -19,10 +19,10 @@ namespace Kernel
 	{
 		Logger::info("MADT: Initializing...");
 
-		s_entry = reinterpret_cast<MADT::Entry*>(ACPI::find_sdt("APIC", 0));
+		s_table = reinterpret_cast<MADT::Table*>(ACPI::find_sdt("APIC", 0));
 		
-		auto* entry_begin = reinterpret_cast<uint8_t*>(s_entry->entries_begin);
-		auto entry_length = reinterpret_cast<uintptr_t>(s_entry) + s_entry->sdt.length;
+		auto* entry_begin = reinterpret_cast<uint8_t*>(s_table->entries_begin);
+		auto entry_length = reinterpret_cast<uintptr_t>(s_table) + s_table->header.length;
 		for (uint8_t* ptr = entry_begin; reinterpret_cast<uintptr_t>(ptr) < entry_length; ptr += *(ptr + 1))
 		{
 			switch (*(ptr))
@@ -49,9 +49,9 @@ namespace Kernel
 		Logger::info("MADT: Initializing finished!");
 	}
 	
-	MADT::Entry* MADT::entry()
+	MADT::Table* MADT::table()
 	{
-		return s_entry;
+		return s_table;
 	}
 	
 	Vector<MADT::LAPIC*> MADT::lapics()

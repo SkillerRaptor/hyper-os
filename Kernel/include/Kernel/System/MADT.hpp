@@ -14,9 +14,9 @@ namespace Kernel
 	class MADT
 	{
 	public:
-		struct Entry
+		struct Table
 		{
-			ACPI::SDT sdt;
+			ACPI::SDT header;
 			uint32_t lapic_address;
 			uint32_t flags;
 			char entries_begin[];
@@ -65,14 +65,14 @@ namespace Kernel
 	public:
 		static void initialize();
 		
-		static Entry* entry();
+		static Table* table();
 		static Vector<LAPIC*> lapics();
 		static Vector<IOAPIC*> ioapics();
 		static Vector<ISO*> isos();
 		static Vector<NMI*> nmis();
 		
 	private:
-		static Entry* s_entry;
+		static Table* s_table;
 		static Vector<LAPIC*> s_lapics;
 		static Vector<IOAPIC*> s_ioapics;
 		static Vector<ISO*> s_isos;
