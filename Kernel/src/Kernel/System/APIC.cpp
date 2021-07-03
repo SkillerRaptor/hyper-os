@@ -23,7 +23,7 @@ namespace Kernel
 		IDT::set_handler(0xFF, IDT::HandlerType::Present | IDT::HandlerType::InterruptGate, APIC::lapic_spur_handler);
 
 		uint32_t spur = lapic_read(0xF0);
-		lapic_write(0xF0, spur | 0x100);
+		lapic_write(0xF0, spur | (1 << 8) | 0xFF);
 
 		Logger::info("APIC: Initializing finished!");
 	}

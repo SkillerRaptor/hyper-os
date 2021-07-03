@@ -6,6 +6,9 @@
 
 #pragma once
 
+#include <Kernel/Common/Registers.hpp>
+#include <Kernel/Common/Optional.hpp>
+
 namespace Kernel
 {
 	class CPU
@@ -15,5 +18,7 @@ namespace Kernel
 		
 		static void write_msr(uint32_t msr, uint64_t value);
 		static uint64_t read_msr(uint32_t msr);
+		
+		static Optional<CpuId> cpu_id(uint32_t leaf);
 	};
 } // namespace Kernel

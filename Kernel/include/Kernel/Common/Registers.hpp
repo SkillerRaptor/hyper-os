@@ -35,4 +35,12 @@ namespace Kernel
 		uint64_t rsp;
 		uint64_t ss;
 	} __attribute__((packed));
+	
+	struct CpuId
+	{
+		uint32_t eax;
+		uint32_t ebx;
+		uint32_t ecx;
+		uint32_t edx;
+	} __attribute__((packed));
 } // namespace Kernel

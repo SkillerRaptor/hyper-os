@@ -54,4 +54,34 @@ namespace Kernel
 		
 		return ((static_cast<uint64_t>(edx) << 32) | eax);
 	}
+	
+	Optional<CpuId> CPU::cpu_id(uint32_t leaf)
+	{
+		uint32_t cpuid_max = 0;
+		__asm__ __volatile__ (
+			"cpuid"
+			: "=a" (cpuid_max)
+			: "a" (leaf & 0x80000000)
+			: "rbx"
+			, "rcx"
+			, "rdx"
+		);
+		
+		if (leaf > cpuid_max)
+			return {};
+		
+		CpuId cpu_id{};
+		
+		__asm__ __volatile__ (
+			"cpuid"
+			: "=a" (cpu_id.eax)
+			, "=b" (cpu_id.ebx)
+			, "=c" (cpu_id.ecx)
+			, "=d" (cpu_id.edx)
+			: "a" (leaf)
+			, "c" (0)
+		);
+		
+		return cpu_id;
+	}
 } // namespace Kernel
