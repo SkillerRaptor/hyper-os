@@ -7,8 +7,8 @@
 #include <Kernel/Common/Logger.hpp>
 #include <Kernel/Common/Memory.hpp>
 #include <Kernel/Common/MMIO.hpp>
+#include <Kernel/Drivers/HPET.hpp>
 #include <Kernel/System/ACPI.hpp>
-#include <Kernel/System/HPET.hpp>
 
 namespace Kernel
 {

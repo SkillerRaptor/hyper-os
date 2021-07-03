@@ -9,13 +9,13 @@
 #include <Kernel/Common/Logger.hpp>
 #include <Kernel/Common/Memory.hpp>
 #include <Kernel/Common/Serial.hpp>
+#include <Kernel/Drivers/HPET.hpp>
 #include <Kernel/Memory/PhysicalMemoryManager.hpp>
 #include <Kernel/Memory/VirtualMemoryManager.hpp>
 #include <Kernel/System/ACPI.hpp>
 #include <Kernel/System/APIC.hpp>
 #include <Kernel/System/IDT.hpp>
 #include <Kernel/System/GDT.hpp>
-#include <Kernel/System/HPET.hpp>
 #include <Kernel/System/PIC.hpp>
 #include <Kernel/System/SMP.hpp>
 
