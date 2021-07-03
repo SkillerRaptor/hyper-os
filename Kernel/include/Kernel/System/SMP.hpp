@@ -12,9 +12,7 @@ namespace Kernel
 {
 	class SMP
 	{
-	private:
-	
 	public:
 		static void initialize(stivale2_struct_tag_smp* smp_tag);
 	};
-}
+} // namespace Kernel
