@@ -69,16 +69,16 @@ namespace Kernel
 
 		ACPI::initialize(reinterpret_cast<ACPI::RSDP*>(rsdp_tag->rsdp + s_physical_memory_offset));
 		APIC::initialize();
-		
+
 		auto* smp_tag =
 			reinterpret_cast<stivale2_struct_tag_smp*>(stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_SMP_ID));
 
 		SMP::initialize(smp_tag);
-		
+
 		Logger::info("HyperOS booted successfully!");
 
 		__asm__ __volatile__("sti");
-
+		
 		while (true)
 		{
 			__asm__ __volatile__("hlt");
