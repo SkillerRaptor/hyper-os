@@ -18,6 +18,7 @@ set(KERNEL_SOURCES
         src/Kernel/Common/IoService.cpp
         src/Kernel/Common/Logger.cpp
         src/Kernel/Common/Memory.cpp
+        src/Kernel/Common/MMIO.cpp
         src/Kernel/Common/Serial.cpp
         src/Kernel/Common/String.cpp
         src/Kernel/Memory/Bitmap.cpp
@@ -39,6 +40,7 @@ set(KERNEL_HEADERS
         include/Kernel/Common/Logger.hpp
         include/Kernel/Common/Math.hpp
         include/Kernel/Common/Memory.hpp
+        include/Kernel/Common/MMIO.hpp
         include/Kernel/Common/Serial.hpp
         include/Kernel/Common/String.hpp
         include/Kernel/Common/Utility.hpp
