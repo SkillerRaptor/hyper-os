@@ -44,7 +44,7 @@ namespace Kernel
 		IoService::outb(s_master_data_selector, s_disable_code);
 	}
 
-	void PIC::send_end_of_interrupt(uint8_t interrupt_request_line)
+	void PIC::end_of_interrupt(uint8_t interrupt_request_line)
 	{
 		if (interrupt_request_line >= 0x8)
 		{

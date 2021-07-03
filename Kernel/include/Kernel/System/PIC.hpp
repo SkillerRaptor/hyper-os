@@ -35,7 +35,7 @@ namespace Kernel
 		static void remap(uint8_t master_offset, uint8_t slave_offset);
 		static void disable();
 		
-		static void send_end_of_interrupt(uint8_t interrupt_request_line);
+		static void end_of_interrupt(uint8_t interrupt_request_line);
 		
 		static void set_interrupt_request_mask(uint8_t interrupt_request_line);
 		static void clear_interrupt_request_mask(uint8_t interrupt_request_line);

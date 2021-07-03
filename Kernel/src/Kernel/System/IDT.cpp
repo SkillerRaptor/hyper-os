@@ -141,82 +141,82 @@ namespace Kernel
 	{
 		void c_interrupt_handler_0()
 		{
-			PIC::send_end_of_interrupt(0);
+			PIC::end_of_interrupt(0);
 		}
 
 		void c_interrupt_handler_1()
 		{
-			PIC::send_end_of_interrupt(1);
+			PIC::end_of_interrupt(1);
 		}
 
 		void c_interrupt_handler_2()
 		{
-			PIC::send_end_of_interrupt(2);
+			PIC::end_of_interrupt(2);
 		}
 
 		void c_interrupt_handler_3()
 		{
-			PIC::send_end_of_interrupt(3);
+			PIC::end_of_interrupt(3);
 		}
 
 		void c_interrupt_handler_4()
 		{
-			PIC::send_end_of_interrupt(4);
+			PIC::end_of_interrupt(4);
 		}
 
 		void c_interrupt_handler_5()
 		{
-			PIC::send_end_of_interrupt(5);
+			PIC::end_of_interrupt(5);
 		}
 
 		void c_interrupt_handler_6()
 		{
-			PIC::send_end_of_interrupt(6);
+			PIC::end_of_interrupt(6);
 		}
 
 		void c_interrupt_handler_7()
 		{
-			PIC::send_end_of_interrupt(7);
+			PIC::end_of_interrupt(7);
 		}
 
 		void c_interrupt_handler_8()
 		{
-			PIC::send_end_of_interrupt(8);
+			PIC::end_of_interrupt(8);
 		}
 
 		void c_interrupt_handler_9()
 		{
-			PIC::send_end_of_interrupt(9);
+			PIC::end_of_interrupt(9);
 		}
 
 		void c_interrupt_handler_10()
 		{
-			PIC::send_end_of_interrupt(10);
+			PIC::end_of_interrupt(10);
 		}
 
 		void c_interrupt_handler_11()
 		{
-			PIC::send_end_of_interrupt(11);
+			PIC::end_of_interrupt(11);
 		}
 
 		void c_interrupt_handler_12()
 		{
-			PIC::send_end_of_interrupt(12);
+			PIC::end_of_interrupt(12);
 		}
 
 		void c_interrupt_handler_13()
 		{
-			PIC::send_end_of_interrupt(13);
+			PIC::end_of_interrupt(13);
 		}
 
 		void c_interrupt_handler_14()
 		{
-			PIC::send_end_of_interrupt(14);
+			PIC::end_of_interrupt(14);
 		}
 
 		void c_interrupt_handler_15()
 		{
-			PIC::send_end_of_interrupt(15);
+			PIC::end_of_interrupt(15);
 		}
 
 		__attribute__((noreturn)) void c_exception_handler_0()
