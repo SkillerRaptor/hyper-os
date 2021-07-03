@@ -20,22 +20,16 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 #-------------------------------------------------------------------------------------------
 # Toolchain
 #-------------------------------------------------------------------------------------------
-if ("${ARCH}" STREQUAL "x86_64")
-    set(COMPILER_PREFIX "x86_64")
-elseif ("${ARCH}" STREQUAL "x86_32")
-    set(COMPILER_PREFIX "i686")
-endif ()
-
 set(CMAKE_C_COMPILER_FORCED ON)
 set(CMAKE_CXX_COMPILER_FORCED ON)
 set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 
-set(TOOLCHAIN_PREFIX "${CMAKE_SOURCE_DIR}/Toolchain/CrossCompiler/Tools/${ARCH}/bin")
-set(CMAKE_C_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-gcc")
-set(CMAKE_CXX_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-g++")
-set(CMAKE_LINKER_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-ld")
-set(CMAKE_AS_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-as")
-set(CMAKE_AR_COMPILER "${TOOLCHAIN_PREFIX}/${COMPILER_PREFIX}-elf-ar")
+set(TOOLCHAIN_PREFIX "${CMAKE_SOURCE_DIR}/Toolchain/CrossCompiler/Tools/bin")
+set(CMAKE_C_COMPILER "${TOOLCHAIN_PREFIX}/x86_64-elf-gcc")
+set(CMAKE_CXX_COMPILER "${TOOLCHAIN_PREFIX}/x86_64-elf-g++")
+set(CMAKE_LINKER_COMPILER "${TOOLCHAIN_PREFIX}/x86_64-elf-ld")
+set(CMAKE_AS_COMPILER "${TOOLCHAIN_PREFIX}/x86_64-elf-as")
+set(CMAKE_AR_COMPILER "${TOOLCHAIN_PREFIX}/x86_64-elf-ar")
 set(CMAKE_ASM_COMPILER "nasm")
 
 enable_language(ASM_NASM)
@@ -87,7 +81,6 @@ add_custom_target(
         run
         COMMAND ${CMAKE_COMMAND} -E env
         "HYPEROS_BINARY_DIR=${CMAKE_BINARY_DIR}"
-        "HYPEROS_COMPILER_PREFIX=${COMPILER_PREFIX}"
         ${CMAKE_SOURCE_DIR}/Meta/Run.sh
         USES_TERMINAL)
 
@@ -95,7 +88,6 @@ add_custom_target(
         debug
         COMMAND ${CMAKE_COMMAND} -E env
         "HYPEROS_BINARY_DIR=${CMAKE_BINARY_DIR}"
-        "HYPEROS_COMPILER_PREFIX=${COMPILER_PREFIX}"
         ${CMAKE_SOURCE_DIR}/Meta/Debug.sh
         USES_TERMINAL)
 
@@ -104,7 +96,6 @@ add_custom_target(
         COMMAND ${CMAKE_COMMAND} -E env
         "HYPEROS_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
         "HYPEROS_BINARY_DIR=${CMAKE_BINARY_DIR}"
-        "HYPEROS_ARCH=${ARCH}"
         ${CMAKE_SOURCE_DIR}/Meta/Build-Image.sh
         USES_TERMINAL)
 

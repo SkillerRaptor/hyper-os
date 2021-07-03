@@ -21,5 +21,8 @@ namespace Kernel
 		
 		static void outd(void* address, uint32_t value);
 		static uint32_t ind(void* address);
+		
+		static void outq(void* address, uint64_t value);
+		static uint64_t inq(void* address);
 	};
 } // namespace Kernel

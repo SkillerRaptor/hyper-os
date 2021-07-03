@@ -1,15 +1,6 @@
 #!/bin/bash
 
 current_path="$(dirname "$(realpath "$0")")"
-arch="x86_64"
-compiler_prefix="x86_64"
-
-if [ $arch = "x86_64" ]
-then
-  compiler_prefix="x86_64"
-else
-  compiler_prefix="i686"
-fi
 
 build_step() {
   NAME=$1
@@ -18,16 +9,16 @@ build_step() {
 }
 
 build_error() {
-  build_step HyperOS echo "Building cross-compiler for $compiler_prefix failed!"
+  build_step HyperOS echo "Building cross-compiler for x86_64 failed!"
   exit
 }
 
 pushd "$current_path" >/dev/null || build_error
 
-if [ -e "CrossCompiler/Tools/$arch/bin/$compiler_prefix-elf-g++" ]; then
+if [ -e "CrossCompiler/Tools/bin/x86_64-elf-g++" ]; then
   exit 0
 else
-  build_step HyperOS echo "Building cross-compiler for $compiler_prefix..."
+  build_step HyperOS echo "Building cross-compiler for x86_64..."
 fi
 
 build_step Dependencies sudo apt update
@@ -84,15 +75,15 @@ else
   build_step gcc echo "gcc is already downloaded!"
 fi
 
-export PREFIX="$current_path/CrossCompiler/Tools/$arch"
-export TARGET=$compiler_prefix-elf
+export PREFIX="$current_path/CrossCompiler/Tools"
+export TARGET=x86_64-elf
 export PATH="$PREFIX/bin:$PATH"
 
 export CFLAGS="-g0 -O3"
 export CXXFLAGS="-g0 -O3"
 
 build_step binutils echo "Building binutils..."
-build_step binutils mkdir -p "CrossCompiler/binutils_build/$arch" || build_error
+build_step binutils mkdir -p "CrossCompiler/binutils_build" || build_error
 pushd "CrossCompiler/binutils_build/$arch" >/dev/null || build_error
 build_step binutils ../../binutils/configure --target=$TARGET \
   --prefix="$PREFIX" \
@@ -105,7 +96,7 @@ build_step binutils echo "Building binutils finished!"
 popd >/dev/null || build_error
 
 build_step gcc echo "Building gcc..."
-build_step gcc mkdir -p "CrossCompiler/gcc_build/$arch" || build_error
+build_step gcc mkdir -p "CrossCompiler/gcc_build" || build_error
 pushd "CrossCompiler/gcc_build/$arch" >/dev/null || build_error
 build_step gcc ../../gcc/configure --target=$TARGET \
   --prefix="$PREFIX" \
@@ -121,4 +112,4 @@ build_step gcc echo "Building gcc finished!"
 popd >/dev/null || build_error
 popd >/dev/null || build_error
 
-build_step HyperOS echo "Building cross-compiler for $compiler_prefix done!"
+build_step HyperOS echo "Building cross-compiler for x86_64 done!"

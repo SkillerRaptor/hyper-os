@@ -5,6 +5,7 @@
  */
 
 #include <Kernel/main.hpp>
+#include <Kernel/Arch/Stivale.hpp>
 #include <Kernel/Common/Logger.hpp>
 #include <Kernel/Common/Memory.hpp>
 #include <Kernel/Common/Serial.hpp>
@@ -16,12 +17,6 @@
 #include <Kernel/System/GDT.hpp>
 #include <Kernel/System/PIC.hpp>
 #include <Kernel/System/SMP.hpp>
-
-#if defined(__x86_64__)
-#	include <Kernel/Arch/x86_64/Stivale.hpp>
-#elif defined(__i386__)
-#	error x86_32 is not implemented yet!
-#endif
 
 namespace Kernel
 {
@@ -78,7 +73,7 @@ namespace Kernel
 		Logger::info("HyperOS booted successfully!");
 
 		__asm__ __volatile__("sti");
-		
+
 		while (true)
 		{
 			__asm__ __volatile__("hlt");

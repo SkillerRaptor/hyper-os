@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <Kernel/Arch/x86_64/Stivale.hpp>
+#include <Kernel/Arch/Stivale.hpp>
 #include <Kernel/Common/Memory.hpp>
 
 namespace Kernel

@@ -3,8 +3,6 @@
 true_path="$(dirname "$(realpath "$0")")"
 root_path=$true_path/..
 
-arch="x86_64"
-
 build_step() {
   NAME=$1
   shift
@@ -19,8 +17,8 @@ build_error() {
 build_step HyperOS echo "Building HyperOS..."
 
 pushd "$root_path" >/dev/null || build_error
-build_step Bash mkdir -p Build/$arch || build_error
-pushd Build/$arch >/dev/null || build_error
+build_step Bash mkdir -p Build || build_error
+pushd Build >/dev/null || build_error
 build_step CMake cmake --build . || build_error
 popd >/dev/null || build_error
 popd >/dev/null || build_error

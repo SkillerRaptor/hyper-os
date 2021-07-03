@@ -2,7 +2,7 @@
 
 KERNEL_HDD=$HYPEROS_BINARY_DIR/Root/boot/kernel.hdd
 ECHFS_COMMAND=$HYPEROS_SOURCE_DIR/ThirdParty/echfs/echfs-utils
-LIMINE_INSTALL_COMMAND=$HYPEROS_SOURCE_DIR/ThirdParty/limine/limine-install-linux-$HYPEROS_ARCH
+LIMINE_INSTALL_COMMAND=$HYPEROS_SOURCE_DIR/ThirdParty/limine/limine-install-linux-x86_64
 
 rm -f "$KERNEL_HDD"
 dd if=/dev/zero bs=1M count=0 seek=64 of="$KERNEL_HDD"

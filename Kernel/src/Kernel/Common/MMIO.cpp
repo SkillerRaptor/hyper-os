@@ -44,7 +44,7 @@ namespace Kernel
 	
 	uint16_t MMIO::inw(void* address)
 	{
-		uint8_t return_value = 0;
+		uint16_t return_value = 0;
 		
 		__asm__ __volatile__(
 			"mov %0, %1"
@@ -68,13 +68,37 @@ namespace Kernel
 	
 	uint32_t MMIO::ind(void* address)
 	{
-		uint8_t return_value = 0;
+		uint32_t return_value = 0;
 		
 		__asm__ __volatile__(
 			"mov %0, %1"
 			: "=r"(return_value)
 			: "m"(*reinterpret_cast<uint32_t*>(address))
 			: "memory"
+		);
+		
+		return return_value;
+	}
+	
+	void MMIO::outq(void* address, uint64_t value)
+	{
+		__asm__ __volatile__(
+		"mov %0, %1"
+		: "=m"(*reinterpret_cast<uint64_t*>(address))
+		: "r"(value)
+		: "memory"
+		);
+	}
+	
+	uint64_t MMIO::inq(void* address)
+	{
+		uint64_t return_value = 0;
+		
+		__asm__ __volatile__(
+		"mov %0, %1"
+		: "=r"(return_value)
+		: "m"(*reinterpret_cast<uint64_t*>(address))
+		: "memory"
 		);
 		
 		return return_value;

@@ -12,8 +12,10 @@ cmake_minimum_required(VERSION 3.10)
 #-------------------------------------------------------------------------------------------
 # Kernel
 #-------------------------------------------------------------------------------------------
-set(KERNEL_SOURCES
+set(SOURCES
         src/Kernel/main.cpp
+        src/Kernel/Arch/Stivale.cpp
+        src/Kernel/Arch/Interrupts.asm
         src/Kernel/Common/CxxAbi.cpp
         src/Kernel/Common/IoService.cpp
         src/Kernel/Common/Logger.cpp
@@ -35,8 +37,9 @@ set(KERNEL_SOURCES
         src/Kernel/System/PIC.cpp
         src/Kernel/System/SMP.cpp)
 
-set(KERNEL_HEADERS
+set(HEADERS
         include/Kernel/main.hpp
+        include/Kernel/Arch/Stivale.hpp
         include/Kernel/Common/CxxAbi.hpp
         include/Kernel/Common/IoService.hpp
         include/Kernel/Common/Logger.hpp
@@ -62,25 +65,6 @@ set(KERNEL_HEADERS
         include/Kernel/System/MADT.hpp
         include/Kernel/System/PIC.hpp
         include/Kernel/System/SMP.hpp)
-
-if ("${ARCH}" STREQUAL "x86_64")
-    set(ARCH_SOURCES
-            src/Kernel/Arch/x86_64/Stivale.cpp
-            src/Kernel/Arch/x86_64/Interrupts.asm)
-
-    set(ARCH_HEADERS
-            include/Kernel/Arch/x86_64/Stivale.hpp)
-elseif ("${ARCH}" STREQUAL "x86_32")
-    # TODO: Implement x86_32
-endif ()
-
-set(SOURCES
-        ${KERNEL_SOURCES}
-        ${ARCH_SOURCES})
-
-set(HEADERS
-        ${KERNEL_HEADERS}
-        ${ARCH_HEADERS})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-pie -fno-pic -fno-rtti -fno-exceptions -ffreestanding -fbuiltin")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-asynchronous-unwind-tables -fno-stack-protector")

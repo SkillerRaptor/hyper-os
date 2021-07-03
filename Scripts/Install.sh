@@ -3,8 +3,6 @@
 true_path="$(dirname "$(realpath "$0")")"
 root_path=$true_path/..
 
-arch="x86_64"
-
 install_step() {
   NAME=$1
   shift
@@ -19,8 +17,8 @@ install_error() {
 install_step HyperOS echo "Installing HyperOS..."
 
 pushd "$root_path" >/dev/null || install_error
-install_step Bash mkdir -p Build/$arch || install_error
-pushd Build/$arch >/dev/null || install_error
+install_step Bash mkdir -p Build || install_error
+pushd Build >/dev/null || install_error
 install_step CMake cmake --install . || install_error
 popd >/dev/null || install_error
 popd >/dev/null || install_error
