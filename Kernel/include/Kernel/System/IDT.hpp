@@ -14,14 +14,15 @@ namespace Kernel
 {
 	class IDT
 	{
-	private:
+	public:
 		enum HandlerType : uint8_t
 		{
 			Present = 1 << 7,
 			InterruptGate = 1 << 1 | 1 << 2 | 1 << 3,
 			TrapGate = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3
 		};
-
+		
+	private:
 		struct Entry
 		{
 			uint16_t offset_low;
@@ -43,13 +44,12 @@ namespace Kernel
 		static void initialize();
 		static void install();
 
-		static void register_handler(size_t index, uint8_t flags, uintptr_t handler);
-		static void register_interrupt_handler(size_t index, uintptr_t handler);
-		static void register_trap_handler(size_t index, uintptr_t handler);
+		static void set_handler(uint8_t index, uint8_t flags, void (*handler)(Registers*));
+		static void register_handler(uint8_t index, uint8_t flags, void (*handler)());
 
 	private:
 		__attribute__((noreturn)) static void default_handler(Registers* registers);
-		
+
 	private:
 		static Entry s_entries[256];
 	};

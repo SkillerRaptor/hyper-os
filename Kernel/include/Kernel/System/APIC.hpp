@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <Kernel/Common/Registers.hpp>
+
 namespace Kernel
 {
 	class APIC
@@ -19,6 +21,8 @@ namespace Kernel
 		static uint32_t lapic_read(uint32_t reg);
 		
 	private:
+		static void lapic_spur_handler(Registers*);
+		
 		static uintptr_t lapic_get_mmio_base();
 	};
 }
