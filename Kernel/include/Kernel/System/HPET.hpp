@@ -44,12 +44,13 @@ namespace Kernel
 		
 	public:
 		static void initialize();
+		
+		static void sleep(uint64_t ms);
 
 	private:
 		static Table* s_table;
 		static Entry* s_entry;
 		
 		static size_t s_clock_period;
-		static size_t s_frequency;
 	};
 } // namespace Kernel
