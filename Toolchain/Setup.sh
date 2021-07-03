@@ -84,7 +84,7 @@ export CXXFLAGS="-g0 -O3"
 
 build_step binutils echo "Building binutils..."
 build_step binutils mkdir -p "CrossCompiler/binutils_build" || build_error
-pushd "CrossCompiler/binutils_build/$arch" >/dev/null || build_error
+pushd "CrossCompiler/binutils_build" >/dev/null || build_error
 build_step binutils ../../binutils/configure --target=$TARGET \
   --prefix="$PREFIX" \
   --with-sysroot \
@@ -97,7 +97,7 @@ popd >/dev/null || build_error
 
 build_step gcc echo "Building gcc..."
 build_step gcc mkdir -p "CrossCompiler/gcc_build" || build_error
-pushd "CrossCompiler/gcc_build/$arch" >/dev/null || build_error
+pushd "CrossCompiler/gcc_build" >/dev/null || build_error
 build_step gcc ../../gcc/configure --target=$TARGET \
   --prefix="$PREFIX" \
   --disable-nls \

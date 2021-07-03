@@ -75,7 +75,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mcmodel=kernel -mno-red-zone")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdlib")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O1")
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T ${CMAKE_CURRENT_SOURCE_DIR}/src/Kernel/Arch/${ARCH}/linker.ld")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T ${CMAKE_CURRENT_SOURCE_DIR}/src/Kernel/Arch/linker.ld")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ffreestanding -static -nostdlib")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fno-pie -fno-pic -nodefaultlibs -nostartfiles")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -z max-page-size=0x1000")
@@ -92,4 +92,4 @@ target_include_directories(kernel PRIVATE include)
 # Install
 #-------------------------------------------------------------------------------------------
 install(TARGETS kernel DESTINATION ${CMAKE_BINARY_DIR}/Root/boot)
-install(FILES src/Kernel/Arch/${ARCH}/limine.cfg DESTINATION ${CMAKE_BINARY_DIR}/Root/boot)
+install(FILES src/Kernel/Arch/limine.cfg DESTINATION ${CMAKE_BINARY_DIR}/Root/boot)

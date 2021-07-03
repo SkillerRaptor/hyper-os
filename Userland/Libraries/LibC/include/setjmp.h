@@ -12,20 +12,12 @@
 
 __BEGIN_DECLS
 
-#if defined(__x86_64__)
 struct __jmp_buf_128
 {
 	uint64_t _part[2];
 };
 
-#	define _jmp_buf_length 16
-#	define _jmp_buf_type struct __jmp_buf_128
-#elif defined(__i386__)
-#	define _jmp_buf_length 16
-#	define _jmp_buf_type int
-#endif
-
-typedef _jmp_buf_type jmp_buf[_jmp_buf_length];
+typedef struct __jmp_buf_128 jmp_buf[16];
 
 #ifndef setjmp
 #	define setjmp __setjmp

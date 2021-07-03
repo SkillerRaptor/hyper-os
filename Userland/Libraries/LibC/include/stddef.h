@@ -12,17 +12,10 @@
 
 __BEGIN_DECLS
 
-#if defined(__x86_64__)
 typedef long unsigned int size_t;
 typedef long int ssize_t;
 typedef long int ptrdiff_t;
 typedef long int intptr_t;
-#elif defined(__i386__)
-typedef unsigned int size_t;
-typedef int ssize_t;
-typedef int ptrdiff_t;
-typedef int intptr_t;
-#endif
 
 #ifndef NULL
 #	define NULL ((void*) 0)
