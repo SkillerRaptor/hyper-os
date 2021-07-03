@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <Kernel/Synchronization/Spinlock.hpp>
 #include <stivale2.h>
 #include <stddef.h>
 
@@ -14,7 +15,7 @@ namespace Kernel
 	struct PageMap
 	{
 		uintptr_t top_level;
-		//Spinlock spinlock;
+		Spinlock spinlock;
 	};
 	
 	class VirtualMemoryManager

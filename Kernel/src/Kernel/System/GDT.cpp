@@ -70,12 +70,12 @@ namespace Kernel
 		s_pointer.size = sizeof(s_entries) - 1;
 		s_pointer.address = reinterpret_cast<uintptr_t>(&s_entries);
 
-		GDT::reload();
+		GDT::install();
 
 		Logger::info("GDT: Initializing finished!");
 	}
 
-	void GDT::reload()
+	void GDT::install()
 	{
 		__asm __volatile__("cli");
 
@@ -97,10 +97,11 @@ namespace Kernel
 			"mov %%gs, %1\n"
 			"mov %%ss, %1\n"
 			:
-			: "m"(s_pointer),
-			  "r"(static_cast<uint64_t>(s_kernel_data_selector)),
-			  "r"(static_cast<uint64_t>(s_kernel_code_selector))
-			: "memory");
+			: "m"(s_pointer)
+			, "r"(static_cast<uint64_t>(s_kernel_data_selector))
+			, "r"(static_cast<uint64_t>(s_kernel_code_selector))
+			: "memory"
+		);
 	}
 
 	void GDT::create_descriptor(

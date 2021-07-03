@@ -73,18 +73,18 @@ namespace Kernel
 		uintptr_t virtual_address,
 		uintptr_t flags)
 	{
-		//page_map->spinlock.lock();
+		page_map->spinlock.lock();
 
 		uintptr_t* pte = virtual2pte(page_map, virtual_address, true);
 		if (pte == nullptr)
 		{
-			//page_map->spinlock.unlock();
+			page_map->spinlock.unlock();
 			return false;
 		}
 
 		*pte = physical_address | flags;
 
-		//page_map->spinlock.unlock();
+		page_map->spinlock.unlock();
 
 		return true;
 	}

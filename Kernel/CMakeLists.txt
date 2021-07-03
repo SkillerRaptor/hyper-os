@@ -25,6 +25,7 @@ set(KERNEL_SOURCES
         src/Kernel/Memory/KernelMemory.cpp
         src/Kernel/Memory/PhysicalMemoryManager.cpp
         src/Kernel/Memory/VirtualMemoryManager.cpp
+        src/Kernel/Synchronization/Spinlock.cpp
         src/Kernel/System/ACPI.cpp
         src/Kernel/System/CPU.cpp
         src/Kernel/System/IDT.cpp
@@ -49,6 +50,7 @@ set(KERNEL_HEADERS
         include/Kernel/Memory/KernelMemory.hpp
         include/Kernel/Memory/PhysicalMemoryManager.hpp
         include/Kernel/Memory/VirtualMemoryManager.hpp
+        include/Kernel/Synchronization/Spinlock.hpp
         include/Kernel/System/ACPI.hpp
         include/Kernel/System/CPU.hpp
         include/Kernel/System/IDT.hpp

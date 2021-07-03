@@ -70,7 +70,7 @@ namespace Kernel
 	
 	public:
 		static void initialize();
-		static void reload();
+		static void install();
 	
 	private:
 		static void create_descriptor(Entry* entry, uint32_t base, uint32_t limit, AccessAttribute access, FlagAttribute flags);

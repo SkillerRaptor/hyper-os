@@ -7,6 +7,7 @@
 #pragma once
 
 #include <Kernel/Memory/Bitmap.hpp>
+#include <Kernel/Synchronization/Spinlock.hpp>
 #include <stddef.h>
 #include <stivale2.h>
 
@@ -29,6 +30,6 @@ namespace Kernel
 		static uintptr_t s_highest_page;
 		static size_t s_last_used_index;
 		static Bitmap s_bitmap;
-		//static Spinlock s_spinlock;
+		static Spinlock s_spinlock;
 	};
 }

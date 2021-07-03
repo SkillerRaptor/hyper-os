@@ -9,18 +9,18 @@
 
 namespace Kernel
 {
-	//Spinlock Logger::s_spinlock{};
+	Spinlock Logger::s_spinlock{};
 
 	void Logger::log(Logger::Level level, const char* format, ...)
 	{
-		//s_spinlock.lock();
+		s_spinlock.lock();
 
 		va_list args;
 		va_start(args, format);
 		vlog(level, format, args);
 		va_end(args);
 
-		//s_spinlock.unlock();
+		s_spinlock.unlock();
 	}
 
 	void Logger::vlog(Logger::Level level, const char* format, va_list args)
@@ -112,50 +112,50 @@ namespace Kernel
 
 	void Logger::info(const char* format, ...)
 	{
-		//s_spinlock.lock();
+		s_spinlock.lock();
 
 		va_list args;
 		va_start(args, format);
 		vlog(Logger::Level::Info, format, args);
 		va_end(args);
 
-		//s_spinlock.unlock();
+		s_spinlock.unlock();
 	}
 
 	void Logger::warning(const char* format, ...)
 	{
-		//s_spinlock.lock();
+		s_spinlock.lock();
 		
 		va_list args;
 		va_start(args, format);
 		vlog(Logger::Level::Warning, format, args);
 		va_end(args);
 
-		//s_spinlock.unlock();
+		s_spinlock.unlock();
 	}
 
 	void Logger::error(const char* format, ...)
 	{
-		//s_spinlock.lock();
+		s_spinlock.lock();
 		
 		va_list args;
 		va_start(args, format);
 		vlog(Logger::Level::Error, format, args);
 		va_end(args);
 
-		//s_spinlock.unlock();
+		s_spinlock.unlock();
 	}
 
 	void Logger::debug(const char* format, ...)
 	{
-		//s_spinlock.lock();
+		s_spinlock.lock();
 		
 		va_list args;
 		va_start(args, format);
 		vlog(Logger::Level::Debug, format, args);
 		va_end(args);
 
-		//s_spinlock.unlock();
+		s_spinlock.unlock();
 	}
 
 	char* Logger::convert_string(uint64_t number, int64_t base)

@@ -96,12 +96,12 @@ namespace Kernel
 		IDT::register_trap_handler(20, reinterpret_cast<uintptr_t>(exception_handler_20));
 		IDT::register_trap_handler(30, reinterpret_cast<uintptr_t>(exception_handler_30));
 
-		IDT::reload();
+		IDT::install();
 
 		Logger::info("IDT: Initializing finished!");
 	}
 
-	void IDT::reload()
+	void IDT::install()
 	{
 		IDT::Pointer pointer =
 			{
@@ -112,7 +112,8 @@ namespace Kernel
 		__asm__ __volatile__(
 			"lidt %0"
 			:
-			: "m"(pointer));
+			: "m"(pointer)
+		);
 	}
 
 	void IDT::register_handler(size_t index, uint8_t flags, uintptr_t handler)

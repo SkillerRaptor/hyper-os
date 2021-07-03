@@ -40,7 +40,7 @@ namespace Kernel
 	
 	public:
 		static void initialize();
-		static void reload();
+		static void install();
 		
 		static void register_handler(size_t index, uint8_t flags, uintptr_t handler);
 		static void register_interrupt_handler(size_t index, uintptr_t handler);

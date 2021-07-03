@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <Kernel/Synchronization/Spinlock.hpp>
 #include <stdarg.h>
 #include <stdint.h>
 
@@ -35,6 +36,6 @@ namespace Kernel
 		static char* convert_string(uint64_t number, int64_t base);
 	
 	private:
-		//static Spinlock s_spinlock;
+		static Spinlock s_spinlock;
 	};
 } // namespace Kernel

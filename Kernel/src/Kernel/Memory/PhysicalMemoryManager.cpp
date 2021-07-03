@@ -14,7 +14,7 @@ namespace Kernel
 	uintptr_t PhysicalMemoryManager::s_highest_page{ 0 };
 	size_t PhysicalMemoryManager::s_last_used_index{ 0 };
 	Bitmap PhysicalMemoryManager::s_bitmap{};
-	// Spinlock PhysicalMemoryManager::s_spinlock{};
+	Spinlock PhysicalMemoryManager::s_spinlock{};
 
 	void PhysicalMemoryManager::initialize(stivale2_mmap_entry* memory_map, size_t memory_map_entries)
 	{
@@ -82,7 +82,7 @@ namespace Kernel
 
 	void* PhysicalMemoryManager::allocate(size_t num)
 	{
-		// s_spinlock.lock();
+		s_spinlock.lock();
 
 		size_t limit = s_last_used_index;
 		void* ptr = internal_allocate(num, s_highest_page / s_page_size);
@@ -92,7 +92,7 @@ namespace Kernel
 			ptr = internal_allocate(num, limit);
 		}
 
-		// s_spinlock.unlock();
+		s_spinlock.unlock();
 
 		return ptr;
 	}
@@ -116,7 +116,7 @@ namespace Kernel
 
 	void PhysicalMemoryManager::free(void* ptr, size_t num)
 	{
-		// s_spinlock.lock();
+		s_spinlock.lock();
 
 		size_t page = reinterpret_cast<size_t>(ptr) / s_page_size;
 		for (size_t i = page; i < page + num; i++)
@@ -124,7 +124,7 @@ namespace Kernel
 			s_bitmap.reset(i);
 		}
 
-		// s_spinlock.unlock();
+		s_spinlock.unlock();
 	}
 
 	void* PhysicalMemoryManager::internal_allocate(size_t num, size_t limit)
