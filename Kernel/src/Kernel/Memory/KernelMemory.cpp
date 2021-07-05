@@ -54,7 +54,7 @@ namespace Kernel
 		}
 
 		auto* header_address = reinterpret_cast<uint8_t*>(ptr) - s_page_size;
-		auto* header{ reinterpret_cast<AllocationHeader*>(header_address) };
+		auto* header = reinterpret_cast<AllocationHeader*>(header_address);
 
 		if (Math::div_round_up(header->size, s_page_size) == Math::div_round_up(size, s_page_size))
 		{
