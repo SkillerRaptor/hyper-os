@@ -51,6 +51,7 @@ set(HEADERS
         include/Kernel/Common/Optional.hpp
         include/Kernel/Common/Serial.hpp
         include/Kernel/Common/String.hpp
+        include/Kernel/Common/Types.hpp
         include/Kernel/Common/Utility.hpp
         include/Kernel/Common/Vector.hpp
         include/Kernel/Drivers/HPET.hpp
