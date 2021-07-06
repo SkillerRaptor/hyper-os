@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#pragma once
+
+#include <stdio.h>
+
+namespace std
+{
+	using ::fclose;
+	using ::FILE;
+	using ::fopen;
+
+	using ::fprintf;
+	using ::printf;
+	using ::snprintf;
+	using ::sprintf;
+	using ::vsnprintf;
+	using ::vsprintf;
+} // namespace std
