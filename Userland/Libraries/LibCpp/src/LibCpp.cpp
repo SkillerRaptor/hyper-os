@@ -17,6 +17,7 @@
 #include <functional>
 #include <ios>
 #include <iterator>
+#include <memory>
 #include <numbers>
 #include <string>
 #include <string_view>

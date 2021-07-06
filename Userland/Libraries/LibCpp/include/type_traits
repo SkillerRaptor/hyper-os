@@ -499,6 +499,26 @@ namespace std
 	{
 	};
 
+	template <typename Default, typename AlwaysVoid, template <typename...> class Op, typename... Args>
+	struct __detector
+	{
+		using value_type = false_type;
+		using type = Default;
+	};
+
+	template <typename Default, template <typename...> class Op, typename... Args>
+	struct __detector<Default, __void_t<Op<Args...>>, Op, Args...>
+	{
+		using value_type = true_type;
+		using type = Op<Args...>;
+	};
+
+	template <typename Default, template <typename...> class Op, typename... Args>
+	using __detected_or = __detector<Default, void, Op, Args...>;
+
+	template <typename Default, template <typename...> class Op, typename... Args>
+	using __detected_or_t = typename __detected_or<Default, Op, Args...>::type;
+
 	template <typename T>
 	constexpr const bool is_void_v = is_void<T>::value;
 

@@ -31,6 +31,7 @@ set(HEADERS
         include/functional
         include/ios
         include/iterator
+        include/memory
         include/new
         include/numbers
         include/string
