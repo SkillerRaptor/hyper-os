@@ -34,53 +34,55 @@ namespace Kernel
 			delete[] m_data;
 		}
 
-		[[nodiscard]] constexpr bool empty() const noexcept
+		[[nodiscard]] bool empty() const noexcept
 		{
 			return size() == 0;
 		}
 
-		constexpr SizeType size() const noexcept
+		SizeType size() const noexcept
 		{
 			return m_size;
 		}
 
-		constexpr SizeType max_size() const noexcept
+		SizeType max_size() const noexcept
 		{
 			return m_capacity;
 		}
 
-		constexpr Reference operator[](SizeType position)
+		Reference operator[](SizeType position)
 		{
 			return m_data[position];
 		}
 
-		constexpr ConstReference operator[](SizeType position) const
+		ConstReference operator[](SizeType position) const
 		{
 			return m_data[position];
 		}
 
-		constexpr Reference at(SizeType position)
+		Reference at(SizeType position)
 		{
+			// Assert
 			return m_data[position];
 		}
 
-		constexpr ConstReference at(SizeType position) const
+		ConstReference at(SizeType position) const
 		{
+			// Assert
 			return m_data[position];
 		}
 
-		constexpr Pointer data() noexcept
+		Pointer data() noexcept
 		{
 			return m_data;
 		}
 
-		constexpr ConstPointer data() const noexcept
+		ConstPointer data() const noexcept
 		{
 			return m_data;
 		}
 
 		template <typename... Args>
-		constexpr T& emplace_back(Args&&... args)
+		T& emplace_back(Args&&... args)
 		{
 			if (m_size >= m_capacity)
 			{
@@ -91,7 +93,7 @@ namespace Kernel
 			return m_data[m_size++];
 		}
 
-		constexpr void push_back(ConstReference value)
+		void push_back(ConstReference value)
 		{
 			if (m_size >= m_capacity)
 			{
@@ -101,7 +103,7 @@ namespace Kernel
 			m_data[m_size++] = value;
 		}
 
-		constexpr void push_back(ValueType&& value)
+		void push_back(ValueType&& value)
 		{
 			if (m_size >= m_capacity)
 			{
@@ -111,7 +113,7 @@ namespace Kernel
 			m_data[m_size++] = move(value);
 		}
 
-		constexpr void pop_back()
+		void pop_back()
 		{
 			if (m_size > 0)
 			{
@@ -120,13 +122,13 @@ namespace Kernel
 			}
 		}
 
-		constexpr void clear() noexcept
+		void clear() noexcept
 		{
 			for (SizeType i = 0; i < m_size; ++i)
 			{
 				m_data[i].~T();
 			}
-			
+
 			m_size = 0;
 		}
 

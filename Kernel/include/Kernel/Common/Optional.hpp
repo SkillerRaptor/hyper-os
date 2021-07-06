@@ -17,10 +17,7 @@ namespace Kernel
 		using ValueType = T;
 
 	public:
-		constexpr Optional() noexcept
-			: m_has_value(false)
-		{
-		}
+		constexpr Optional() noexcept = default;
 
 		constexpr Optional(T&& value)
 			: m_value(move(value))

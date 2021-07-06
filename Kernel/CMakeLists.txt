@@ -44,11 +44,13 @@ set(HEADERS
         include/Kernel/Common/CxxAbi.hpp
         include/Kernel/Common/IoService.hpp
         include/Kernel/Common/Logger.hpp
+        include/Kernel/Common/Map.hpp
         include/Kernel/Common/Math.hpp
         include/Kernel/Common/Memory.hpp
         include/Kernel/Common/MMIO.hpp
         include/Kernel/Common/Registers.hpp
         include/Kernel/Common/Optional.hpp
+        include/Kernel/Common/Pair.hpp
         include/Kernel/Common/Serial.hpp
         include/Kernel/Common/String.hpp
         include/Kernel/Common/Types.hpp

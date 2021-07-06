@@ -22,7 +22,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 #-------------------------------------------------------------------------------------------
 set(CMAKE_C_COMPILER_FORCED ON)
 set(CMAKE_CXX_COMPILER_FORCED ON)
-set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 
 set(TOOLCHAIN_PREFIX "${CMAKE_SOURCE_DIR}/Toolchain/CrossCompiler/Tools/bin")
 set(CMAKE_C_COMPILER "${TOOLCHAIN_PREFIX}/x86_64-elf-gcc")
