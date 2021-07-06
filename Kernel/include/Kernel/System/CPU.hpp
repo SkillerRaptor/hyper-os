@@ -19,6 +19,6 @@ namespace Kernel
 		static void write_msr(uint32_t msr, uint64_t value);
 		static uint64_t read_msr(uint32_t msr);
 		
-		static Optional<CpuId> cpu_id(uint32_t leaf);
+		static Optional<CpuId> cpu_id(uint32_t leaf, uint32_t sub_leaf);
 	};
 } // namespace Kernel

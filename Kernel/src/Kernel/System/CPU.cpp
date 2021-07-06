@@ -55,7 +55,7 @@ namespace Kernel
 		return ((static_cast<uint64_t>(edx) << 32) | eax);
 	}
 	
-	Optional<CpuId> CPU::cpu_id(uint32_t leaf)
+	Optional<CpuId> CPU::cpu_id(uint32_t leaf, uint32_t sub_leaf)
 	{
 		uint32_t cpuid_max = 0;
 		__asm__ __volatile__ (
@@ -68,9 +68,13 @@ namespace Kernel
 		);
 		
 		if (leaf > cpuid_max)
+		{
 			return {};
+		}
 		
 		CpuId cpu_id{};
+		cpu_id.leaf = leaf;
+		cpu_id.sub_leaf = sub_leaf;
 		
 		__asm__ __volatile__ (
 			"cpuid"
