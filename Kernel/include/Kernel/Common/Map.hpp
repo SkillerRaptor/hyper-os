@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <stddef.h>
 #include <Kernel/Common/Pair.hpp>
 #include <Kernel/Common/Vector.hpp>
+#include <stddef.h>
 
 namespace Kernel
 {

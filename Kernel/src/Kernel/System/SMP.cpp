@@ -18,7 +18,7 @@ namespace Kernel
 	{
 		Logger::info("SMP: Initializing...");
 
-		Logger::debug("SMP: BSP LAPIC id - %x", smp_tag->bsp_lapic_id);
+		Logger::debug("SMP: BSP LAPIC id - 0x%X", smp_tag->bsp_lapic_id);
 		Logger::debug("SMP: Total CPU count - %u", smp_tag->cpu_count);
 
 		for (size_t i = 0; i < smp_tag->cpu_count; ++i)

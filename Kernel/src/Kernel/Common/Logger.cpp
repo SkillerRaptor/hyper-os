@@ -4,94 +4,90 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <Kernel/Common/Memory.hpp>
 #include <Kernel/Common/Logger.hpp>
 #include <Kernel/Common/Serial.hpp>
+#include <stddef.h>
 
 namespace Kernel
 {
 	Spinlock Logger::s_spinlock{};
 
-	void Logger::log(Logger::Level level, const char* format, ...)
+	void Logger::log(const char* format, ...)
 	{
 		s_spinlock.lock();
 
 		va_list args;
 		va_start(args, format);
-		vlog(level, format, args);
+		vlog(format, args);
 		va_end(args);
 
 		s_spinlock.unlock();
 	}
 
-	void Logger::vlog(Logger::Level level, const char* format, va_list args)
+	void Logger::vlog(const char* format, va_list args)
 	{
-		const char* level_string = "";
-
-		switch (level)
-		{
-		case Logger::Level::Info:
-			level_string = "\033[39m[\033[32m INFO \033[39m] ";
-			break;
-		case Logger::Level::Warning:
-			level_string = "\033[39m[\033[33m WARNING \033[39m] ";
-			break;
-		case Logger::Level::Error:
-			level_string = "\033[39m[\033[31m ERROR \033[39m] ";
-			break;
-		case Logger::Level::Debug:
-			level_string = "\033[39m[\033[36m DEBUG \033[39m] ";
-			break;
-		}
-
-		Serial::write(level_string);
-
 		while (*format)
 		{
 			if (*format == '%')
 			{
 				++format;
+
+				uint64_t width = 0;
+				while (is_digit(*format))
+				{
+					width = width * 10 + static_cast<uint64_t>(*format - '0');
+					++format;
+				}
+
 				switch (*format)
 				{
+				case 'd':
+				case 'i':
+				{
+					auto i = va_arg(args, int32_t);
+					if (i < 0)
+					{
+						i = -i;
+						Serial::write('-');
+					}
+					Serial::write(Logger::convert_to_string(i, 10, width, false));
+					break;
+				}
+				case 'u':
+				{
+					auto i = va_arg(args, uint64_t);
+					Serial::write(Logger::convert_to_string(i, 10, width, false));
+					break;
+				}
+				case 'o':
+				{
+					auto i = va_arg(args, uint64_t);
+					Serial::write(Logger::convert_to_string(i, 8, width, false));
+					break;
+				}
+				case 'x':
+				{
+					auto i = va_arg(args, uint64_t);
+					Serial::write(Logger::convert_to_string(i, 16, width, false));
+					break;
+				}
+				case 'X':
+				{
+					auto i = va_arg(args, uint64_t);
+					Serial::write(Logger::convert_to_string(i, 16, width, true));
+					break;
+				}
 				case 'c':
 				{
 					auto c = static_cast<char>(va_arg(args, int));
 					Serial::write(c);
 					break;
 				}
-				case 'd':
-				{
-					int32_t i = va_arg(args, int32_t);
-					if (i < 0)
-					{
-						i = -i;
-						Serial::write('-');
-					}
-					Serial::write(Logger::convert_string(i, 10));
-					break;
-				}
-				case 'u':
-				{
-					uint64_t i = va_arg(args, uint64_t);
-					Serial::write(Logger::convert_string(i, 10));
-					break;
-				}
-				case 'o':
-				{
-					uint64_t i = va_arg(args, uint64_t);
-					Serial::write(Logger::convert_string(i, 8));
-					break;
-				}
 				case 's':
 				{
-					char* str = va_arg(args, char*);
+					auto str = va_arg(args, char*);
 					Serial::write(str);
-					break;
-				}
-				case 'x':
-				{
-					uint64_t i = va_arg(args, uint64_t);
-					Serial::write("0x");
-					Serial::write(Logger::convert_string(i, 16));
 					break;
 				}
 				default:
@@ -114,9 +110,11 @@ namespace Kernel
 	{
 		s_spinlock.lock();
 
+		Serial::write("\033[39m[\033[32m INFO \033[39m] ");
+
 		va_list args;
 		va_start(args, format);
-		vlog(Logger::Level::Info, format, args);
+		vlog(format, args);
 		va_end(args);
 
 		s_spinlock.unlock();
@@ -125,10 +123,12 @@ namespace Kernel
 	void Logger::warning(const char* format, ...)
 	{
 		s_spinlock.lock();
-		
+
+		Serial::write("\033[39m[\033[33m WARNING \033[39m] ");
+
 		va_list args;
 		va_start(args, format);
-		vlog(Logger::Level::Warning, format, args);
+		vlog(format, args);
 		va_end(args);
 
 		s_spinlock.unlock();
@@ -137,10 +137,12 @@ namespace Kernel
 	void Logger::error(const char* format, ...)
 	{
 		s_spinlock.lock();
-		
+
+		Serial::write("\033[39m[\033[31m ERROR \033[39m] ");
+
 		va_list args;
 		va_start(args, format);
-		vlog(Logger::Level::Error, format, args);
+		vlog(format, args);
 		va_end(args);
 
 		s_spinlock.unlock();
@@ -149,31 +151,49 @@ namespace Kernel
 	void Logger::debug(const char* format, ...)
 	{
 		s_spinlock.lock();
-		
+
+		Serial::write("\033[39m[\033[36m DEBUG \033[39m] ");
+
 		va_list args;
 		va_start(args, format);
-		vlog(Logger::Level::Debug, format, args);
+		vlog(format, args);
 		va_end(args);
 
 		s_spinlock.unlock();
 	}
 
-	char* Logger::convert_string(uint64_t number, int64_t base)
+	char* Logger::convert_to_string(uint64_t number, int64_t base, uint64_t width, bool uppercase)
 	{
-		static char representation[] = "0123456789ABCDEF";
+		static constexpr const char* lowercase_representation = "0123456789abcdef";
+		static constexpr const char* uppercase_representation = "0123456789ABCDEF";
 
-		static char buffer[50];
-		char* ptr;
-
-		ptr = &buffer[49];
+		static char buffer[50] = { 0 };
+		char* ptr = &buffer[49];
 		*ptr = '\0';
+
+		size_t string_width = 0;
 
 		do
 		{
-			*--ptr = representation[number % base];
+			*--ptr = (uppercase ? uppercase_representation : lowercase_representation)[number % base];
 			number /= base;
+			++string_width;
 		} while (number != 0);
 
+		if (width > 0 && string_width < width)
+		{
+			size_t move_width = width - string_width;
+			do
+			{
+				*--ptr = '0';
+			} while (--move_width != 0);
+		}
+
 		return ptr;
+	}
+
+	bool Logger::is_digit(char c)
+	{
+		return (c >= '0') && (c <= '9');
 	}
 } // namespace Kernel

@@ -40,7 +40,7 @@ namespace Kernel
 
 			if (!strncmp(sdt_header->signature, signature, 4) && (count++ == index))
 			{
-				Logger::debug("ACPI: Found '%s' at %x", signature, sdt_header);
+				Logger::debug("ACPI: Found '%s' at 0x%X", signature, sdt_header);
 				return reinterpret_cast<void*>(sdt_header);
 			}
 		}
@@ -54,12 +54,12 @@ namespace Kernel
 		if (rsdp->revision >= 2 && rsdp->xsdt_address)
 		{
 			s_xsdt = reinterpret_cast<ACPI::XSDT*>(rsdp->xsdt_address + s_physical_memory_offset);
-			Logger::debug("ACPI: Found XSDT at %x", reinterpret_cast<uintptr_t>(s_xsdt));
+			Logger::debug("ACPI: Found XSDT at 0x%X", reinterpret_cast<uintptr_t>(s_xsdt));
 			return;
 		}
 
 		s_rsdt = reinterpret_cast<ACPI::RSDT*>(rsdp->rsdt_address + s_physical_memory_offset);
-		Logger::debug("ACPI: Found RSDT at %x", reinterpret_cast<uintptr_t>(s_rsdt));
+		Logger::debug("ACPI: Found RSDT at 0x%X", reinterpret_cast<uintptr_t>(s_rsdt));
 	}
 
 	ACPI::SDT* ACPI::get_sdt(size_t index)

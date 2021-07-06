@@ -24,8 +24,8 @@ namespace Kernel
 		};
 	
 	public:
-		static void log(Level level, const char* format, ...);
-		static void vlog(Level level, const char* format, va_list args);
+		static void log(const char* format, ...);
+		static void vlog(const char* format, va_list args);
 		
 		static void info(const char* format, ...);
 		static void warning(const char* format, ...);
@@ -33,8 +33,10 @@ namespace Kernel
 		static void debug(const char* format, ...);
 	
 	private:
-		static char* convert_string(uint64_t number, int64_t base);
-	
+		static char* convert_to_string(uint64_t number, int64_t base, uint64_t width, bool uppercase);
+		
+		static bool is_digit(char c);
+		
 	private:
 		static Spinlock s_spinlock;
 	};
