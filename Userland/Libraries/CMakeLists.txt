@@ -13,4 +13,3 @@ cmake_minimum_required(VERSION 3.10)
 # Subdirectories
 #-------------------------------------------------------------------------------------------
 add_subdirectory(LibC)
-add_subdirectory(LibCpp)
