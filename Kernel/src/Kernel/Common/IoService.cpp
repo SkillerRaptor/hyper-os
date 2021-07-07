@@ -13,9 +13,7 @@ namespace Kernel
 		__asm__ __volatile__(
 			"outb %0, %1"
 			:
-			: "a"(value)
-			, "Nd"(port)
-		);
+			: "a"(value), "Nd"(port));
 	}
 
 	uint8_t IoService::inb(uint16_t port)
@@ -25,8 +23,7 @@ namespace Kernel
 		__asm__ __volatile__(
 			"inb %1, %0"
 			: "=a"(return_value)
-			: "Nd"(port)
-		);
+			: "Nd"(port));
 
 		return return_value;
 	}
@@ -36,9 +33,7 @@ namespace Kernel
 		__asm__ __volatile__(
 			"outw %0, %1"
 			:
-			: "a"(value)
-			, "Nd"(port)
-		);
+			: "a"(value), "Nd"(port));
 	}
 
 	uint16_t IoService::inw(uint16_t port)
@@ -48,8 +43,7 @@ namespace Kernel
 		__asm__ __volatile__(
 			"inw %1, %0"
 			: "=a"(return_value)
-			: "Nd"(port)
-		);
+			: "Nd"(port));
 
 		return return_value;
 	}
@@ -59,9 +53,7 @@ namespace Kernel
 		__asm__ __volatile__(
 			"outl %0, %1"
 			:
-			: "a"(value)
-			, "Nd"(port)
-		);
+			: "a"(value), "Nd"(port));
 	}
 
 	uint32_t IoService::ind(uint16_t port)
@@ -71,8 +63,7 @@ namespace Kernel
 		__asm__ __volatile__(
 			"inl %1, %0"
 			: "=a"(return_value)
-			: "Nd"(port)
-		);
+			: "Nd"(port));
 
 		return return_value;
 	}

@@ -6,14 +6,10 @@
 
 #pragma once
 
-#include <stddef.h>
-
 namespace Kernel
 {
 	extern "C"
 	{
-		static constexpr const size_t s_atexit_max_functions = 128;
-
 		extern void* __dso_handle;
 
 		struct AtexitFunctionEntry
