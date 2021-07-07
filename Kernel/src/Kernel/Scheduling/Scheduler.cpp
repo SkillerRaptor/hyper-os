@@ -95,8 +95,7 @@ namespace Kernel
 	{
 		s_spinlock.lock();
 
-		pid_t next_pid = 0;
-
+		pid_t next_pid = -1;
 		size_t task_idle_count = 0;
 		for (pid_t i = 0; i < static_cast<pid_t>(s_task_list.size()); ++i)
 		{
@@ -124,8 +123,7 @@ namespace Kernel
 		}
 
 		Task& next_task = s_task_list[next_pid];
-		tid_t next_tid = 0;
-
+		tid_t next_tid = -1;
 		size_t thread_idle_count = 0;
 		for (tid_t i = 0; i < static_cast<tid_t>(next_task.threads.size()); ++i)
 		{

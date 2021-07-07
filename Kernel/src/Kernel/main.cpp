@@ -77,14 +77,14 @@ namespace Kernel
 
 		SMP::initialize(smp_tag);
 		Scheduler::initialize();
+		
+		auto* framebuffer_tag = reinterpret_cast<stivale2_struct_tag_framebuffer*>(
+			stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID));
+		
+		Painter::initialize(framebuffer_tag);
 
 		pid_t pid = Scheduler::create_task(-1, nullptr);
 		Scheduler::create_thread(pid, reinterpret_cast<uint64_t>(kernel_thread), 0x8);
-
-		auto* framebuffer_tag = reinterpret_cast<stivale2_struct_tag_framebuffer*>(
-			stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID));
-
-		Painter::initialize(framebuffer_tag);
 
 		Logger::info("HyperOS booted successfully!");
 

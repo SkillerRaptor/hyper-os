@@ -31,7 +31,7 @@ namespace Kernel
 		size_t idle_count;
 		
 		PageMap* page_map;
-		Vector<Thread> threads;
+		Map<ssize_t, Thread> threads;
 	};
 	
 	struct Thread
