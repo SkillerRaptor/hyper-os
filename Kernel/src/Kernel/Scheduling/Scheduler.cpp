@@ -6,7 +6,7 @@
 
 #include <Kernel/Common/Logger.hpp>
 #include <Kernel/Common/Memory.hpp>
-#include <Kernel/Interrupts/PIC.hpp>
+#include <Kernel/Interrupts/APIC.hpp>
 #include <Kernel/Interrupts/IDT.hpp>
 #include <Kernel/Memory/PhysicalMemoryManager.hpp>
 #include <Kernel/Memory/VirtualMemoryManager.hpp>
@@ -165,7 +165,7 @@ namespace Kernel
 		next_task.state = Task::State::Running;
 		next_thread.state = Task::State::Running;
 
-		PIC::end_of_interrupt(0x20);
+		APIC::lapic_end_of_interrupt();
 		
 		s_spinlock.unlock();
 		switch_task(&s_task_list[next_pid].threads[next_tid].registers);

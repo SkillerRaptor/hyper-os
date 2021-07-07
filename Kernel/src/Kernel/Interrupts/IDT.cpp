@@ -5,6 +5,7 @@
  */
 
 #include <Kernel/Common/Logger.hpp>
+#include <Kernel/Interrupts/APIC.hpp>
 #include <Kernel/Interrupts/IDT.hpp>
 #include <Kernel/Interrupts/PIC.hpp>
 #include <Kernel/System/GDT.hpp>
@@ -293,8 +294,10 @@ namespace Kernel
 
 	void IDT::default_handler(Registers* registers)
 	{
-		Logger::error("IDT: Unhandled interrupt %u", registers->isr);
-		
+		Logger::error("IDT: Unhandled interrupt %u | rip = %16X", registers->isr, registers->rip);
+
+		APIC::lapic_end_of_interrupt();
+
 		while (true)
 		{
 			__asm__ __volatile__("cli");

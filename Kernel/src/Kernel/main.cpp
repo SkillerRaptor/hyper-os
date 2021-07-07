@@ -82,7 +82,7 @@ namespace Kernel
 		Logger::info("HyperOS booted successfully!");
 
 		__asm__ __volatile__("sti");
-
+		
 		while (true)
 		{
 			__asm__ __volatile__("hlt");
@@ -91,7 +91,7 @@ namespace Kernel
 	
 	void kernel_thread()
 	{
-		Logger::error("Kernel thread works! :^)");
+		Logger::info("Kernel thread works! :^)");
 		
 		while (true)
 		{

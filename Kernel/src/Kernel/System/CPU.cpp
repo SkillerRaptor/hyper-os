@@ -5,6 +5,7 @@
  */
 
 #include <Kernel/Common/Logger.hpp>
+#include <Kernel/Interrupts/APIC.hpp>
 #include <Kernel/Interrupts/IDT.hpp>
 #include <Kernel/Memory/VirtualMemoryManager.hpp>
 #include <Kernel/System/GDT.hpp>
@@ -21,9 +22,15 @@ namespace Kernel
 		VirtualMemoryManager::switch_page_map(VirtualMemoryManager::kernel_page_map());
 		
 		write_kernel_gs(reinterpret_cast<uintptr_t>(smp_info->extra_argument));
+		
+		APIC::calibrate(100);
+		uint32_t spur = APIC::lapic_read(0xF0);
+		APIC::lapic_write(0xF0, spur | (1 << 8) | 0xFF);
 
 		Logger::info("Processor %u started successfully!", SMP::local_cpu().cpu_number);
 		SMP::cpu_online();
+		
+		__asm__ __volatile__("sti");
 
 		while (true)
 		{
