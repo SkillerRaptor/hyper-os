@@ -35,8 +35,6 @@ namespace Kernel
 	{
 		uint64_t ticks = s_entry->main_counter_value + (ms * 1000000000000) / s_clock_period;
 		
-		Logger::debug("Ticks: %u, Counter Value: %u", ticks, s_entry->main_counter_value);
-		
 		__volatile__ uint64_t i_ = 0;
 		while (s_entry->main_counter_value < ticks)
 		{
