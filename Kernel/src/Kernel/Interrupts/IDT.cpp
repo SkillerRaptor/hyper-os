@@ -301,7 +301,7 @@ namespace Kernel
 	
 	void IDT::default_handler(Registers* registers)
 	{
-		Logger::error("IDT: Unhandled interrupt %u", registers->vector);
+		Logger::error("IDT: Unhandled interrupt %u", registers->isr);
 		
 		while (true)
 		{

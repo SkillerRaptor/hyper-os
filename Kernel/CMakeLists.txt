@@ -76,7 +76,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-asynchronous-unwind-tables -fno-sta
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-80387 -mno-mmx -mno-sse -mno-sse2")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mcmodel=kernel -mno-red-zone")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdlib")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O1")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T ${CMAKE_CURRENT_SOURCE_DIR}/src/Kernel/Arch/linker.ld")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ffreestanding -static -nostdlib")
