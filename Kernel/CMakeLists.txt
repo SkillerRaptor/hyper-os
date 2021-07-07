@@ -23,6 +23,11 @@ set(SOURCES
         src/Kernel/Common/Serial.cpp
         src/Kernel/Common/String.cpp
         src/Kernel/Drivers/HPET.cpp
+        src/Kernel/Graphics/Color.cpp
+        src/Kernel/Graphics/Painter.cpp
+        src/Kernel/Graphics/Rect.cpp
+        src/Kernel/Graphics/Window.cpp
+        src/Kernel/Graphics/WindowManager.cpp
         src/Kernel/Interrupts/Interrupts.asm
         src/Kernel/Interrupts/APIC.cpp
         src/Kernel/Interrupts/IDT.cpp
@@ -59,6 +64,11 @@ set(HEADERS
         include/Kernel/Common/Utility.hpp
         include/Kernel/Common/Vector.hpp
         include/Kernel/Drivers/HPET.hpp
+        include/Kernel/Graphics/Color.hpp
+        include/Kernel/Graphics/Painter.hpp
+        include/Kernel/Graphics/Rect.hpp
+        include/Kernel/Graphics/Window.hpp
+        include/Kernel/Graphics/WindowManager.hpp
         include/Kernel/Interrupts/APIC.hpp
         include/Kernel/Interrupts/IDT.hpp
         include/Kernel/Interrupts/PIC.hpp

@@ -7,6 +7,7 @@
 #pragma once
 
 #include <Kernel/Common/Utility.hpp>
+#include <Kernel/Memory/KernelMemory.hpp>
 #include <stddef.h>
 
 namespace Kernel
@@ -31,6 +32,7 @@ namespace Kernel
 
 		~Vector()
 		{
+			clear();
 			delete[] m_data;
 		}
 
@@ -126,7 +128,7 @@ namespace Kernel
 		{
 			for (SizeType i = 0; i < m_size; ++i)
 			{
-				m_data[i].~T();
+				m_data[i].~ValueType();
 			}
 
 			m_size = 0;
@@ -144,7 +146,12 @@ namespace Kernel
 
 			for (SizeType i = 0; i < m_size; ++i)
 			{
-				data_block[i] = m_data[i];
+				data_block[i] = move(m_data[i]);
+			}
+			
+			for (SizeType i = 0; i < m_size; ++i)
+			{
+				m_data[i].~ValueType();
 			}
 
 			delete[] m_data;

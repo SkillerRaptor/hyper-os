@@ -55,13 +55,18 @@ namespace Kernel
 		{
 			task.page_map = page_map;
 		}
-		
+
 		s_task_list[task.pid] = task;
 		return task.pid;
 	}
 
 	tid_t Scheduler::create_thread(pid_t pid, uint64_t rip, uint16_t cs)
 	{
+		if (pid == -1)
+		{
+			return -1;
+		}
+
 		if (s_task_list[pid].pid == -1)
 		{
 			return -1;
@@ -80,7 +85,7 @@ namespace Kernel
 		thread.registers.flags = 0x202;
 		thread.registers.rsp = thread.kernel_stack + s_physical_memory_offset;
 		thread.registers.ss = cs + 8;
-		
+
 		s_task_list[pid].threads[thread.tid] = thread;
 
 		return 0;
@@ -148,14 +153,14 @@ namespace Kernel
 
 			last_task.state = Task::State::Waiting;
 			last_thread.state = Task::State::Waiting;
-			
+
 			last_thread.registers = *registers;
 		}
-		
+
 		cpu_data.pid = next_pid;
 		cpu_data.tid = next_tid;
 		cpu_data.error = next_thread.error;
-		
+
 		cpu_data.page_map = next_task.page_map;
 		VirtualMemoryManager::switch_page_map(cpu_data.page_map);
 
@@ -166,8 +171,67 @@ namespace Kernel
 		next_thread.state = Task::State::Running;
 
 		APIC::lapic_end_of_interrupt();
-		
+
 		s_spinlock.unlock();
+
+		/*
+		Logger::debug(
+			"Register dump: 1\n"
+			"          rax=0x%16X rbx=0x%16X rcx=0x%16X rdx=0x%16X\n"
+			"          rsi=0x%16X rdi=0x%16X rbp=0x%16X rsp=0x%16X\n"
+			"           r8=0x%16X  r9=0x%16X r10=0x%16X r11=0x%16X\n"
+			"          r12=0x%16X r13=0x%16X r14=0x%16X r15=0x%16X\n"
+			"          rip=0x%16X  cs=0x%16X  ss=0x%16X flg=0x%16X",
+			registers->rax,
+			registers->rbx,
+			registers->rcx,
+			registers->rdx,
+			registers->rsi,
+			registers->rdi,
+			registers->rbp,
+			registers->rsp,
+			registers->r8,
+			registers->r9,
+			registers->r10,
+			registers->r11,
+			registers->r12,
+			registers->r13,
+			registers->r14,
+			registers->r15,
+			registers->rip,
+			registers->cs,
+			registers->ss,
+			registers->flags);
+
+		Logger::debug(
+			"Register dump: 2\n"
+			"          rax=0x%16X rbx=0x%16X rcx=0x%16X rdx=0x%16X\n"
+			"          rsi=0x%16X rdi=0x%16X rbp=0x%16X rsp=0x%16X\n"
+			"           r8=0x%16X  r9=0x%16X r10=0x%16X r11=0x%16X\n"
+			"          r12=0x%16X r13=0x%16X r14=0x%16X r15=0x%16X\n"
+			"          rip=0x%16X  cs=0x%16X  ss=0x%16X flg=0x%16X",
+			s_task_list[next_pid].threads[next_tid].registers.rax,
+			s_task_list[next_pid].threads[next_tid].registers.rbx,
+			s_task_list[next_pid].threads[next_tid].registers.rcx,
+			s_task_list[next_pid].threads[next_tid].registers.rdx,
+			s_task_list[next_pid].threads[next_tid].registers.rsi,
+			s_task_list[next_pid].threads[next_tid].registers.rdi,
+			s_task_list[next_pid].threads[next_tid].registers.rbp,
+			s_task_list[next_pid].threads[next_tid].registers.rsp,
+			s_task_list[next_pid].threads[next_tid].registers.r8,
+			s_task_list[next_pid].threads[next_tid].registers.r9,
+			s_task_list[next_pid].threads[next_tid].registers.r10,
+			s_task_list[next_pid].threads[next_tid].registers.r11,
+			s_task_list[next_pid].threads[next_tid].registers.r12,
+			s_task_list[next_pid].threads[next_tid].registers.r13,
+			s_task_list[next_pid].threads[next_tid].registers.r14,
+			s_task_list[next_pid].threads[next_tid].registers.r15,
+			s_task_list[next_pid].threads[next_tid].registers.rip,
+			s_task_list[next_pid].threads[next_tid].registers.cs,
+			s_task_list[next_pid].threads[next_tid].registers.ss,
+			s_task_list[next_pid].threads[next_tid].registers.flags);
+		*/
+		
 		switch_task(&s_task_list[next_pid].threads[next_tid].registers);
 	}
 } // namespace Kernel

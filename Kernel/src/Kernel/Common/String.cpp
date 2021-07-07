@@ -8,6 +8,11 @@
 
 namespace Kernel
 {
+	String::String(const char* string)
+	{
+		(void) string;
+	}
+	
 	int strncmp(const char* string1, const char* string2, size_t num)
 	{
 		for (size_t i = 0; i < num; ++i)

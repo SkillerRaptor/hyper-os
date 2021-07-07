@@ -10,6 +10,8 @@
 #include <Kernel/Common/Memory.hpp>
 #include <Kernel/Common/Serial.hpp>
 #include <Kernel/Drivers/HPET.hpp>
+#include <Kernel/Graphics/Painter.hpp>
+#include <Kernel/Graphics/WindowManager.hpp>
 #include <Kernel/Interrupts/APIC.hpp>
 #include <Kernel/Interrupts/IDT.hpp>
 #include <Kernel/Interrupts/PIC.hpp>
@@ -25,7 +27,7 @@ namespace Kernel
 	using ConstructorFunction = void (*)();
 	extern "C" ConstructorFunction constructors_start[];
 	extern "C" ConstructorFunction constructors_end[];
-	
+
 	void kernel_main(stivale2_struct* bootloader_data)
 	{
 		Serial::initialize();
@@ -67,7 +69,7 @@ namespace Kernel
 		ACPI::initialize(reinterpret_cast<ACPI::RSDP*>(rsdp_tag->rsdp + s_physical_memory_offset));
 		APIC::initialize();
 		HPET::initialize();
-		
+
 		APIC::calibrate(100);
 
 		auto* smp_tag =
@@ -75,27 +77,41 @@ namespace Kernel
 
 		SMP::initialize(smp_tag);
 		Scheduler::initialize();
-		
+
 		pid_t pid = Scheduler::create_task(-1, nullptr);
 		Scheduler::create_thread(pid, reinterpret_cast<uint64_t>(kernel_thread), 0x8);
-		
+
+		auto* framebuffer_tag = reinterpret_cast<stivale2_struct_tag_framebuffer*>(
+			stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID));
+
+		Painter::initialize(framebuffer_tag);
+
 		Logger::info("HyperOS booted successfully!");
 
 		__asm__ __volatile__("sti");
-		
+
 		while (true)
 		{
 			__asm__ __volatile__("hlt");
 		}
 	}
-	
+
 	void kernel_thread()
 	{
-		Logger::info("Kernel thread works! :^)");
+		Logger::info("Kernel thread successfully started!");
+		
+		Window demo_window("Demo", { 50, 50, 960, 540 });
+		WindowManager::add_window(demo_window);
 		
 		while (true)
 		{
-			__asm__ __volatile__("hlt");
+			// Handle Events
+			
+			Painter::clear(Painter::s_desktop_color);
+			WindowManager::draw_windows();
+			Painter::swap_buffers();
 		}
+		
+		Painter::cleanup();
 	}
 } // namespace Kernel

@@ -296,12 +296,41 @@ namespace Kernel
 	{
 		Logger::error("IDT: Unhandled interrupt %u | rip = %16X", registers->isr, registers->rip);
 
+		Logger::error(
+			"Register dump:\n"
+			"          rax=0x%16X rbx=0x%16X rcx=0x%16X rdx=0x%16X\n"
+			"          rsi=0x%16X rdi=0x%16X rbp=0x%16X rsp=0x%16X\n"
+			"           r8=0x%16X  r9=0x%16X r10=0x%16X r11=0x%16X\n"
+			"          r12=0x%16X r13=0x%16X r14=0x%16X r15=0x%16X\n"
+			"          rip=0x%16X  cs=0x%16X  ss=0x%16X flg=0x%16X",
+			registers->rax,
+			registers->rbx,
+			registers->rcx,
+			registers->rdx,
+			registers->rsi,
+			registers->rdi,
+			registers->rbp,
+			registers->rsp,
+			registers->r8,
+			registers->r9,
+			registers->r10,
+			registers->r11,
+			registers->r12,
+			registers->r13,
+			registers->r14,
+			registers->r15,
+			registers->rip,
+			registers->cs,
+			registers->ss,
+			registers->flags);
+
 		APIC::lapic_end_of_interrupt();
 
 		while (true)
 		{
 			__asm__ __volatile__("cli");
 			__asm__ __volatile__("hlt");
+			__asm__ __volatile__("pause");
 		}
 	}
 

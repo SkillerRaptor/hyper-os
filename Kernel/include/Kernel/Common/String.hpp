@@ -10,6 +10,13 @@
 
 namespace Kernel
 {
+	class String
+	{
+	public:
+		String() = default;
+		String(const char* string);
+	};
+	
 	extern "C"
 	{
 		int strncmp(const char* string1, const char* string2, size_t num);
