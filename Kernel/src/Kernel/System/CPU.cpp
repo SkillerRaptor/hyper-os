@@ -6,17 +6,24 @@
 
 #include <Kernel/Common/Logger.hpp>
 #include <Kernel/Interrupts/IDT.hpp>
+#include <Kernel/Memory/VirtualMemoryManager.hpp>
 #include <Kernel/System/GDT.hpp>
 #include <Kernel/System/CPU.hpp>
+#include <Kernel/System/SMP.hpp>
 
 namespace Kernel
 {
-	void CPU::initialize()
+	void CPU::initialize(stivale2_smp_info* smp_info)
 	{
 		GDT::install();
 		IDT::install();
+		
+		VirtualMemoryManager::switch_page_map(VirtualMemoryManager::kernel_page_map());
+		
+		write_kernel_gs(reinterpret_cast<uintptr_t>(smp_info->extra_argument));
 
-		Logger::info("Processor %u successfully loaded!");
+		Logger::info("Processor %u started successfully!", SMP::local_cpu().cpu_number);
+		SMP::cpu_online();
 
 		while (true)
 		{
@@ -53,6 +60,16 @@ namespace Kernel
 		);
 		
 		return ((static_cast<uint64_t>(edx) << 32) | eax);
+	}
+	
+	void CPU::write_kernel_gs(uintptr_t address)
+	{
+		write_msr(0xC0000101, address);
+	}
+	
+	uintptr_t CPU::read_kernel_gs()
+	{
+		return read_msr(0xC0000101);
 	}
 	
 	Optional<CpuId> CPU::cpu_id(uint32_t leaf, uint32_t sub_leaf)

@@ -15,6 +15,8 @@ namespace Kernel
 	public:
 		static void initialize();
 		
+		static void calibrate(uint64_t ms);
+		
 		static void lapic_end_of_interrupt();
 		
 		static void lapic_write(uint32_t reg, uint32_t data);

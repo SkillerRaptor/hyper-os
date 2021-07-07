@@ -12,7 +12,7 @@
 namespace Kernel
 {
 	IDT::Entry IDT::s_entries[256]{};
-	
+
 	extern "C"
 	{
 		uintptr_t idt_handlers[256]{ 0 };
@@ -286,19 +286,11 @@ namespace Kernel
 
 	void IDT::install()
 	{
-		IDT::Pointer pointer =
-			{
-				.size = sizeof(s_entries) - 1,
-				.address = reinterpret_cast<uintptr_t>(s_entries)
-			};
+		IDT::Pointer pointer = { .size = sizeof(s_entries) - 1, .address = reinterpret_cast<uintptr_t>(s_entries) };
 
-		__asm__ __volatile__(
-			"lidt %0"
-			:
-			: "m"(pointer)
-		);
+		__asm__ __volatile__("lidt %0" : : "m"(pointer));
 	}
-	
+
 	void IDT::default_handler(Registers* registers)
 	{
 		Logger::error("IDT: Unhandled interrupt %u", registers->isr);
@@ -309,17 +301,17 @@ namespace Kernel
 			__asm__ __volatile__("hlt");
 		}
 	}
-	
-	void IDT::set_handler(uint8_t index, uint8_t flags, void(*handler)(Registers*))
+
+	void IDT::set_handler(uint8_t index, uint8_t flags, void (*handler)(Registers*))
 	{
 		s_entries[index].attributes = flags;
 		idt_handlers[index] = reinterpret_cast<uintptr_t>(handler);
 	}
 
-	void IDT::register_handler(uint8_t index, uint8_t flags, void(*handler)())
+	void IDT::register_handler(uint8_t index, uint8_t flags, void (*handler)())
 	{
 		auto handler_address = reinterpret_cast<uintptr_t>(handler);
-		
+
 		s_entries[index].offset_low = (handler_address & 0x0000FFFF) >> 0;
 		s_entries[index].selector = GDT::s_kernel_code_selector;
 		s_entries[index].ist = 0x0;
@@ -327,7 +319,7 @@ namespace Kernel
 		s_entries[index].offset_middle = (handler_address & 0xFFFF0000) >> 16;
 		s_entries[index].offset_high = (handler_address & 0xFFFFFFFF00000000) >> 32;
 		s_entries[index].zero = 0;
-		
+
 		idt_handlers[index] = reinterpret_cast<uintptr_t>(default_handler);
 	}
 } // namespace Kernel

@@ -10,5 +10,7 @@
 
 namespace Kernel
 {
-	extern "C" __attribute__((noreturn)) void main(stivale2_struct* bootloader_data);
+	extern "C" __attribute__((noreturn)) void kernel_main(stivale2_struct* bootloader_data);
+	
+	__attribute__((noreturn)) void kernel_thread();
 }
