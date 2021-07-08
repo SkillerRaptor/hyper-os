@@ -16,7 +16,7 @@ namespace Kernel
 	{
 	public:
 		static constexpr const Color s_desktop_color = { 25, 25, 25 };
-		
+
 	private:
 		struct FramebufferData
 		{
@@ -26,18 +26,18 @@ namespace Kernel
 			uint16_t pitch;
 			uint16_t bpp;
 		};
-		
+
 	public:
 		static void initialize(stivale2_struct_tag_framebuffer* framebuffer_tag);
 		static void cleanup();
-		
+
 		static void clear(const Color& color);
 		static void draw_rect(const Rect& rect, const Color& color);
-		
+
 		static void swap_buffers();
 
 	private:
 		static FramebufferData s_framebuffer_data;
 		static uint8_t* s_backbuffer;
 	};
-}
+} // namespace Kernel

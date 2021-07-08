@@ -306,11 +306,26 @@ namespace Kernel
 			"           r8=0x%16X  r9=0x%16X r10=0x%16X r11=0x%16X\n"
 			"          r12=0x%16X r13=0x%16X r14=0x%16X r15=0x%16X\n"
 			"          rip=0x%16X  cs=0x%16X  ss=0x%16X flg=0x%16X",
-			registers->rax, registers->rbx, registers->rcx, registers->rdx,
-			registers->rsi, registers->rdi, registers->rbp, registers->rsp,
-			registers->r8,  registers->r9,  registers->r10, registers->r11,
-			registers->r12, registers->r13, registers->r14, registers->r15,
-			registers->rip, registers->cs,  registers->ss,  registers->flags);
+			registers->rax,
+			registers->rbx,
+			registers->rcx,
+			registers->rdx,
+			registers->rsi,
+			registers->rdi,
+			registers->rbp,
+			registers->rsp,
+			registers->r8,
+			registers->r9,
+			registers->r10,
+			registers->r11,
+			registers->r12,
+			registers->r13,
+			registers->r14,
+			registers->r15,
+			registers->rip,
+			registers->cs,
+			registers->ss,
+			registers->flags);
 
 		APIC::lapic_end_of_interrupt();
 

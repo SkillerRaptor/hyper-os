@@ -10,11 +10,12 @@ namespace Kernel
 {
 	void Spinlock::lock()
 	{
-		while(__atomic_test_and_set(&m_lock, __ATOMIC_ACQUIRE));
+		while (__atomic_test_and_set(&m_lock, __ATOMIC_ACQUIRE))
+			;
 	}
-	
+
 	void Spinlock::unlock()
 	{
 		__atomic_clear(&m_lock, __ATOMIC_RELEASE);
 	}
-}
+} // namespace Kernel

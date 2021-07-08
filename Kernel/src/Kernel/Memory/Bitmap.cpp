@@ -34,7 +34,7 @@ namespace Kernel
 		{
 			return;
 		}
-		
+
 		uint64_t byte_index;
 		uint8_t bit_value;
 		get_index(position, byte_index, bit_value);
@@ -62,7 +62,7 @@ namespace Kernel
 		{
 			return;
 		}
-		
+
 		uint64_t byte_index;
 		uint8_t bit_value;
 		get_index(position, byte_index, bit_value);
@@ -84,7 +84,7 @@ namespace Kernel
 		{
 			return;
 		}
-		
+
 		uint64_t byte_index;
 		uint8_t bit_value;
 		get_index(position, byte_index, bit_value);
@@ -110,7 +110,7 @@ namespace Kernel
 	{
 		return test(position);
 	}
-	
+
 	void Bitmap::get_index(size_t position, uint64_t& byte_index, uint8_t& bit_value)
 	{
 		byte_index = position / Memory::s_byte_size;

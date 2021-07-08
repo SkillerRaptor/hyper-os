@@ -15,8 +15,8 @@ namespace Kernel
 	public:
 		void lock();
 		void unlock();
-	
+
 	private:
 		volatile uint32_t m_lock;
 	};
-}
+} // namespace Kernel

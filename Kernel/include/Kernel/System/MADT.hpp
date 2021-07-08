@@ -64,13 +64,13 @@ namespace Kernel
 
 	public:
 		static void initialize();
-		
+
 		static Table* table();
 		static Vector<LAPIC*> lapics();
 		static Vector<IOAPIC*> ioapics();
 		static Vector<ISO*> isos();
 		static Vector<NMI*> nmis();
-		
+
 	private:
 		static Table* s_table;
 		static Vector<LAPIC*> s_lapics;

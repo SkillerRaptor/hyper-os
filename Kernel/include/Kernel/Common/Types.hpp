@@ -11,7 +11,7 @@
 namespace Kernel
 {
 	using ssize_t = int64_t;
-	
+
 	using pid_t = ssize_t;
 	using tid_t = ssize_t;
-}
+} // namespace Kernel

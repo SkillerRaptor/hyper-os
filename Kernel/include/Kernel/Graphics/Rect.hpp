@@ -16,23 +16,23 @@ namespace Kernel
 	public:
 		Rect() = default;
 		Rect(uint32_t x, uint32_t y, size_t width, size_t height);
-		
+
 		void set_x(uint32_t x);
 		[[nodiscard]] uint32_t x() const;
-		
+
 		void set_y(uint32_t y);
 		[[nodiscard]] uint32_t y() const;
-		
+
 		void set_width(size_t width);
 		[[nodiscard]] size_t width() const;
-		
+
 		void set_height(size_t height);
 		[[nodiscard]] size_t height() const;
-		
+
 	private:
 		uint32_t m_x{ 0 };
 		uint32_t m_y{ 0 };
 		size_t m_width{ 0 };
 		size_t m_height{ 0 };
 	};
-}
+} // namespace Kernel

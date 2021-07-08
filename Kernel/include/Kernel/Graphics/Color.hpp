@@ -16,4 +16,4 @@ namespace Kernel
 		uint8_t g;
 		uint8_t b;
 	};
-}
+} // namespace Kernel

@@ -67,7 +67,7 @@ namespace Kernel::Memory
 		{
 			return nullptr;
 		}
-		
+
 		Memory::memcpy(new_pointer, ptr, (header->size > size) ? size : header->size);
 		free(ptr);
 
@@ -82,7 +82,7 @@ namespace Kernel::Memory
 		size_t page_count = header->page_count + 1;
 		PhysicalMemoryManager::free(reinterpret_cast<void*>(header_address - Memory::s_physical_memory_offset), page_count);
 	}
-} // namespace Kernel
+} // namespace Kernel::Memory
 
 [[nodiscard]] void* operator new(size_t size)
 {

@@ -40,7 +40,7 @@ namespace Kernel
 			uint32_t creator_id;
 			uint32_t creator_revision;
 		} __attribute__((packed));
-		
+
 	private:
 		struct RSDT
 		{
@@ -56,13 +56,13 @@ namespace Kernel
 
 	public:
 		static void initialize(RSDP* rsdp);
-		
+
 		static void* find_sdt(const char* signature, size_t index);
 
 	private:
 		static void detect_rsdt(RSDP* rsdp);
 		static SDT* get_sdt(size_t index);
-		
+
 	private:
 		static RSDT* s_rsdt;
 		static XSDT* s_xsdt;

@@ -23,7 +23,7 @@ namespace Kernel
 		static constexpr const uint16_t s_lvt_timer_register = 0x0320;
 		static constexpr const uint8_t s_ia32_apic_base_msr = 0x1B;
 		static constexpr const uint8_t s_lapic_id_register = 0x20;
-	
+
 	public:
 		static void initialize();
 

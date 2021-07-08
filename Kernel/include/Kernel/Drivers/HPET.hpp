@@ -42,16 +42,16 @@ namespace Kernel
 			uint64_t main_counter_value;
 			uint64_t reserved_5;
 		} __attribute__((packed));
-		
+
 	public:
 		static void initialize();
-		
+
 		static void sleep(uint64_t ms);
 
 	private:
 		static Table* s_table;
 		static Entry* s_entry;
-		
+
 		static size_t s_clock_period;
 	};
 } // namespace Kernel

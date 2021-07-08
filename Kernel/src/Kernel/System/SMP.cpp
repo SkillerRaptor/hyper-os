@@ -56,8 +56,7 @@ namespace Kernel
 		}
 
 		while (s_cpus_online < smp_tag->cpu_count)
-		{
-		}
+			;
 
 		Logger::info("SMP: Initializing finished!");
 	}

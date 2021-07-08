@@ -19,7 +19,7 @@ namespace Kernel
 
 		void set_title(const String& title);
 		[[nodiscard]] const String& title() const;
-		
+
 		void set_rect(const Rect& rect);
 		[[nodiscard]] const Rect& rect() const;
 

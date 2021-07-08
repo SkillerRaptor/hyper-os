@@ -14,7 +14,7 @@ namespace Kernel::Memory
 	void* calloc(size_t num, size_t size);
 	void* realloc(void* ptr, size_t size);
 	void free(void* ptr);
-}
+} // namespace Kernel::Memory
 
 [[nodiscard]] void* operator new(size_t size);
 

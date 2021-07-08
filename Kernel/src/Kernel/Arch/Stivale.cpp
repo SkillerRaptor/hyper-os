@@ -59,4 +59,4 @@ namespace Kernel::Stivale
 			current_tag = reinterpret_cast<stivale2_tag*>(current_tag->next + Memory::s_physical_memory_offset);
 		}
 	}
-} // namespace Kernel
+} // namespace Kernel::Stivale

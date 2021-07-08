@@ -171,7 +171,7 @@ namespace Kernel
 		APIC::lapic_end_of_interrupt();
 
 		s_spinlock.unlock();
-		
+
 		switch_task(&s_task_list[next_pid].threads[next_tid].registers);
 	}
 } // namespace Kernel

@@ -26,7 +26,7 @@ namespace Kernel
 					return value.second;
 				}
 			}
-			
+
 			return m_data.emplace_back(x, T()).second;
 		}
 
@@ -40,7 +40,7 @@ namespace Kernel
 					return value.second;
 				}
 			}
-			
+
 			return m_data.emplace_back(move(x), T()).second;
 		}
 
@@ -54,7 +54,7 @@ namespace Kernel
 					return value.second;
 				}
 			}
-			
+
 			// TODO: Assert / Panic here
 		}
 
@@ -76,22 +76,22 @@ namespace Kernel
 		{
 			m_data.clear();
 		}
-		
+
 		[[nodiscard]] size_t size() const noexcept
 		{
 			return m_data.size();
 		}
-		
+
 		[[nodiscard]] size_t max_size() const noexcept
 		{
 			return m_data.max_size();
 		}
-		
+
 		[[nodiscard]] bool empty() const noexcept
 		{
 			return size() == 0;
 		}
-	
+
 	private:
 		Vector<Pair<Key, T>> m_data{};
 	};

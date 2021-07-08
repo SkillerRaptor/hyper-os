@@ -26,7 +26,7 @@ namespace Kernel
 			clear();
 			delete[] m_data;
 		}
-		
+
 		template <typename... Args>
 		T& emplace_back(Args&&... args)
 		{
@@ -77,49 +77,49 @@ namespace Kernel
 
 			m_size = 0;
 		}
-		
+
 		T& operator[](size_t position)
 		{
 			return m_data[position];
 		}
-		
+
 		const T& operator[](size_t position) const
 		{
 			return m_data[position];
 		}
-		
+
 		T& at(size_t position)
 		{
 			// TODO: Assert / Panic here
 			return m_data[position];
 		}
-		
+
 		const T& at(size_t position) const
 		{
 			// TODO: Assert / Panic here
 			return m_data[position];
 		}
-		
+
 		T* data() noexcept
 		{
 			return m_data;
 		}
-		
+
 		const T* data() const noexcept
 		{
 			return m_data;
 		}
-		
+
 		[[nodiscard]] size_t size() const noexcept
 		{
 			return m_size;
 		}
-		
+
 		[[nodiscard]] size_t max_size() const noexcept
 		{
 			return m_capacity;
 		}
-		
+
 		[[nodiscard]] bool empty() const noexcept
 		{
 			return size() == 0;
@@ -139,7 +139,7 @@ namespace Kernel
 			{
 				data_block[i] = Utilities::move(m_data[i]);
 			}
-			
+
 			for (size_t i = 0; i < m_size; ++i)
 			{
 				m_data[i].~T();
