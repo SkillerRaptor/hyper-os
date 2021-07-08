@@ -9,146 +9,140 @@
 
 namespace Kernel
 {
-	Bitmap::Bitmap(SizeType size) noexcept
+	Bitmap::Bitmap(size_t size) noexcept
 		: m_size(size)
 	{
 	}
 
-	Bitmap::Bitmap(Pointer data, SizeType size) noexcept
+	Bitmap::Bitmap(uint8_t* data, size_t size) noexcept
 		: m_data(data)
 		, m_size(size)
 	{
 	}
 
-	Bitmap& Bitmap::set() noexcept
+	void Bitmap::set() noexcept
 	{
-		for (SizeType i = 0; i < m_size; i++)
+		for (size_t i = 0; i < m_size; i++)
 		{
 			m_data[i] = 0xFF;
 		}
-		return *this;
 	}
 
-	Bitmap& Bitmap::set(SizeType position, bool value)
+	void Bitmap::set(size_t position, bool value)
 	{
-		if (position > (m_size * s_byte_size))
+		if (position > m_size)
 		{
-			// TODO: Check if position is in range
-			// return *this;
+			return;
 		}
-
-		uint64_t byte_index = position / s_byte_size;
-		ValueType bit_index = static_cast<ValueType>(position % s_byte_size);
-		ValueType bit_value = static_cast<ValueType>(1u << (bit_index));
+		
+		uint64_t byte_index;
+		uint8_t bit_value;
+		get_index(position, byte_index, bit_value);
 
 		if (value)
 		{
 			m_data[byte_index] |= bit_value;
-			return *this;
+			return;
 		}
 
 		m_data[byte_index] &= ~bit_value;
-
-		return *this;
 	}
 
-	Bitmap& Bitmap::reset() noexcept
+	void Bitmap::reset() noexcept
 	{
-		for (SizeType i = 0; i < m_size; i++)
+		for (size_t i = 0; i < m_size; i++)
 		{
 			m_data[i] = 0x00;
 		}
-		return *this;
 	}
 
-	Bitmap& Bitmap::reset(SizeType position)
+	void Bitmap::reset(size_t position)
 	{
-		if (position > (m_size * s_byte_size))
+		if (position > m_size)
 		{
-			// TODO: Check if position is in range
-			// return *this;
+			return;
 		}
-
-		uint64_t byte_index = position / s_byte_size;
-		ValueType bit_index = static_cast<ValueType>(position % s_byte_size);
-		ValueType bit_value = static_cast<ValueType>(1u << (bit_index));
+		
+		uint64_t byte_index;
+		uint8_t bit_value;
+		get_index(position, byte_index, bit_value);
 
 		m_data[byte_index] &= ~bit_value;
-
-		return *this;
 	}
 
-	Bitmap& Bitmap::flip() noexcept
+	void Bitmap::flip() noexcept
 	{
-		for (SizeType i = 0; i < m_size; i++)
+		for (size_t i = 0; i < m_size; i++)
 		{
 			m_data[i] = ~m_data[i];
 		}
-		return *this;
 	}
 
-	Bitmap& Bitmap::flip(SizeType position)
+	void Bitmap::flip(size_t position)
 	{
-		if (position > (m_size * s_byte_size))
+		if (position > m_size)
 		{
-			// TODO: Check if position is in range
-			// return *this;
+			return;
 		}
-
-		uint64_t byte_index = position / s_byte_size;
-		ValueType bit_index = static_cast<ValueType>(position % s_byte_size);
-		ValueType bit_value = static_cast<ValueType>(1u << (bit_index));
+		
+		uint64_t byte_index;
+		uint8_t bit_value;
+		get_index(position, byte_index, bit_value);
 
 		m_data[byte_index] ^= bit_value;
-		return *this;
 	}
 
-	bool Bitmap::test(SizeType position) const noexcept
+	bool Bitmap::test(size_t position) const noexcept
 	{
-		if (position > (m_size * s_byte_size))
+		if (position > m_size)
 		{
-			// TODO: Check if position is in range
-			// return false;
+			return false;
 		}
 
-		uint64_t byte_index = position / s_byte_size;
-		ValueType bit_index = static_cast<ValueType>(position % s_byte_size);
-		ValueType bit_value = static_cast<ValueType>(1u << (bit_index));
+		uint64_t byte_index;
+		uint8_t bit_value;
+		get_index(position, byte_index, bit_value);
 
 		return (m_data[byte_index] & bit_value) != 0;
 	}
 
-	bool Bitmap::operator[](SizeType position) const noexcept
+	bool Bitmap::operator[](size_t position) const noexcept
 	{
 		return test(position);
 	}
+	
+	void Bitmap::get_index(size_t position, uint64_t& byte_index, uint8_t& bit_value)
+	{
+		byte_index = position / Memory::s_byte_size;
+		bit_value = static_cast<uint8_t>(1 << (position % Memory::s_byte_size));
+	}
 
-	void Bitmap::set_data(Bitmap::Pointer data) noexcept
+	void Bitmap::set_data(uint8_t* data) noexcept
 	{
 		m_data = data;
 	}
 
-	Bitmap::Pointer Bitmap::data() noexcept
+	uint8_t* Bitmap::data() noexcept
 	{
 		return m_data;
 	}
 
-	Bitmap::ConstPointer Bitmap::data() const noexcept
+	const uint8_t* Bitmap::data() const noexcept
 	{
 		return m_data;
 	}
 
-	void Bitmap::set_size(Bitmap::SizeType size) noexcept
+	void Bitmap::set_size(size_t size) noexcept
 	{
 		m_size = size;
 	}
 
-	Bitmap::SizeType Bitmap::size() const noexcept
+	size_t Bitmap::size() const noexcept
 	{
 		return m_size;
 	}
 
-	Bitmap::SizeType Bitmap::max_size() const noexcept
+	size_t Bitmap::max_size() const noexcept
 	{
 		return m_size;
 	}

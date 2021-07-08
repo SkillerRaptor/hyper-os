@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <stivale2.h>
 
-namespace Kernel
+namespace Kernel::Stivale
 {
-	void* stivale2_get_tag(stivale2_struct* bootloader_data, uint64_t identifier);
-} // namespace Kernel
+	void* get_tag(stivale2_struct* bootloader_data, uint64_t identifier);
+} // namespace Kernel::Stivale

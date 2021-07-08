@@ -53,12 +53,12 @@ namespace Kernel
 	{
 		if (rsdp->revision >= 2 && rsdp->xsdt_address)
 		{
-			s_xsdt = reinterpret_cast<ACPI::XSDT*>(rsdp->xsdt_address + s_physical_memory_offset);
+			s_xsdt = reinterpret_cast<ACPI::XSDT*>(rsdp->xsdt_address + Memory::s_physical_memory_offset);
 			Logger::debug("ACPI: Found XSDT at 0x%X", reinterpret_cast<uintptr_t>(s_xsdt));
 			return;
 		}
 
-		s_rsdt = reinterpret_cast<ACPI::RSDT*>(rsdp->rsdt_address + s_physical_memory_offset);
+		s_rsdt = reinterpret_cast<ACPI::RSDT*>(rsdp->rsdt_address + Memory::s_physical_memory_offset);
 		Logger::debug("ACPI: Found RSDT at 0x%X", reinterpret_cast<uintptr_t>(s_rsdt));
 	}
 
@@ -67,10 +67,10 @@ namespace Kernel
 		if (s_xsdt != nullptr)
 		{
 			auto* current_pointer = reinterpret_cast<uint64_t*>(s_xsdt->sdt_addresses);
-			return reinterpret_cast<ACPI::SDT*>(current_pointer[index] + s_physical_memory_offset);
+			return reinterpret_cast<ACPI::SDT*>(current_pointer[index] + Memory::s_physical_memory_offset);
 		}
 
 		auto* current_pointer = reinterpret_cast<uint32_t*>(s_rsdt->sdt_addresses);
-		return reinterpret_cast<ACPI::SDT*>(current_pointer[index] + s_physical_memory_offset);
+		return reinterpret_cast<ACPI::SDT*>(current_pointer[index] + Memory::s_physical_memory_offset);
 	}
 } // namespace Kernel

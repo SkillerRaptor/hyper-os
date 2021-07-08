@@ -18,16 +18,16 @@ namespace Kernel
 		Rect(uint32_t x, uint32_t y, size_t width, size_t height);
 		
 		void set_x(uint32_t x);
-		uint32_t x() const;
+		[[nodiscard]] uint32_t x() const;
 		
 		void set_y(uint32_t y);
-		uint32_t y() const;
+		[[nodiscard]] uint32_t y() const;
 		
 		void set_width(size_t width);
-		size_t width() const;
+		[[nodiscard]] size_t width() const;
 		
 		void set_height(size_t height);
-		size_t height() const;
+		[[nodiscard]] size_t height() const;
 		
 	private:
 		uint32_t m_x{ 0 };

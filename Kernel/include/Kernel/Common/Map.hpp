@@ -16,94 +16,83 @@ namespace Kernel
 	class Map
 	{
 	public:
-		using KeyType = Key;
-		using MappedType = T;
-		using ValueType = Pair<KeyType, MappedType>;
-		using Reference = ValueType&;
-		using ConstReference = const ValueType&;
-		using Pointer = ValueType*;
-		using ConstPointer = const ValueType*;
-		using SizeType = size_t;
-		using DifferenceType = ptrdiff_t;
-
-	public:
-		[[nodiscard]] bool empty() const noexcept
-		{
-			return size() == 0;
-		}
-
-		SizeType size() const noexcept
-		{
-			return m_data.size();
-		}
-
-		SizeType max_size() const noexcept
-		{
-			return m_data.max_size();
-		}
-
-		MappedType& operator[](const KeyType& x)
+		T& operator[](const Key& x)
 		{
 			for (size_t i = 0; i < m_data.size(); ++i)
 			{
-				Reference value = m_data[i];
+				Pair<Key, T>& value = m_data[i];
 				if (value.first == x)
 				{
 					return value.second;
 				}
 			}
 			
-			return m_data.emplace_back(x, MappedType()).second;
+			return m_data.emplace_back(x, T()).second;
 		}
 
-		MappedType& operator[](KeyType&& x)
+		T& operator[](Key&& x)
 		{
 			for (size_t i = 0; i < m_data.size(); ++i)
 			{
-				Reference value = m_data[i];
+				Pair<Key, T>& value = m_data[i];
 				if (value.first == x)
 				{
 					return value.second;
 				}
 			}
 			
-			return m_data.emplace_back(move(x), MappedType()).second;
+			return m_data.emplace_back(move(x), T()).second;
 		}
 
-		MappedType& at(const KeyType& x)
+		T& at(const Key& x)
 		{
 			for (size_t i = 0; i < m_data.size(); ++i)
 			{
-				Reference value = m_data[i];
+				Pair<Key, T>& value = m_data[i];
+				if (value.first == x)
+				{
+					return value.second;
+				}
+			}
+			
+			// TODO: Assert / Panic here
+		}
+
+		const T& at(const Key& x) const
+		{
+			for (size_t i = 0; i < m_data.size(); ++i)
+			{
+				const Pair<Key, T>& value = m_data[i];
 				if (value.first == x)
 				{
 					return value.second;
 				}
 			}
 
-			// Assert
-		}
-
-		const MappedType& at(const KeyType& x) const
-		{
-			for (size_t i = 0; i < m_data.size(); ++i)
-			{
-				ConstReference value = m_data[i];
-				if (value.first == x)
-				{
-					return value.second;
-				}
-			}
-
-			// Assert
+			// TODO: Assert / Panic here
 		}
 
 		void clear() noexcept
 		{
 			m_data.clear();
 		}
-
+		
+		[[nodiscard]] size_t size() const noexcept
+		{
+			return m_data.size();
+		}
+		
+		[[nodiscard]] size_t max_size() const noexcept
+		{
+			return m_data.max_size();
+		}
+		
+		[[nodiscard]] bool empty() const noexcept
+		{
+			return size() == 0;
+		}
+	
 	private:
-		Vector<ValueType> m_data{};
+		Vector<Pair<Key, T>> m_data{};
 	};
 } // namespace Kernel

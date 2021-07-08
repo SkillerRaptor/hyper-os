@@ -9,7 +9,7 @@
 
 namespace Kernel
 {
-	Vector<Window> WindowManager::s_windows{};
+	Vector<Window> WindowManager::s_windows = {};
 	
 	void WindowManager::add_window(const Window& window)
 	{

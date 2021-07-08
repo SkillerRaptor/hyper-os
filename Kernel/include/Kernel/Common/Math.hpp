@@ -14,14 +14,14 @@ namespace Kernel::Math
 	{
 		return (a + (b - 1)) / b;
 	}
-	
+
 	static constexpr uint64_t align_up(uint64_t a, uint64_t b)
 	{
 		return div_round_up(a, b) * b;
 	}
-	
+
 	static constexpr uint64_t align_down(uint64_t a, uint64_t b)
 	{
 		return (a / b) * b;
 	}
-}
+} // namespace Kernel::Math

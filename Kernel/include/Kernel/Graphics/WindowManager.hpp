@@ -15,12 +15,11 @@ namespace Kernel
 	{
 	public:
 		static void add_window(const Window& window);
-		
+
 		static void draw_window(const Window& window);
 		static void draw_windows();
-		
+
 	private:
 		static Vector<Window> s_windows;
 	};
-	
-}
+} // namespace Kernel

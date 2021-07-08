@@ -8,7 +8,6 @@
 
 #include <Kernel/Common/Registers.hpp>
 #include <stdint.h>
-#include <stddef.h>
 
 namespace Kernel
 {

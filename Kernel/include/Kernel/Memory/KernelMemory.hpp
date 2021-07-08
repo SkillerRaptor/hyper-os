@@ -8,7 +8,7 @@
 
 #include <stddef.h>
 
-namespace Kernel
+namespace Kernel::Memory
 {
 	void* malloc(size_t size);
 	void* calloc(size_t num, size_t size);

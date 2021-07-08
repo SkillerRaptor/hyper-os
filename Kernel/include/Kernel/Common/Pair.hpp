@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Kernel/Common/Utility.hpp>
+#include <Kernel/Common/Utilities.hpp>
 
 namespace Kernel
 {
@@ -14,17 +14,13 @@ namespace Kernel
 	class Pair
 	{
 	public:
-		using FirstType = T1;
-		using SecondType = T2;
-
-	public:
 		Pair()
 			: first()
 			, second()
 		{
 		}
 
-		Pair(const FirstType& first, const SecondType& second)
+		Pair(const T1& first, const T2& second)
 			: first(first)
 			, second(second)
 		{
@@ -63,14 +59,14 @@ namespace Kernel
 
 		Pair& operator=(Pair&& other) noexcept
 		{
-			first = move(other.first);
-			second = move(other.second);
+			first = Utilities::move(other.first);
+			second = Utilities::move(other.second);
 			return *this;
 		}
 
 	public:
-		FirstType first;
-		SecondType second;
+		T1 first{};
+		T2 second{};
 	};
 
 	template <typename T1, typename T2>

@@ -6,20 +6,10 @@
 
 #pragma once
 
-namespace Kernel
+namespace Kernel::Serial
 {
-	class Serial
-	{
-	private:
-		static constexpr const uint16_t s_serial_port{ 0x03F8 };
+	void initialize();
 
-	public:
-		static void initialize();
-
-		static void write(char character);
-		static void write(const char* string);
-
-	private:
-		static bool transmit_empty();
-	};
-} // namespace Kernel
+	void write(char character);
+	void write(const char* string);
+} // namespace Kernel::Serial

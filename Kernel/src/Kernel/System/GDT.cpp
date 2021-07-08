@@ -28,44 +28,44 @@ namespace Kernel
 			0x00000000,
 			0xFFFFFFFF,
 			AccessAttribute::Present |
-			AccessAttribute::CodeOrData |
-			AccessAttribute::Executable |
-			AccessAttribute::Readable,
+				AccessAttribute::CodeOrData |
+				AccessAttribute::Executable |
+				AccessAttribute::Readable,
 			FlagAttribute::Granularity4K |
-			FlagAttribute::Mode64Bit);
+				FlagAttribute::Mode64Bit);
 
 		GDT::create_descriptor(
 			&s_entries.kernel_entries[1],
 			0x00000000,
 			0xFFFFFFFF,
 			AccessAttribute::Present |
-			AccessAttribute::CodeOrData |
-			AccessAttribute::Writeable,
+				AccessAttribute::CodeOrData |
+				AccessAttribute::Writeable,
 			FlagAttribute::Granularity4K |
-			FlagAttribute::Mode32Bit);
+				FlagAttribute::Mode32Bit);
 
 		GDT::create_descriptor(
 			&s_entries.userland_entries[0],
 			0x00000000,
 			0xFFFFFFFF,
 			AccessAttribute::Present |
-			AccessAttribute::CodeOrData |
-			AccessAttribute::Executable |
-			AccessAttribute::Readable |
-			AccessAttribute::Ring3,
+				AccessAttribute::CodeOrData |
+				AccessAttribute::Executable |
+				AccessAttribute::Readable |
+				AccessAttribute::Ring3,
 			FlagAttribute::Granularity4K |
-			FlagAttribute::Mode64Bit);
+				FlagAttribute::Mode64Bit);
 
 		GDT::create_descriptor(
 			&s_entries.userland_entries[1],
 			0x00000000,
 			0xFFFFFFFF,
 			AccessAttribute::Present |
-			AccessAttribute::CodeOrData |
-			AccessAttribute::Writeable |
-			AccessAttribute::Ring3,
+				AccessAttribute::CodeOrData |
+				AccessAttribute::Writeable |
+				AccessAttribute::Ring3,
 			FlagAttribute::Granularity4K |
-			FlagAttribute::Mode32Bit);
+				FlagAttribute::Mode32Bit);
 
 		s_pointer.size = sizeof(s_entries) - 1;
 		s_pointer.address = reinterpret_cast<uintptr_t>(&s_entries);
@@ -97,11 +97,8 @@ namespace Kernel
 			"mov %%gs, %1\n"
 			"mov %%ss, %1\n"
 			:
-			: "m"(s_pointer)
-			, "r"(static_cast<uint64_t>(s_kernel_data_selector))
-			, "r"(static_cast<uint64_t>(s_kernel_code_selector))
-			: "memory"
-		);
+			: "m"(s_pointer), "r"(static_cast<uint64_t>(s_kernel_data_selector)), "r"(static_cast<uint64_t>(s_kernel_code_selector))
+			: "memory");
 	}
 
 	void GDT::create_descriptor(

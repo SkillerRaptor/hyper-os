@@ -10,7 +10,7 @@
 #include <Kernel/Memory/PhysicalMemoryManager.hpp>
 #include <stdint.h>
 
-namespace Kernel
+namespace Kernel::Memory
 {
 	struct AllocationHeader
 	{
@@ -20,7 +20,7 @@ namespace Kernel
 
 	void* malloc(size_t size)
 	{
-		size_t page_count = Math::div_round_up(size, s_page_size);
+		size_t page_count = Math::div_round_up(size, Memory::s_page_size);
 
 		auto* ptr = reinterpret_cast<uint8_t*>(PhysicalMemoryManager::callocate(page_count + 1));
 		if (ptr == nullptr)
@@ -28,10 +28,10 @@ namespace Kernel
 			return nullptr;
 		}
 
-		ptr = ptr + s_physical_memory_offset;
+		ptr = ptr + Memory::s_physical_memory_offset;
 
 		auto* header = reinterpret_cast<AllocationHeader*>(ptr);
-		ptr = ptr + s_page_size;
+		ptr = ptr + Memory::s_page_size;
 
 		header->page_count = page_count;
 		header->size = size;
@@ -42,7 +42,7 @@ namespace Kernel
 	void* calloc(size_t num, size_t size)
 	{
 		void* ptr = malloc(num * size);
-		memset(ptr, 0x00, num * size);
+		Memory::memset(ptr, 0x00, num * size);
 		return ptr;
 	}
 
@@ -53,10 +53,10 @@ namespace Kernel
 			return malloc(size);
 		}
 
-		auto* header_address = reinterpret_cast<uint8_t*>(ptr) - s_page_size;
+		auto* header_address = reinterpret_cast<uint8_t*>(ptr) - Memory::s_page_size;
 		auto* header = reinterpret_cast<AllocationHeader*>(header_address);
 
-		if (Math::div_round_up(header->size, s_page_size) == Math::div_round_up(size, s_page_size))
+		if (Math::div_round_up(header->size, Memory::s_page_size) == Math::div_round_up(size, Memory::s_page_size))
 		{
 			header->size = size;
 			return ptr;
@@ -67,8 +67,8 @@ namespace Kernel
 		{
 			return nullptr;
 		}
-
-		memcpy(new_pointer, ptr, (header->size > size) ? size : header->size);
+		
+		Memory::memcpy(new_pointer, ptr, (header->size > size) ? size : header->size);
 		free(ptr);
 
 		return new_pointer;
@@ -76,42 +76,42 @@ namespace Kernel
 
 	void free(void* ptr)
 	{
-		auto* header_address = reinterpret_cast<uint8_t*>(ptr) - s_page_size;
+		auto* header_address = reinterpret_cast<uint8_t*>(ptr) - Memory::s_page_size;
 		auto* header = reinterpret_cast<AllocationHeader*>(header_address);
 
 		size_t page_count = header->page_count + 1;
-		PhysicalMemoryManager::free(reinterpret_cast<void*>(header_address - s_physical_memory_offset), page_count);
+		PhysicalMemoryManager::free(reinterpret_cast<void*>(header_address - Memory::s_physical_memory_offset), page_count);
 	}
 } // namespace Kernel
 
 [[nodiscard]] void* operator new(size_t size)
 {
-	return Kernel::malloc(size);
+	return Kernel::Memory::malloc(size);
 }
 
 void operator delete(void* ptr) noexcept
 {
-	Kernel::free(ptr);
+	Kernel::Memory::free(ptr);
 }
 
 void operator delete(void* ptr, size_t) noexcept
 {
-	Kernel::free(ptr);
+	Kernel::Memory::free(ptr);
 }
 
 [[nodiscard]] void* operator new[](size_t size)
 {
-	return Kernel::malloc(size);
+	return Kernel::Memory::malloc(size);
 }
 
 void operator delete[](void* ptr) noexcept
 {
-	Kernel::free(ptr);
+	Kernel::Memory::free(ptr);
 }
 
 void operator delete[](void* ptr, size_t) noexcept
 {
-	Kernel::free(ptr);
+	Kernel::Memory::free(ptr);
 }
 
 [[nodiscard]] void* operator new(size_t, void* ptr) noexcept

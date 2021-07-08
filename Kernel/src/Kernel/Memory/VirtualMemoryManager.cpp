@@ -19,21 +19,21 @@ namespace Kernel
 
 		s_kernel_page_map = VirtualMemoryManager::create_page_map();
 
-		for (uintptr_t p = 0; p < 0x100000000; p += s_page_size)
+		for (uintptr_t p = 0; p < 0x100000000; p += Memory::s_page_size)
 		{
-			VirtualMemoryManager::map_page(s_kernel_page_map, p, p + s_physical_memory_offset, 0x03);
+			VirtualMemoryManager::map_page(s_kernel_page_map, p, p + Memory::s_physical_memory_offset, 0x03);
 		}
 
-		for (uintptr_t p = 0; p < 0x80000000; p += s_page_size)
+		for (uintptr_t p = 0; p < 0x80000000; p += Memory::s_page_size)
 		{
-			VirtualMemoryManager::map_page(s_kernel_page_map, p, p + s_kernel_base_address, 0x03);
+			VirtualMemoryManager::map_page(s_kernel_page_map, p, p + Memory::s_kernel_base_address, 0x03);
 		}
 
 		for (size_t i = 0; i < memory_map_entries; i++)
 		{
-			for (uintptr_t p = 0; p < memory_map[i].length; p += s_page_size)
+			for (uintptr_t p = 0; p < memory_map[i].length; p += Memory::s_page_size)
 			{
-				VirtualMemoryManager::map_page(s_kernel_page_map, p, p + s_physical_memory_offset, 0x03);
+				VirtualMemoryManager::map_page(s_kernel_page_map, p, p + Memory::s_physical_memory_offset, 0x03);
 			}
 		}
 
@@ -48,8 +48,8 @@ namespace Kernel
 		page_map->top_level = reinterpret_cast<uintptr_t>(PhysicalMemoryManager::callocate(1));
 		if (s_kernel_page_map != nullptr)
 		{
-			auto* top_level = reinterpret_cast<uintptr_t*>(page_map->top_level + s_physical_memory_offset);
-			auto* kernel_top_level = reinterpret_cast<uintptr_t*>(page_map->top_level + s_physical_memory_offset);
+			auto* top_level = reinterpret_cast<uintptr_t*>(page_map->top_level + Memory::s_physical_memory_offset);
+			auto* kernel_top_level = reinterpret_cast<uintptr_t*>(page_map->top_level + Memory::s_physical_memory_offset);
 			for (size_t i = 256; i < 512; i++)
 			{
 				top_level[i] = kernel_top_level[i];
@@ -94,7 +94,7 @@ namespace Kernel
 		if (current_level[entry] & 0x1)
 		{
 			uintptr_t level_entry = current_level[entry] & ~((uintptr_t) 0xFFF);
-			return reinterpret_cast<uintptr_t*>(level_entry + s_physical_memory_offset);
+			return reinterpret_cast<uintptr_t*>(level_entry + Memory::s_physical_memory_offset);
 		}
 
 		if (!allocate)
@@ -111,7 +111,7 @@ namespace Kernel
 		current_level[entry] = next_level | 0b111;
 
 		uintptr_t level_entry = current_level[entry] & ~((uintptr_t) 0xFFF);
-		return reinterpret_cast<uintptr_t*>(level_entry + s_physical_memory_offset);
+		return reinterpret_cast<uintptr_t*>(level_entry + Memory::s_physical_memory_offset);
 	}
 
 	uintptr_t* VirtualMemoryManager::virtual2pte(PageMap* page_map, uintptr_t virtualAddress, bool allocate)
@@ -121,7 +121,7 @@ namespace Kernel
 		uintptr_t pml2_entry = (virtualAddress & ((uintptr_t) 0x1FF << 21)) >> 21;
 		uintptr_t pml1_entry = (virtualAddress & ((uintptr_t) 0x1FF << 12)) >> 12;
 
-		auto* pml4 = reinterpret_cast<uintptr_t*>(page_map->top_level + s_physical_memory_offset);
+		auto* pml4 = reinterpret_cast<uintptr_t*>(page_map->top_level + Memory::s_physical_memory_offset);
 
 		uintptr_t* pml3 = get_next_level(pml4, pml4_entry, allocate);
 		if (pml3 == nullptr)

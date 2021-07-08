@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Kernel/Common/Utility.hpp>
+#include <Kernel/Common/Utilities.hpp>
 #include <Kernel/Memory/KernelMemory.hpp>
 #include <stddef.h>
 
@@ -15,15 +15,6 @@ namespace Kernel
 	template <typename T>
 	class Vector
 	{
-	public:
-		using ValueType = T;
-		using Reference = T&;
-		using ConstReference = const T&;
-		using Pointer = T*;
-		using ConstPointer = const T*;
-		using SizeType = size_t;
-		using DifferenceType = ptrdiff_t;
-
 	public:
 		Vector()
 		{
@@ -35,54 +26,7 @@ namespace Kernel
 			clear();
 			delete[] m_data;
 		}
-
-		[[nodiscard]] bool empty() const noexcept
-		{
-			return size() == 0;
-		}
-
-		SizeType size() const noexcept
-		{
-			return m_size;
-		}
-
-		SizeType max_size() const noexcept
-		{
-			return m_capacity;
-		}
-
-		Reference operator[](SizeType position)
-		{
-			return m_data[position];
-		}
-
-		ConstReference operator[](SizeType position) const
-		{
-			return m_data[position];
-		}
-
-		Reference at(SizeType position)
-		{
-			// Assert
-			return m_data[position];
-		}
-
-		ConstReference at(SizeType position) const
-		{
-			// Assert
-			return m_data[position];
-		}
-
-		Pointer data() noexcept
-		{
-			return m_data;
-		}
-
-		ConstPointer data() const noexcept
-		{
-			return m_data;
-		}
-
+		
 		template <typename... Args>
 		T& emplace_back(Args&&... args)
 		{
@@ -91,11 +35,11 @@ namespace Kernel
 				grow(m_capacity + m_capacity / 2);
 			}
 
-			m_data[m_size] = T(forward<Args>(args)...);
+			m_data[m_size] = T(Utilities::forward<Args>(args)...);
 			return m_data[m_size++];
 		}
 
-		void push_back(ConstReference value)
+		void push_back(const T& value)
 		{
 			if (m_size >= m_capacity)
 			{
@@ -105,14 +49,14 @@ namespace Kernel
 			m_data[m_size++] = value;
 		}
 
-		void push_back(ValueType&& value)
+		void push_back(T&& value)
 		{
 			if (m_size >= m_capacity)
 			{
 				grow(m_capacity + m_capacity / 2);
 			}
 
-			m_data[m_size++] = move(value);
+			m_data[m_size++] = Utilities::move(value);
 		}
 
 		void pop_back()
@@ -126,32 +70,79 @@ namespace Kernel
 
 		void clear() noexcept
 		{
-			for (SizeType i = 0; i < m_size; ++i)
+			for (size_t i = 0; i < m_size; ++i)
 			{
-				m_data[i].~ValueType();
+				m_data[i].~T();
 			}
 
 			m_size = 0;
 		}
+		
+		T& operator[](size_t position)
+		{
+			return m_data[position];
+		}
+		
+		const T& operator[](size_t position) const
+		{
+			return m_data[position];
+		}
+		
+		T& at(size_t position)
+		{
+			// TODO: Assert / Panic here
+			return m_data[position];
+		}
+		
+		const T& at(size_t position) const
+		{
+			// TODO: Assert / Panic here
+			return m_data[position];
+		}
+		
+		T* data() noexcept
+		{
+			return m_data;
+		}
+		
+		const T* data() const noexcept
+		{
+			return m_data;
+		}
+		
+		[[nodiscard]] size_t size() const noexcept
+		{
+			return m_size;
+		}
+		
+		[[nodiscard]] size_t max_size() const noexcept
+		{
+			return m_capacity;
+		}
+		
+		[[nodiscard]] bool empty() const noexcept
+		{
+			return size() == 0;
+		}
 
 	private:
-		void grow(SizeType capacity)
+		void grow(size_t capacity)
 		{
-			auto* data_block = new ValueType[capacity];
+			auto* data_block = new T[capacity];
 
 			if (capacity < m_size)
 			{
 				m_size = capacity;
 			}
 
-			for (SizeType i = 0; i < m_size; ++i)
+			for (size_t i = 0; i < m_size; ++i)
 			{
-				data_block[i] = move(m_data[i]);
+				data_block[i] = Utilities::move(m_data[i]);
 			}
 			
-			for (SizeType i = 0; i < m_size; ++i)
+			for (size_t i = 0; i < m_size; ++i)
 			{
-				m_data[i].~ValueType();
+				m_data[i].~T();
 			}
 
 			delete[] m_data;
@@ -160,8 +151,8 @@ namespace Kernel
 		}
 
 	private:
-		Pointer m_data{ nullptr };
-		SizeType m_size{ 0 };
-		SizeType m_capacity{ 0 };
+		T* m_data{ nullptr };
+		size_t m_size{ 0 };
+		size_t m_capacity{ 0 };
 	};
 } // namespace Kernel

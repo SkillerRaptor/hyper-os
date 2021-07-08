@@ -14,42 +14,36 @@ namespace Kernel
 	class Bitmap
 	{
 	public:
-		using ValueType = uint8_t;
-		using Reference = ValueType&;
-		using ConstReference = const ValueType&;
-		using Pointer = ValueType*;
-		using ConstPointer = const ValueType*;
-		using SizeType = size_t;
-		using DifferenceType = ptrdiff_t;
-		
-	public:
 		constexpr Bitmap() noexcept = default;
 		
-		explicit Bitmap(SizeType size) noexcept;
-		Bitmap(Pointer data, SizeType size) noexcept;
+		explicit Bitmap(size_t size) noexcept;
+		Bitmap(uint8_t* data, size_t size) noexcept;
 		
-		Bitmap& set() noexcept;
-		Bitmap& set(SizeType position, bool value = true);
+		void set() noexcept;
+		void set(size_t position, bool value = true);
 		
-		Bitmap& reset() noexcept;
-		Bitmap& reset(SizeType position);
+		void reset() noexcept;
+		void reset(size_t position);
 		
-		Bitmap& flip() noexcept;
-		Bitmap& flip(SizeType position);
+		void flip() noexcept;
+		void flip(size_t position);
 		
-		bool test(SizeType position) const noexcept;
-		bool operator[](SizeType position) const noexcept;
+		[[nodiscard]] bool test(size_t position) const noexcept;
+		[[nodiscard]] bool operator[](size_t position) const noexcept;
 		
-		void set_data(Pointer data) noexcept;
-		Pointer data() noexcept;
-		ConstPointer data() const noexcept;
+		void set_data(uint8_t* data) noexcept;
+		[[nodiscard]] uint8_t* data() noexcept;
+		[[nodiscard]] const uint8_t* data() const noexcept;
 		
-		void set_size(SizeType size) noexcept;
-		SizeType size() const noexcept;
-		SizeType max_size() const noexcept;
-	
+		void set_size(size_t size) noexcept;
+		[[nodiscard]] size_t size() const noexcept;
+		[[nodiscard]] size_t max_size() const noexcept;
+
 	private:
-		Pointer m_data{ nullptr };
-		SizeType m_size{ 0 };
+		static void get_index(size_t position, uint64_t& byte_index, uint8_t& bit_value);
+		
+	private:
+		uint8_t* m_data{ nullptr };
+		size_t m_size{ 0 };
 	};
 }

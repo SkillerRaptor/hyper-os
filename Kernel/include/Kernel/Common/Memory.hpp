@@ -9,7 +9,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace Kernel
+namespace Kernel::Memory
 {
 	static constexpr const uint8_t s_byte_size = 8;
 	static constexpr const uint16_t s_page_size = 4096;
@@ -22,4 +22,4 @@ namespace Kernel
 		void* memcpy(void* destination, const void* source, size_t count);
 		void* memmove(void* destination, const void* source, size_t count);
 	}
-} // namespace Kernel
+} // namespace Kernel::Memory

@@ -6,7 +6,7 @@
 
 #pragma once
 
-namespace Kernel
+namespace Kernel::Utilities
 {
 	template <typename T>
 	struct RemoveReference

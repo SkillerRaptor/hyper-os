@@ -16,18 +16,23 @@ namespace Kernel
 	class Logger
 	{
 	public:
-		enum class Level
+		enum class Level : uint8_t
 		{
 			Debug = 0,
 			Info,
 			Warning,
 			Error
 		};
+
+	private:
+		enum class ConvertFlags : uint8_t
+		{
+			None = 0,
+			Uppercase = 1 << 0,
+			Negative = 1 << 1
+		};
 	
 	public:
-		static void log(const char* format, ...);
-		static void vlog(const char* format, va_list args);
-		
 		static void info(const char* format, ...);
 		static void warning(const char* format, ...);
 		static void error(const char* format, ...);
@@ -37,8 +42,14 @@ namespace Kernel
 		static Level level();
 	
 	private:
+		static void vlog(const char* format, va_list args);
+		
 		static bool is_digit(char character);
-		static char* convert_to_string(uint64_t number, uint8_t base, size_t width, bool uppercase);
+		static char* convert_to_string(uint64_t number, uint8_t base, size_t min_width, ConvertFlags flags);
+		
+		friend bool operator&(const ConvertFlags& left, const ConvertFlags& right);
+		friend ConvertFlags operator|(const ConvertFlags& left, const ConvertFlags& right);
+		friend ConvertFlags operator|=(ConvertFlags& left, const ConvertFlags& right);
 		
 	private:
 		static Level s_level;

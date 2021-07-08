@@ -13,9 +13,9 @@ namespace Kernel
 	class GDT
 	{
 	public:
-		static constexpr const uint8_t s_kernel_code_selector{ 0x08 };
-		static constexpr const uint8_t s_kernel_data_selector{ 0x10 };
-	
+		static constexpr const uint8_t s_kernel_code_selector = 0x08;
+		static constexpr const uint8_t s_kernel_data_selector = 0x10;
+
 	private:
 		enum class AccessAttribute : uint8_t
 		{
@@ -32,7 +32,7 @@ namespace Kernel
 			Writeable = 1 << 1,
 			Tss = 1 << 0,
 		};
-		
+
 		enum class FlagAttribute : uint8_t
 		{
 			Null = 0 << 0,
@@ -42,7 +42,7 @@ namespace Kernel
 			Mode32Bit = 1 << 2,
 			Mode64Bit = 1 << 1
 		};
-		
+
 		struct Entry
 		{
 			uint16_t limit_low;
@@ -53,7 +53,7 @@ namespace Kernel
 			uint8_t flags : 4;
 			uint8_t base_high;
 		} __attribute__((packed));
-		
+
 		struct Entries
 		{
 			Entry null_entry;
@@ -61,25 +61,25 @@ namespace Kernel
 			Entry userland_entries[2];
 			// TODO: Adding TSS Entry
 		} __attribute__((packed));
-		
+
 		struct Pointer
 		{
 			uint16_t size;
 			uint64_t address;
 		} __attribute__((packed));
-	
+
 	public:
 		static void initialize();
 		static void install();
-	
+
 	private:
 		static void create_descriptor(Entry* entry, uint32_t base, uint32_t limit, AccessAttribute access, FlagAttribute flags);
-	
+
 		friend AccessAttribute operator|(const AccessAttribute& left, const AccessAttribute& right);
 		friend FlagAttribute operator|(const FlagAttribute& left, const FlagAttribute& right);
-	
+
 	private:
 		static Entries s_entries;
 		static Pointer s_pointer;
 	};
-}
+} // namespace Kernel

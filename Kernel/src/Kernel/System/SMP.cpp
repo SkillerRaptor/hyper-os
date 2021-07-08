@@ -30,7 +30,7 @@ namespace Kernel
 
 		for (size_t i = 0; i < smp_tag->cpu_count; ++i)
 		{
-			auto stack = reinterpret_cast<uintptr_t>(PhysicalMemoryManager::callocate(2)) + s_physical_memory_offset;
+			auto stack = reinterpret_cast<uintptr_t>(PhysicalMemoryManager::callocate(2)) + Memory::s_physical_memory_offset;
 
 			CPU::Data cpu_data{};
 			cpu_data.cpu_number = static_cast<uint16_t>(i);
@@ -54,11 +54,11 @@ namespace Kernel
 			smp_tag->smp_info[i].target_stack = stack;
 			smp_tag->smp_info[i].goto_address = reinterpret_cast<uint64_t>(CPU::initialize);
 		}
-		
+
 		while (s_cpus_online < smp_tag->cpu_count)
 		{
 		}
-		
+
 		Logger::info("SMP: Initializing finished!");
 	}
 
@@ -68,8 +68,7 @@ namespace Kernel
 
 		__asm__ __volatile__(
 			"mov %%gs:0, %0"
-			: "=r"(index)
-		);
+			: "=r"(index));
 
 		return s_cpus[index];
 	}

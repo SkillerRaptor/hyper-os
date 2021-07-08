@@ -7,7 +7,7 @@
 #include <Kernel/Arch/Stivale.hpp>
 #include <Kernel/Common/Memory.hpp>
 
-namespace Kernel
+namespace Kernel::Stivale
 {
 	static uint8_t s_stack[4096] = { 0 };
 
@@ -41,9 +41,9 @@ namespace Kernel
 		.tags = reinterpret_cast<uintptr_t>(&s_framebuffer_header_tag)
 	};
 
-	void* stivale2_get_tag(stivale2_struct* bootloader_data, uint64_t identifier)
+	void* get_tag(stivale2_struct* bootloader_data, uint64_t identifier)
 	{
-		auto* current_tag = reinterpret_cast<stivale2_tag*>(bootloader_data->tags + s_physical_memory_offset);
+		auto* current_tag = reinterpret_cast<stivale2_tag*>(bootloader_data->tags + Memory::s_physical_memory_offset);
 		while (true)
 		{
 			if (current_tag == nullptr)
@@ -56,7 +56,7 @@ namespace Kernel
 				return current_tag;
 			}
 
-			current_tag = reinterpret_cast<stivale2_tag*>(current_tag->next + s_physical_memory_offset);
+			current_tag = reinterpret_cast<stivale2_tag*>(current_tag->next + Memory::s_physical_memory_offset);
 		}
 	}
 } // namespace Kernel

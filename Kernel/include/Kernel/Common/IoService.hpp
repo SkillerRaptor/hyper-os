@@ -8,20 +8,16 @@
 
 #include <stdint.h>
 
-namespace Kernel
+namespace Kernel::IoService
 {
-	class IoService
-	{
-	public:
-		static void outb(uint16_t port, uint8_t value);
-		static uint8_t inb(uint16_t port);
+	void outb(uint16_t port, uint8_t value);
+	uint8_t inb(uint16_t port);
 
-		static void outw(uint16_t port, uint16_t value);
-		static uint16_t inw(uint16_t port);
-		
-		static void outd(uint16_t port, uint32_t value);
-		static uint32_t ind(uint16_t port);
+	void outw(uint16_t port, uint16_t value);
+	uint16_t inw(uint16_t port);
 
-		static void wait();
-	};
-} // namespace Kernel
+	void outd(uint16_t port, uint32_t value);
+	uint32_t ind(uint16_t port);
+
+	void wait();
+} // namespace Kernel::IoService

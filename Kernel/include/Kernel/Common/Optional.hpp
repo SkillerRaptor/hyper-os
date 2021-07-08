@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Kernel/Common/Utility.hpp>
+#include <Kernel/Common/Utilities.hpp>
 
 namespace Kernel
 {
@@ -14,13 +14,10 @@ namespace Kernel
 	class Optional
 	{
 	public:
-		using ValueType = T;
-
-	public:
 		constexpr Optional() noexcept = default;
 
 		constexpr Optional(T&& value)
-			: m_value(move(value))
+			: m_value(Utilities::move(value))
 			, m_has_value(true)
 		{
 		}
@@ -30,7 +27,7 @@ namespace Kernel
 			return m_value;
 		}
 
-		constexpr const T& value() const &
+		constexpr const T& value() const&
 		{
 			return m_value;
 		}
@@ -40,7 +37,7 @@ namespace Kernel
 			return move(m_value);
 		}
 
-		constexpr const T&& value() const &&
+		constexpr const T&& value() const&&
 		{
 			return move(m_value);
 		}
@@ -73,7 +70,7 @@ namespace Kernel
 			{
 				return;
 			}
-		
+
 			m_value.~T();
 			m_has_value = false;
 		}

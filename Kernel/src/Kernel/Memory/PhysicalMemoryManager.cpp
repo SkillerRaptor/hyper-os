@@ -42,7 +42,7 @@ namespace Kernel
 			}
 		}
 
-		size_t bitmap_size = Math::div_round_up(s_highest_page, s_page_size) / s_byte_size;
+		size_t bitmap_size = Math::div_round_up(s_highest_page, Memory::s_page_size) / Memory::s_byte_size;
 		for (size_t i = 0; i < memory_map_entries; ++i)
 		{
 			if (memory_map[i].type != STIVALE2_MMAP_USABLE)
@@ -52,7 +52,7 @@ namespace Kernel
 
 			if (memory_map[i].length >= bitmap_size)
 			{
-				s_bitmap.set_data(reinterpret_cast<uint8_t*>(memory_map[i].base + s_physical_memory_offset));
+				s_bitmap.set_data(reinterpret_cast<uint8_t*>(memory_map[i].base + Memory::s_physical_memory_offset));
 				s_bitmap.set_size(bitmap_size);
 
 				s_bitmap.set();
@@ -71,9 +71,9 @@ namespace Kernel
 				continue;
 			}
 
-			for (uintptr_t j = 0; j < memory_map[i].length; j += s_page_size)
+			for (uintptr_t j = 0; j < memory_map[i].length; j += Memory::s_page_size)
 			{
-				s_bitmap.reset((memory_map[i].base + j) / s_page_size);
+				s_bitmap.reset((memory_map[i].base + j) / Memory::s_page_size);
 			}
 		}
 
@@ -85,11 +85,11 @@ namespace Kernel
 		s_spinlock.lock();
 
 		size_t limit = s_last_used_index;
-		void* ptr = internal_allocate(num, s_highest_page / s_page_size);
+		void* ptr = PhysicalMemoryManager::internal_allocate(num, s_highest_page / Memory::s_page_size);
 		if (ptr == nullptr)
 		{
 			s_last_used_index = 0;
-			ptr = internal_allocate(num, limit);
+			ptr = PhysicalMemoryManager::internal_allocate(num, limit);
 		}
 
 		s_spinlock.unlock();
@@ -99,14 +99,14 @@ namespace Kernel
 
 	void* PhysicalMemoryManager::callocate(size_t num)
 	{
-		auto* ptr = reinterpret_cast<uint8_t*>(allocate(num));
+		auto* ptr = reinterpret_cast<uint8_t*>(PhysicalMemoryManager::allocate(num));
 		if (ptr == nullptr)
 		{
 			return nullptr;
 		}
 
-		auto* address = reinterpret_cast<uint64_t*>(ptr + s_physical_memory_offset);
-		for (size_t i = 0; i < num * (s_page_size / sizeof(uint64_t)); i++)
+		auto* address = reinterpret_cast<uint64_t*>(ptr + Memory::s_physical_memory_offset);
+		for (size_t i = 0; i < num * (Memory::s_page_size / sizeof(uint64_t)); i++)
 		{
 			address[i] = 0x00;
 		}
@@ -118,7 +118,7 @@ namespace Kernel
 	{
 		s_spinlock.lock();
 
-		size_t page = reinterpret_cast<size_t>(ptr) / s_page_size;
+		size_t page = reinterpret_cast<size_t>(ptr) / Memory::s_page_size;
 		for (size_t i = page; i < page + num; i++)
 		{
 			s_bitmap.reset(i);
@@ -133,22 +133,24 @@ namespace Kernel
 
 		while (s_last_used_index < limit)
 		{
-			if (!s_bitmap.test(s_last_used_index++))
-			{
-				if (++p == num)
-				{
-					size_t page = s_last_used_index - num;
-					for (size_t i = page; i < s_last_used_index; i++)
-					{
-						s_bitmap.set(i);
-					}
-					return reinterpret_cast<void*>(page * s_page_size);
-				}
-			}
-			else
+			if (s_bitmap.test(s_last_used_index++))
 			{
 				p = 0;
+				continue;
 			}
+
+			if (++p != num)
+			{
+				continue;
+			}
+
+			size_t page = s_last_used_index - num;
+			for (size_t i = page; i < s_last_used_index; i++)
+			{
+				s_bitmap.set(i);
+			}
+
+			return reinterpret_cast<void*>(page * Memory::s_page_size);
 		}
 
 		return nullptr;

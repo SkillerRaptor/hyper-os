@@ -6,7 +6,6 @@
 
 #include <Kernel/Common/Logger.hpp>
 #include <Kernel/Common/Memory.hpp>
-#include <Kernel/Common/MMIO.hpp>
 #include <Kernel/Drivers/HPET.hpp>
 #include <Kernel/Interrupts/APIC.hpp>
 #include <Kernel/Interrupts/IDT.hpp>
@@ -20,7 +19,6 @@ namespace Kernel
 	{
 		Logger::info("APIC: Initializing...");
 
-		PIC::remap(0x20, 0x28);
 		PIC::disable();
 
 		for (size_t i = 0; i < MADT::ioapics().size(); ++i)
@@ -38,7 +36,6 @@ namespace Kernel
 				continue;
 			}
 
-			
 			io_apic_redirect_gsi(io_apic, iso->irq_source + 32, iso->global_system_interrupt, iso->flags, true);
 			if (iso->global_system_interrupt < 16)
 			{
@@ -68,24 +65,24 @@ namespace Kernel
 
 		IDT::set_handler(0xFF, IDT::HandlerType::Present | IDT::HandlerType::InterruptGate, APIC::lapic_spur_handler);
 
-		uint32_t spur = lapic_read(0xF0);
-		lapic_write(0xF0, spur | (1 << 8) | 0xFF);
+		uint32_t spurious_interrupt = lapic_read(s_spurious_interrupt_vector_register);
+		lapic_write(s_spurious_interrupt_vector_register, spurious_interrupt | (1 << 8) | 0xFF);
 
 		Logger::info("APIC: Initializing finished!");
 	}
 
 	void APIC::calibrate(uint64_t ms)
 	{
-		lapic_write(0x3E0, 0x3);
-		lapic_write(0x380, ~0);
+		lapic_write(s_divide_configuration_register, 0x3);
+		lapic_write(s_initial_count_register, ~0);
 
 		HPET::sleep(ms);
 
-		uint32_t ticks = ~0 - lapic_read(0x390);
+		uint32_t ticks = ~0 - lapic_read(s_current_count_register);
 
-		lapic_write(0x320, 32 | 0x20000);
-		lapic_write(0x3E0, 0x3);
-		lapic_write(0x380, ticks);
+		lapic_write(s_lvt_timer_register, 32 | 0x20000);
+		lapic_write(s_divide_configuration_register, 0x3);
+		lapic_write(s_initial_count_register, ticks);
 	}
 
 	void APIC::lapic_end_of_interrupt()
@@ -95,14 +92,14 @@ namespace Kernel
 
 	void APIC::lapic_write(uint32_t reg, uint32_t data)
 	{
-		auto* lapic_base = reinterpret_cast<__volatile__ uint32_t*>((CPU::read_msr(0x1B) & 0xFFFFF000) + s_physical_memory_offset + reg);
+		auto* lapic_base = reinterpret_cast<__volatile__ uint32_t*>((CPU::read_msr(s_ia32_apic_base_msr) & 0xFFFFF000) + Memory::s_physical_memory_offset + reg);
 		*lapic_base = data;
 	}
 
 	uint32_t APIC::lapic_read(uint32_t reg)
 	{
-		auto lapic_base = *reinterpret_cast<__volatile__ uint32_t*>((CPU::read_msr(0x1B) & 0xFFFFF000) + s_physical_memory_offset + reg);
-		if (lapic_base == 0x20)
+		auto lapic_base = *reinterpret_cast<__volatile__ uint32_t*>((CPU::read_msr(s_ia32_apic_base_msr) & 0xFFFFF000) + Memory::s_physical_memory_offset + reg);
+		if (lapic_base == s_lapic_id_register)
 		{
 			return lapic_base >> 24;
 		}
@@ -139,22 +136,6 @@ namespace Kernel
 		io_apic_write_redirection(io_apic, gsi, redirect);
 	}
 
-	void APIC::io_apic_redirect_irq(size_t lapic, uint8_t vector, uint32_t irq, bool status)
-	{
-		for (size_t i = 0; i < MADT::isos().size(); ++i)
-		{
-			MADT::ISO* iso = MADT::isos()[i];
-			if (iso->irq_source == irq)
-			{
-				Logger::debug("APIC: IRQ %u used by override", irq);
-				io_apic_redirect_gsi(lapic, vector, iso->global_system_interrupt, iso->flags, status);
-				return;
-			}
-		}
-
-		io_apic_redirect_gsi(lapic, vector, irq, 0, status);
-	}
-
 	ssize_t APIC::io_apic_from_redirect(uint32_t gsi)
 	{
 		for (size_t i = 0; i < MADT::ioapics().size(); ++i)
@@ -174,6 +155,14 @@ namespace Kernel
 		for (uint32_t i = MADT::ioapics()[io_apic]->global_system_interrupt_base; i < io_apic_max_gsi(io_apic); ++i)
 		{
 			io_apic_mask_gsi(io_apic, i);
+		}
+	}
+
+	void APIC::io_apic_unmask_all_gsi(size_t io_apic)
+	{
+		for (uint32_t i = MADT::ioapics()[io_apic]->global_system_interrupt_base; i < io_apic_max_gsi(io_apic); ++i)
+		{
+			io_apic_unmask_gsi(io_apic, i);
 		}
 	}
 
@@ -208,21 +197,20 @@ namespace Kernel
 
 	void APIC::io_apic_write(size_t io_apic, uint32_t reg, uint32_t data)
 	{
-		__volatile__ uint32_t* base = ioapic_get_base(io_apic);
+		__volatile__ uint32_t* base = io_apic_get_base(io_apic);
 		*(base + 0) = reg;
 		*(base + 4) = data;
 	}
 
 	uint32_t APIC::io_apic_read(size_t io_apic, uint32_t reg)
 	{
-		__volatile__ uint32_t* base = ioapic_get_base(io_apic);
+		__volatile__ uint32_t* base = io_apic_get_base(io_apic);
 		*(base + 0) = reg;
 		return *(base + 4);
 	}
 
-	__volatile__ uint32_t* APIC::ioapic_get_base(size_t io_apic)
+	__volatile__ uint32_t* APIC::io_apic_get_base(size_t io_apic)
 	{
-		return reinterpret_cast<__volatile__ uint32_t*>(
-			static_cast<uint64_t>(MADT::ioapics()[io_apic]->address) + s_physical_memory_offset);
+		return reinterpret_cast<__volatile__ uint32_t*>(static_cast<uint64_t>(MADT::ioapics()[io_apic]->address) + Memory::s_physical_memory_offset);
 	}
 } // namespace Kernel

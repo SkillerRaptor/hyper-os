@@ -13,7 +13,7 @@ namespace Kernel
 {
 	Painter::FramebufferData Painter::s_framebuffer_data{};
 	uint8_t* Painter::s_backbuffer{ nullptr };
-	
+
 	void Painter::initialize(stivale2_struct_tag_framebuffer* framebuffer_tag)
 	{
 		s_framebuffer_data.address = reinterpret_cast<uint8_t*>(framebuffer_tag->framebuffer_addr);
@@ -21,30 +21,25 @@ namespace Kernel
 		s_framebuffer_data.height = framebuffer_tag->framebuffer_height;
 		s_framebuffer_data.pitch = framebuffer_tag->framebuffer_pitch;
 		s_framebuffer_data.bpp = framebuffer_tag->framebuffer_bpp;
-		
+
 		s_backbuffer = new uint8_t[s_framebuffer_data.height * s_framebuffer_data.pitch];
 	}
-	
+
 	void Painter::cleanup()
 	{
 		delete[] s_backbuffer;
 	}
-	
+
 	void Painter::clear(const Color& color)
 	{
-		for (size_t y = 0; y < s_framebuffer_data.height; ++y)
-		{
-			const size_t screen_position_y = y * s_framebuffer_data.pitch;
-			for (size_t x = 0; x < s_framebuffer_data.width; ++x)
-			{
-				const size_t screen_position_x = x * (s_framebuffer_data.bpp / 8);
-				s_backbuffer[screen_position_x + screen_position_y + 0] = color.b;
-				s_backbuffer[screen_position_x + screen_position_y + 1] = color.g;
-				s_backbuffer[screen_position_x + screen_position_y + 2] = color.r;
-			}
-		}
+		Rect desktop_rect{};
+		desktop_rect.set_x(0);
+		desktop_rect.set_y(0);
+		desktop_rect.set_width(s_framebuffer_data.width);
+		desktop_rect.set_height(s_framebuffer_data.height);
+		draw_rect(desktop_rect, color);
 	}
-	
+
 	void Painter::draw_rect(const Rect& rect, const Color& color)
 	{
 		for (size_t y = rect.y(); y < rect.height(); ++y)
@@ -59,9 +54,9 @@ namespace Kernel
 			}
 		}
 	}
-	
+
 	void Painter::swap_buffers()
 	{
-		memcpy(s_framebuffer_data.address, s_backbuffer, s_framebuffer_data.height * s_framebuffer_data.pitch);
+		Memory::memcpy(s_framebuffer_data.address, s_backbuffer, s_framebuffer_data.height * s_framebuffer_data.pitch);
 	}
-}
+} // namespace Kernel

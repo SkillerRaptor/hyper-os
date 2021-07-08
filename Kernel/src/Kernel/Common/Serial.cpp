@@ -6,10 +6,13 @@
 
 #include <Kernel/Common/IoService.hpp>
 #include <Kernel/Common/Serial.hpp>
+#include <stdint.h>
 
-namespace Kernel
+namespace Kernel::Serial
 {
-	void Serial::initialize()
+	static constexpr const uint16_t s_serial_port = 0x03F8;
+
+	void initialize()
 	{
 		IoService::outb(s_serial_port + 1, 0x00);
 		IoService::outb(s_serial_port + 3, 0x80);
@@ -29,25 +32,26 @@ namespace Kernel
 		IoService::outb(s_serial_port + 4, 0x0F);
 	}
 
-	bool Serial::transmit_empty()
+	void write(char character)
 	{
-		return IoService::inb(s_serial_port + 5) & 0x20;
-	}
-
-	void Serial::write(char character)
-	{
-		while (Serial::transmit_empty() == 0)
+		__volatile__ uint64_t i_ = 0;
+		while ((IoService::inb(s_serial_port + 5) & 0x20) == 0)
 		{
+			__asm__ __volatile__(
+				""
+				: "+g"(i_)
+				:
+				:);
 		}
 
 		IoService::outb(s_serial_port, character);
 	}
 
-	void Serial::write(const char* string)
+	void write(const char* string)
 	{
 		while (*string)
 		{
-			Serial::write(*(string++));
+			write(*(string++));
 		}
 	}
-} // namespace Kernel
+} // namespace Kernel::Serial

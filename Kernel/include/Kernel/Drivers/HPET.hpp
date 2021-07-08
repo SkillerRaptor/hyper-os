@@ -7,6 +7,7 @@
 #pragma once
 
 #include <Kernel/System/ACPI.hpp>
+#include <stdint.h>
 
 namespace Kernel
 {

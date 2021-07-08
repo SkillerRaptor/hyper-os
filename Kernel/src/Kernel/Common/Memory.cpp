@@ -6,22 +6,21 @@
 
 #include <Kernel/Common/Memory.hpp>
 
-namespace Kernel
+namespace Kernel::Memory
 {
 	void* memset(void* destination, int value, size_t count)
 	{
 		auto* dest = reinterpret_cast<uint8_t*>(destination);
-		
+
 		__volatile__ uint64_t i_ = 0;
 		for (size_t i = 0; i < count; ++i)
 		{
 			__asm__ __volatile__(
 				""
-				: "+g" (i_)
+				: "+g"(i_)
 				:
-				:
-			);
-			
+				:);
+
 			dest[i] = static_cast<uint8_t>(value);
 		}
 
@@ -32,17 +31,16 @@ namespace Kernel
 	{
 		auto* dest = reinterpret_cast<uint8_t*>(destination);
 		const auto* src = reinterpret_cast<const uint8_t*>(source);
-		
+
 		__volatile__ uint64_t i_ = 0;
 		for (size_t i = 0; i < count; ++i)
 		{
 			__asm__ __volatile__(
 				""
-				: "+g" (i_)
+				: "+g"(i_)
 				:
-				:
-			);
-			
+				:);
+
 			dest[i] = src[i];
 		}
 
@@ -53,7 +51,7 @@ namespace Kernel
 	{
 		auto* dest = reinterpret_cast<uint8_t*>(destination);
 		const auto* src = reinterpret_cast<const uint8_t*>(source);
-		
+
 		__volatile__ uint64_t i_ = 0;
 		if (src > dest)
 		{
@@ -61,10 +59,9 @@ namespace Kernel
 			{
 				__asm__ __volatile__(
 					""
-					: "+g" (i_)
+					: "+g"(i_)
 					:
-					:
-				);
+					:);
 				dest[i] = src[i];
 			}
 		}
@@ -74,14 +71,13 @@ namespace Kernel
 			{
 				__asm__ __volatile__(
 					""
-					: "+g" (i_)
+					: "+g"(i_)
 					:
-					:
-				);
+					:);
 				dest[i - 1] = src[i - 1];
 			}
 		}
 
 		return dest;
 	}
-} // namespace Kernel
+} // namespace Kernel::Memory

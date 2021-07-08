@@ -10,6 +10,7 @@
 #include <Kernel/Common/Memory.hpp>
 #include <Kernel/Common/Serial.hpp>
 #include <Kernel/Drivers/HPET.hpp>
+#include <Kernel/Drivers/PCI.hpp>
 #include <Kernel/Graphics/Painter.hpp>
 #include <Kernel/Graphics/WindowManager.hpp>
 #include <Kernel/Interrupts/APIC.hpp>
@@ -32,8 +33,7 @@ namespace Kernel
 	{
 		Serial::initialize();
 
-		auto* firmware_tag = reinterpret_cast<stivale2_struct_tag_firmware*>(
-			stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_FIRMWARE_ID));
+		auto* firmware_tag = reinterpret_cast<stivale2_struct_tag_firmware*>(Stivale::get_tag(bootloader_data, STIVALE2_STRUCT_TAG_FIRMWARE_ID));
 
 		Logger::info(" _  _                     ___  ___    ");
 		Logger::info("| || |_  _ _ __  ___ _ _ / _ \\/ __|  ");
@@ -53,8 +53,7 @@ namespace Kernel
 		PIC::remap(0x20, 0x28);
 		IDT::initialize();
 
-		auto* memory_map_tag = reinterpret_cast<stivale2_struct_tag_memmap*>(
-			stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_MEMMAP_ID));
+		auto* memory_map_tag = reinterpret_cast<stivale2_struct_tag_memmap*>(Stivale::get_tag(bootloader_data, STIVALE2_STRUCT_TAG_MEMMAP_ID));
 		PhysicalMemoryManager::initialize(memory_map_tag->memmap, memory_map_tag->entries);
 		VirtualMemoryManager::initialize(memory_map_tag->memmap, memory_map_tag->entries);
 
@@ -63,24 +62,23 @@ namespace Kernel
 			(*constructor)();
 		}
 
-		auto* rsdp_tag =
-			reinterpret_cast<stivale2_struct_tag_rsdp*>(stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_RSDP_ID));
+		auto* rsdp_tag = reinterpret_cast<stivale2_struct_tag_rsdp*>(Stivale::get_tag(bootloader_data, STIVALE2_STRUCT_TAG_RSDP_ID));
 
-		ACPI::initialize(reinterpret_cast<ACPI::RSDP*>(rsdp_tag->rsdp + s_physical_memory_offset));
+		ACPI::initialize(reinterpret_cast<ACPI::RSDP*>(rsdp_tag->rsdp + Memory::s_physical_memory_offset));
 		APIC::initialize();
 		HPET::initialize();
 
 		APIC::calibrate(100);
 
-		auto* smp_tag =
-			reinterpret_cast<stivale2_struct_tag_smp*>(stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_SMP_ID));
+		PCI::initialize();
+
+		auto* smp_tag = reinterpret_cast<stivale2_struct_tag_smp*>(Stivale::get_tag(bootloader_data, STIVALE2_STRUCT_TAG_SMP_ID));
 
 		SMP::initialize(smp_tag);
 		Scheduler::initialize();
-		
-		auto* framebuffer_tag = reinterpret_cast<stivale2_struct_tag_framebuffer*>(
-			stivale2_get_tag(bootloader_data, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID));
-		
+
+		auto* framebuffer_tag = reinterpret_cast<stivale2_struct_tag_framebuffer*>(Stivale::get_tag(bootloader_data, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID));
+
 		Painter::initialize(framebuffer_tag);
 
 		pid_t pid = Scheduler::create_task(-1, nullptr);
@@ -99,19 +97,19 @@ namespace Kernel
 	void kernel_thread()
 	{
 		Logger::info("Kernel thread successfully started!");
-		
+
 		Window demo_window("Demo", { 50, 50, 960, 540 });
 		WindowManager::add_window(demo_window);
-		
+
 		while (true)
 		{
 			// Handle Events
-			
+
 			Painter::clear(Painter::s_desktop_color);
 			WindowManager::draw_windows();
 			Painter::swap_buffers();
 		}
-		
+
 		Painter::cleanup();
 	}
 } // namespace Kernel

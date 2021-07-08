@@ -6,101 +6,93 @@
 
 #include <Kernel/Common/MMIO.hpp>
 
-namespace Kernel
+namespace Kernel::MMIO
 {
-	void MMIO::outb(void* address, uint8_t value)
+	void outb(uint8_t* address, uint8_t value)
 	{
 		__asm__ __volatile__(
 			"mov %0, %1"
-			: "=m"(*reinterpret_cast<uint8_t*>(address))
+			: "=m"(*address)
 			: "r"(value)
-			: "memory"
-		);
+			: "memory");
 	}
-	
-	uint8_t MMIO::inb(void* address)
+
+	uint8_t inb(const uint8_t* address)
 	{
-		uint8_t return_value = 0;
-		
+		uint8_t return_value;
+
 		__asm__ __volatile__(
 			"mov %0, %1"
 			: "=r"(return_value)
-			: "m"(*reinterpret_cast<uint8_t*>(address))
-			: "memory"
-		);
-		
+			: "m"(*address)
+			: "memory");
+
 		return return_value;
 	}
-	
-	void MMIO::outw(void* address, uint16_t value)
+
+	void outw(uint16_t* address, uint16_t value)
 	{
 		__asm__ __volatile__(
 			"mov %0, %1"
-			: "=m"(*reinterpret_cast<uint16_t*>(address))
+			: "=m"(*address)
 			: "r"(value)
-			: "memory"
-		);
+			: "memory");
 	}
-	
-	uint16_t MMIO::inw(void* address)
+
+	uint16_t inw(const uint16_t* address)
 	{
-		uint16_t return_value = 0;
-		
+		uint16_t return_value;
+
 		__asm__ __volatile__(
 			"mov %0, %1"
 			: "=r"(return_value)
-			: "m"(*reinterpret_cast<uint16_t*>(address))
-			: "memory"
-		);
-		
+			: "m"(*address)
+			: "memory");
+
 		return return_value;
 	}
-	
-	void MMIO::outd(void* address, uint32_t value)
+
+	void outd(uint32_t* address, uint32_t value)
 	{
 		__asm__ __volatile__(
 			"mov %0, %1"
-			: "=m"(*reinterpret_cast<uint32_t*>(address))
+			: "=m"(*address)
 			: "r"(value)
-			: "memory"
-		);
+			: "memory");
 	}
-	
-	uint32_t MMIO::ind(void* address)
+
+	uint32_t ind(const uint32_t* address)
 	{
-		uint32_t return_value = 0;
-		
+		uint32_t return_value;
+
 		__asm__ __volatile__(
 			"mov %0, %1"
 			: "=r"(return_value)
-			: "m"(*reinterpret_cast<uint32_t*>(address))
-			: "memory"
-		);
-		
+			: "m"(*address)
+			: "memory");
+
 		return return_value;
 	}
-	
-	void MMIO::outq(void* address, uint64_t value)
+
+	void outq(uint64_t* address, uint64_t value)
 	{
 		__asm__ __volatile__(
-		"mov %0, %1"
-		: "=m"(*reinterpret_cast<uint64_t*>(address))
-		: "r"(value)
-		: "memory"
-		);
+			"mov %0, %1"
+			: "=m"(*address)
+			: "r"(value)
+			: "memory");
 	}
-	
-	uint64_t MMIO::inq(void* address)
+
+	uint64_t inq(const uint64_t* address)
 	{
-		uint64_t return_value = 0;
-		
+		uint64_t return_value;
+
 		__asm__ __volatile__(
-		"mov %0, %1"
-		: "=r"(return_value)
-		: "m"(*reinterpret_cast<uint64_t*>(address))
-		: "memory"
-		);
-		
+			"mov %0, %1"
+			: "=r"(return_value)
+			: "m"(*address)
+			: "memory");
+
 		return return_value;
 	}
-}
+} // namespace Kernel::MMIO
