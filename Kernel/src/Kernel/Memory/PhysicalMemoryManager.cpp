@@ -23,7 +23,7 @@ namespace Kernel
 		for (size_t i = 0; i < memory_map_entries; ++i)
 		{
 			Logger::debug(
-				"[Entry %d] [0x%X - 0x%X]: Size: 0x%X - Type: 0x%X",
+				"PMM: Entry %02u - Range: (0x%X - 0x%X), Size: (0x%X), Type: (0x%X)",
 				i,
 				memory_map[i].base,
 				memory_map[i].base + memory_map[i].length,
