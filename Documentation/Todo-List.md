@@ -5,6 +5,7 @@ The list has no particular order. The things will be done in random order.
 
 ## Todo
 - [ ] AHCI (Advanced Host Controller Interface)
+- [ ] XHCI (Extensible Host Controller Interface)
 - [ ] Filesystem (ext2)
 - [ ] NVMe (Non-Volatile Memory express)
 - [ ] PCI (Peripheral Component Interconnect)
