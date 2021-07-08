@@ -8,7 +8,6 @@ The list has no particular order. The things will be done in random order.
 - [ ] XHCI (Extensible Host Controller Interface)
 - [ ] Filesystem (ext2)
 - [ ] NVMe (Non-Volatile Memory express)
-- [ ] PCI (Peripheral Component Interconnect)
 - [ ] PS/2 Keyboard
 - [ ] PS/2 Mouse
 - [ ] RTC (Real Time Clock)
@@ -28,6 +27,7 @@ The list has no particular order. The things will be done in random order.
 - [x] Basic GUI
 - [x] GDT (Global Descriptor Table)
 - [x] IDT (Interrupt Descriptor Table)
+- [x] PCI (Peripheral Component Interconnect)
 - [x] PIC (Programmable Interrupt Controller)
 - [x] PMM (Physical Memory Manager)
 - [x] Scheduler
