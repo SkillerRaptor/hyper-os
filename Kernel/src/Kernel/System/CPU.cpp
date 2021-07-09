@@ -21,7 +21,7 @@ namespace Kernel
 
 		VirtualMemoryManager::switch_page_map(VirtualMemoryManager::kernel_page_map());
 
-		write_kernel_gs(reinterpret_cast<uintptr_t>(smp_info->extra_argument));
+		CPU::write_kernel_gs(reinterpret_cast<uintptr_t>(smp_info->extra_argument));
 
 		APIC::calibrate(100);
 		uint32_t spur = APIC::lapic_read(0xF0);
@@ -66,12 +66,12 @@ namespace Kernel
 
 	void CPU::write_kernel_gs(uintptr_t address)
 	{
-		write_msr(0xC0000101, address);
+		CPU::write_msr(0xC0000101, address);
 	}
 
 	uintptr_t CPU::read_kernel_gs()
 	{
-		return read_msr(0xC0000101);
+		return CPU::read_msr(0xC0000101);
 	}
 
 	Optional<CpuId> CPU::cpu_id(uint32_t leaf, uint32_t sub_leaf)

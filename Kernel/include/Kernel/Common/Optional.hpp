@@ -34,12 +34,12 @@ namespace Kernel
 
 		constexpr T&& value() &&
 		{
-			return move(m_value);
+			return Utilities::move(m_value);
 		}
 
 		constexpr const T&& value() const&&
 		{
-			return move(m_value);
+			return Utilities::move(m_value);
 		}
 
 		template <class U>
@@ -47,10 +47,10 @@ namespace Kernel
 		{
 			if (!m_has_value)
 			{
-				return static_cast<T>(forward<U>(default_value));
+				return static_cast<T>(Utilities::forward<U>(default_value));
 			}
 
-			return move(m_value);
+			return Utilities::move(m_value);
 		}
 
 		template <class U>
@@ -58,7 +58,7 @@ namespace Kernel
 		{
 			if (!m_has_value)
 			{
-				return static_cast<T>(forward<U>(default_value));
+				return static_cast<T>(Utilities::forward<U>(default_value));
 			}
 
 			return m_value;
