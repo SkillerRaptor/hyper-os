@@ -117,6 +117,58 @@ namespace Kernel
 
 		return device;
 	}
+	
+	Optional<PCI::Bar> PCI::get_bar(const Device& device, size_t index)
+	{
+		if (PCI::get_header_type(device.bus, device.device_code, device.function) != 0x00)
+		{
+			return {};
+		}
+		
+		if (index > 5)
+		{
+			return {};
+		}
+		
+		uint8_t bar_table_offset = 0x10 + index * 0x04;
+		
+		uint32_t bar_low = PCI::read(device, bar_table_offset);
+		PCI::write(device, bar_table_offset, ~0);
+		
+		size_t bar_size_low = PCI::read(device, bar_table_offset);
+		PCI::write(device, bar_table_offset, bar_low);
+		
+		bool is_mmio = !(bar_low & 1);
+		if (((bar_low >> 1) & 0b11) == 0b10)
+		{
+			uint32_t bar_high = PCI::read(device, bar_table_offset + 4);
+			PCI::write(device, bar_table_offset + 4, ~0);
+			
+			uint32_t bar_size_high = PCI::read(device, bar_table_offset + 4);
+			PCI::write(device, bar_table_offset + 4, bar_high);
+			
+			size_t size = ((static_cast<uint64_t>(bar_size_high) << 32) | bar_size_low) & ~(is_mmio ? 0b1111 : 0b11);
+			size = ~size + 1;
+			
+			size_t base = ((static_cast<uint64_t>(bar_high) << 32) | bar_low) & ~(is_mmio ? 0b1111 : 0b11);
+			return Bar{ base, size };
+		}
+		
+		size_t size = bar_size_low & (is_mmio ? 0b1111 : 0b11);
+		size = ~size + 1;
+		
+		return Bar{ bar_low, size };
+	}
+	
+	void PCI::become_bus_master(const PCI::Device& device)
+	{
+		PCI::write(device, 0x04, PCI::read(device, 0x04) | (1 << 2));
+	}
+	
+	void PCI::enable_mmio(const PCI::Device& device)
+	{
+		PCI::write(device, 0x04, PCI::read(device, 0x04) | (1 << 1));
+	}
 
 	uint16_t PCI::get_device_id(uint8_t bus, uint8_t device_code, uint8_t function)
 	{
@@ -152,6 +204,11 @@ namespace Kernel
 	{
 		return static_cast<uint8_t>(PCI::read(bus, device_code, function, 0x18) >> 8);
 	}
+	
+	void PCI::write(const PCI::Device& device, uint8_t offset, uint32_t data)
+	{
+		PCI::write(device.bus, device.device_code, device.function, offset, data);
+	}
 
 	void PCI::write(uint8_t bus, uint8_t device_code, uint8_t function, uint8_t offset, uint32_t data)
 	{
@@ -164,6 +221,11 @@ namespace Kernel
 
 		IoService::outd(s_config_address, value);
 		IoService::outd(s_config_data, data);
+	}
+	
+	uint32_t PCI::read(const PCI::Device& device, uint8_t offset)
+	{
+		return PCI::read(device.bus, device.device_code, device.function, offset);
 	}
 
 	uint32_t PCI::read(uint8_t bus, uint8_t device_code, uint8_t function, uint8_t offset)

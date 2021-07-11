@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <Kernel/Common/Optional.hpp>
 #include <Kernel/Common/Vector.hpp>
 #include <stdint.h>
 
@@ -27,14 +28,27 @@ namespace Kernel
 			uint8_t prog_if;
 		};
 		
+		struct Bar
+		{
+			uintptr_t base;
+			size_t size;
+		};
+		
 	private:
 		static constexpr const uint16_t s_config_address = 0xCF8;
 		static constexpr const uint16_t s_config_data = 0xCFC;
 
 	public:
 		static void initialize();
-
+		
+		static Optional<Bar> get_bar(const Device& device, size_t index);
+		
+		static void become_bus_master(const Device& device);
+		static void enable_mmio(const Device& device);
+		
+		static void write(const Device& device, uint8_t offset, uint32_t data);
 		static void write(uint8_t bus, uint8_t device_code, uint8_t function, uint8_t offset, uint32_t data);
+		static uint32_t read(const Device& device, uint8_t offset);
 		static uint32_t read(uint8_t bus, uint8_t device_code, uint8_t function, uint8_t offset);
 
 	private:
