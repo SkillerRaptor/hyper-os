@@ -54,6 +54,7 @@ jobs:
             cmake \
             gcc-10 \
             g++-10 \
+            nasm \
             xorriso
 
       - name: Configure CMake
