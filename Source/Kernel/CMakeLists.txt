@@ -48,6 +48,11 @@ target_link_options(
         -static
         -z max-page-size=0x1000)
 
+#-------------------------------------------------------------------------------------------
+# Boot
+#-------------------------------------------------------------------------------------------
+file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/Boot)
+
 add_custom_command(
         TARGET Kernel
         POST_BUILD

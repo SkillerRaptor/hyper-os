@@ -1,7 +1,7 @@
 #!/bin/bash
 
 script_path="$(dirname "$(realpath "$0")")"
-boot_path=$script_path/../../Boot
+boot_path=$script_path/../Boot
 
 dd if=/dev/zero bs=1M count=0 seek=128 of=$boot_path/nvme.img
 dd if=/dev/zero bs=1M count=0 seek=128 of=$boot_path/usb.img
