@@ -1,5 +1,4 @@
 # HyperEngine
-[![Build](https://img.shields.io/github/workflow/status/SkillerRaptor/HyperEngine/build?style=flat&label=Build&logo=github)](https://github.com/SkillerRaptor/HyperEngine/blob/master/.github/workflows/build.yml)
 [![License](https://img.shields.io/badge/license-MIT-yellow?style=flat)](https://github.com/SkillerRaptor/HyperEngine/blob/master/LICENSE)
 
 This repository contains the source code of the HyperOS.
