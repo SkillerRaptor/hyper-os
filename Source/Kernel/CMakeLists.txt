@@ -55,6 +55,6 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy ${LIMINE_PATH}/limine-eltorito-efi.bin ${CMAKE_SOURCE_DIR}/Boot
         COMMAND ${CMAKE_COMMAND} -E copy ${LIMINE_PATH}/limine.sys ${CMAKE_SOURCE_DIR}/Boot
         COMMAND ${CMAKE_COMMAND} -E copy ${LIMINE_PATH}/limine-install-linux-x86_64 ${CMAKE_SOURCE_DIR}/Boot
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/src/boot/limine.cfg ${CMAKE_SOURCE_DIR}/Boot
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/src/Boot/limine.cfg ${CMAKE_SOURCE_DIR}/Boot
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Kernel> ${CMAKE_SOURCE_DIR}/Boot
         COMMAND /bin/sh ${CMAKE_SOURCE_DIR}/Source/Scripts/Build_Image.sh)
