@@ -1,10 +1,6 @@
-
-[submodule "ThirdParty/echfs"]
-	path = ThirdParty/echfs
-	url = https://github.com/echfs/echfs
-[submodule "ThirdParty/limine"]
-	path = ThirdParty/limine
+[submodule "Source/ThirdParty/limine"]
+	path = Source/ThirdParty/limine
 	url = https://github.com/limine-bootloader/limine
-[submodule "ThirdParty/stivale"]
-	path = ThirdParty/stivale
+[submodule "Source/ThirdParty/stivale"]
+	path = Source/ThirdParty/stivale
 	url = https://github.com/stivale/stivale
