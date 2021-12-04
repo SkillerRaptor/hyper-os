@@ -42,7 +42,7 @@ target_compile_options(
 target_link_options(
         Kernel
         PRIVATE
-        -T ${CMAKE_CURRENT_SOURCE_DIR}/src/Boot/Linker.ld
+        -T ${CMAKE_CURRENT_SOURCE_DIR}/src/Boot/linker.ld
         -nostdlib
         -no-pie
         -static
