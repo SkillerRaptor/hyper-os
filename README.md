@@ -1,5 +1,5 @@
-# HyperEngine
-[![License](https://img.shields.io/badge/license-MIT-yellow?style=flat)](https://github.com/SkillerRaptor/HyperEngine/blob/master/LICENSE)
+# HyperOS
+[![License](https://img.shields.io/badge/license-MIT-yellow?style=flat)](https://github.com/SkillerRaptor/HyperOS/blob/master/LICENSE)
 
 This repository contains the source code of the HyperOS.
 Anyone is welcome to contribute or use the source of the HyperOS.
@@ -21,4 +21,4 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 Please make sure to update tests as appropriate.
 
 ## License
-HyperEngine is distributed under the [MIT](https://github.com/SkillerRaptor/HyperOS/blob/master/LICENSE) license.
+HyperOS is distributed under the [MIT](https://github.com/SkillerRaptor/HyperOS/blob/master/LICENSE) license.
