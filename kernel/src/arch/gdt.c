@@ -64,7 +64,7 @@ static void gdt_create_entry(
 	entry->base_high = (uint8_t) ((base & 0xFF000000) >> 24);
 }
 
-void gdt_init()
+void gdt_init(void)
 {
 	gdt_create_entry(
 		&s_table.null_entry,
@@ -127,7 +127,7 @@ void gdt_init()
 	gdt_load();
 }
 
-void gdt_load()
+void gdt_load(void)
 {
 	__asm __volatile__("lgdt %0\n"
 										 "push %%rbp\n"

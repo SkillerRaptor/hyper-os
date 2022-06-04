@@ -9,10 +9,17 @@
 #-------------------------------------------------------------------------------------------
 set(SOURCES
 		src/main.c
-		src/arch/gdt.c)
+		src/arch/gdt.c
+		src/arch/idt.c
+		src/arch/interrupts.asm
+		src/arch/io.c
+		src/arch/pic.c)
 
 set(HEADERS
-		include/arch/gdt.h)
+		include/arch/gdt.h
+		include/arch/idt.h
+		include/arch/io.h
+		include/arch/pic.h)
 
 add_executable(kernel ${SOURCES} ${HEADERS})
 target_include_directories(kernel PRIVATE include)

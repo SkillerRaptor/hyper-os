@@ -6,8 +6,5 @@
 
 #pragma once
 
-#define KERNEL_CODE_SELECTOR 0x28
-#define KERNEL_DATA_SELECTOR 0x30
-
-void gdt_init(void);
-void gdt_load(void);
+void idt_init(void);
+void idt_load(void);
