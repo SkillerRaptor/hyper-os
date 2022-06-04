@@ -8,10 +8,11 @@
 # Kernel
 #-------------------------------------------------------------------------------------------
 set(SOURCES
-		src/main.c)
+		src/main.c
+		src/arch/gdt.c)
 
 set(HEADERS
-		)
+		include/arch/gdt.h)
 
 add_executable(kernel ${SOURCES} ${HEADERS})
 target_include_directories(kernel PRIVATE include)

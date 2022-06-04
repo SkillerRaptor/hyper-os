@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "arch/gdt.h"
+
 #include <limine.h>
 #include <stddef.h>
 
@@ -14,6 +16,8 @@ static volatile struct limine_terminal_request s_terminal_request = {
 
 __attribute__((noreturn)) void kernel_main(void)
 {
+	gdt_init();
+
 	struct limine_terminal_response *response = s_terminal_request.response;
 	if (response != NULL && response->terminal_count >= 1)
 	{
