@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "arch/acpi.h"
 #include "arch/gdt.h"
 #include "arch/idt.h"
 #include "arch/pic.h"
@@ -23,6 +24,8 @@ __attribute__((noreturn)) void kernel_main(void)
 
 	pmm_init();
 	vmm_init();
+
+	acpi_init();
 
 	logger_info("HyperOS booted successfully");
 

@@ -9,6 +9,7 @@
 #-------------------------------------------------------------------------------------------
 set(SOURCES
 		src/main.c
+		src/arch/acpi.c
 		src/arch/boot.c
 		src/arch/gdt.c
 		src/arch/idt.c
@@ -24,6 +25,7 @@ set(SOURCES
 		src/memory/vmm.c)
 
 set(HEADERS
+		include/arch/acpi.h
 		include/arch/boot.h
 		include/arch/gdt.h
 		include/arch/idt.h

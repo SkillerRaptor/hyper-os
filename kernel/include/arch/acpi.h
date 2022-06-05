@@ -8,5 +8,5 @@
 
 #include <stddef.h>
 
-size_t strlen(const char *string);
-int strncmp(const char *string1, const char *string2, size_t count);
+void acpi_init(void);
+void *acpi_find_sdt(const char *signature, size_t index);
