@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "common/logger.h"
+#include "lib/logger.h"
 
 #include "arch/boot.h"
 #include "lib/string.h"

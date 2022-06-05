@@ -7,7 +7,7 @@
 #include "arch/pic.h"
 
 #include "arch/io.h"
-#include "common/logger.h"
+#include "lib/logger.h"
 
 #define MASTER_COMMAND_SELECTOR 0x20
 #define MASTER_DATA_SELECTOR 0x21

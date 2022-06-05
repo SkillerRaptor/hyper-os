@@ -15,8 +15,11 @@ set(SOURCES
 		src/arch/interrupts.asm
 		src/arch/io.c
 		src/arch/pic.c
-		src/common/logger.c
-		src/lib/string.c)
+		src/lib/logger.c
+		src/lib/memory.c
+		src/lib/string.c
+		src/memory/bitmap.c
+		src/memory/pmm.c)
 
 set(HEADERS
 		include/arch/boot.h
@@ -24,8 +27,12 @@ set(HEADERS
 		include/arch/idt.h
 		include/arch/io.h
 		include/arch/pic.h
-		include/common/logger.h
-		include/lib/string.h)
+		include/lib/logger.h
+		include/lib/math.h
+		include/lib/memory.h
+		include/lib/string.h
+		include/memory/bitmap.h
+		include/memory/pmm.h)
 
 add_executable(kernel ${SOURCES} ${HEADERS})
 target_include_directories(kernel PRIVATE include)

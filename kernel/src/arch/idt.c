@@ -7,7 +7,7 @@
 #include "arch/idt.h"
 
 #include "arch/gdt.h"
-#include "common/logger.h"
+#include "lib/logger.h"
 
 #include <stddef.h>
 #include <stdint.h>
