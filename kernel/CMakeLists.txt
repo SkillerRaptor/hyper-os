@@ -19,7 +19,9 @@ set(SOURCES
 		src/lib/memory.c
 		src/lib/string.c
 		src/memory/bitmap.c
-		src/memory/pmm.c)
+		src/memory/kmalloc.c
+		src/memory/pmm.c
+		src/memory/vmm.c)
 
 set(HEADERS
 		include/arch/boot.h
@@ -32,7 +34,9 @@ set(HEADERS
 		include/lib/memory.h
 		include/lib/string.h
 		include/memory/bitmap.h
-		include/memory/pmm.h)
+		include/memory/kmalloc.h
+		include/memory/pmm.h
+		include/memory/vmm.h)
 
 add_executable(kernel ${SOURCES} ${HEADERS})
 target_include_directories(kernel PRIVATE include)

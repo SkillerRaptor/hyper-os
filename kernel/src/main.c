@@ -9,6 +9,7 @@
 #include "arch/pic.h"
 #include "lib/logger.h"
 #include "memory/pmm.h"
+#include "memory/vmm.h"
 
 #include <stddef.h>
 
@@ -21,6 +22,7 @@ __attribute__((noreturn)) void kernel_main(void)
 	idt_init();
 
 	pmm_init();
+	vmm_init();
 
 	logger_info("HyperOS booted successfully");
 

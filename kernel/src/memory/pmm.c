@@ -144,3 +144,8 @@ void pmm_free(void *ptr, size_t page_count)
 		bitmap_set(&s_bitmap, i, false);
 	}
 }
+
+size_t pmm_get_hhdm_offset()
+{
+	return s_memory_offset;
+}

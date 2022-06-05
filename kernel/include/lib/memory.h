@@ -11,4 +11,5 @@
 #define BYTE_SIZE 8
 #define PAGE_SIZE 4096
 
+void *memcpy(void *destination, const void *source, size_t count);
 void *memset(void *destination, int value, size_t count);
