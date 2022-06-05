@@ -7,6 +7,7 @@
 #include "arch/idt.h"
 
 #include "arch/gdt.h"
+#include "common/logger.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -58,15 +59,15 @@ void idt_init(void)
 	for (size_t i = 0; i < 256; i++)
 	{
 		idt_register_interrupt_handler(
-			i,
-			interrupt_handlers[i],
-			ATTRIBUTE_PRESENT | ATTRIBUTE_INTERRUPT_GATE);
+			i, interrupt_handlers[i], ATTRIBUTE_PRESENT | ATTRIBUTE_INTERRUPT_GATE);
 	}
 
 	s_descriptor.size = sizeof(s_entries) - 1;
 	s_descriptor.address = (uintptr_t) s_entries;
 
 	idt_load();
+
+	logger_info("Initialized IDT");
 }
 
 void idt_load(void)
@@ -77,6 +78,7 @@ void idt_load(void)
 
 void idt_raise(size_t interrupt)
 {
+	logger_error("Unhandled interrupt 0x%02x", interrupt);
 	for (;;)
 	{
 		__asm__ __volatile__("cli");

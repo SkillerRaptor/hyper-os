@@ -6,6 +6,8 @@
 
 #include "arch/gdt.h"
 
+#include "common/logger.h"
+
 #include <stdint.h>
 
 #define ACCESS_ATTRIBUTE_NULL 0x00
@@ -125,6 +127,8 @@ void gdt_init(void)
 	s_descriptor.address = (uintptr_t) &s_table;
 
 	gdt_load();
+
+	logger_info("Initialized GDT");
 }
 
 void gdt_load(void)

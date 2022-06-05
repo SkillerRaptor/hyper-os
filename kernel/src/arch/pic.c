@@ -7,6 +7,7 @@
 #include "arch/pic.h"
 
 #include "arch/io.h"
+#include "common/logger.h"
 
 #define MASTER_COMMAND_SELECTOR 0x20
 #define MASTER_DATA_SELECTOR 0x21
@@ -44,4 +45,6 @@ void pic_remap(void)
 	io_wait();
 	io_out8(SLAVE_DATA_SELECTOR, ICW1_8086);
 	io_wait();
+
+	logger_info("Remapped PIC");
 }
