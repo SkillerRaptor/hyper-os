@@ -32,8 +32,8 @@ struct Descriptor
 	uint64_t address;
 } __attribute__((packed));
 
-static struct Entry s_entries[256];
-static struct Descriptor s_descriptor;
+static struct Entry s_entries[256] = { 0 };
+static struct Descriptor s_descriptor = { 0 };
 
 extern void *interrupt_handlers[];
 

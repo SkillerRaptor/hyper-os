@@ -156,7 +156,7 @@ void logger_init()
 		return;
 	}
 
-	if (terminal_response->terminal_count < 1)
+	if (terminal_response->terminal_count == 0)
 	{
 		return;
 	}

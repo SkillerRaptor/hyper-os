@@ -6,7 +6,7 @@
 
 #pragma once
 
-void logger_init();
+void logger_init(void);
 
 void logger_info(const char *format, ...);
 void logger_warning(const char *format, ...);

@@ -47,8 +47,8 @@ struct Descriptor
 	uint64_t address;
 } __attribute__((packed));
 
-static struct Table s_table;
-static struct Descriptor s_descriptor;
+static struct Table s_table = { 0 };
+static struct Descriptor s_descriptor = { 0 };
 
 static void gdt_create_entry(
 	struct Entry *entry,
