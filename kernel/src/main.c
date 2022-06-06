@@ -19,6 +19,12 @@ __attribute__((noreturn)) void kernel_main(void)
 
 	gdt_init();
 	pic_remap();
+
+	for (uint8_t i = 0; i < 16; ++i)
+	{
+		pic_set_interrupt_request_mask(i);
+	}
+
 	idt_init();
 
 	pmm_init();
