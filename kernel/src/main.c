@@ -7,6 +7,7 @@
 #include "arch/acpi.h"
 #include "arch/gdt.h"
 #include "arch/idt.h"
+#include "arch/madt.h"
 #include "arch/pic.h"
 #include "lib/logger.h"
 #include "memory/pmm.h"
@@ -26,6 +27,7 @@ __attribute__((noreturn)) void kernel_main(void)
 	vmm_init();
 
 	acpi_init();
+	madt_init();
 
 	logger_info("HyperOS booted successfully");
 

@@ -15,6 +15,7 @@ set(SOURCES
 		src/arch/idt.c
 		src/arch/interrupts.asm
 		src/arch/io.c
+		src/arch/madt.c
 		src/arch/pic.c
 		src/lib/logger.c
 		src/lib/memory.c
@@ -30,11 +31,13 @@ set(HEADERS
 		include/arch/gdt.h
 		include/arch/idt.h
 		include/arch/io.h
+		include/arch/madt.h
 		include/arch/pic.h
 		include/lib/logger.h
 		include/lib/math.h
 		include/lib/memory.h
 		include/lib/string.h
+		include/lib/vector.h
 		include/memory/bitmap.h
 		include/memory/kmalloc.h
 		include/memory/pmm.h
