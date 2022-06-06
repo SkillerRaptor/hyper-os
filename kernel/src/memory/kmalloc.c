@@ -28,7 +28,7 @@ void *kmalloc(size_t size)
 		return NULL;
 	}
 
-	ptr = ptr + pmm_get_hhdm_offset();
+	ptr = ptr + pmm_get_memory_offset();
 
 	struct allocation_header *header = (struct allocation_header *) ptr;
 	ptr = ptr + PAGE_SIZE;
@@ -82,5 +82,5 @@ void kfree(void *ptr)
 		(struct allocation_header *) header_address;
 
 	const size_t page_count = header->page_count + 1;
-	pmm_free((void *) (header_address - pmm_get_hhdm_offset()), page_count);
+	pmm_free((void *) (header_address - pmm_get_memory_offset()), page_count);
 }

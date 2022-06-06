@@ -7,6 +7,7 @@
 #include "memory/pmm.h"
 
 #include "arch/boot.h"
+#include "lib/assert.h"
 #include "lib/logger.h"
 #include "lib/math.h"
 #include "lib/memory.h"
@@ -20,16 +21,14 @@ static struct bitmap s_bitmap = { 0 };
 
 void pmm_init(void)
 {
-	struct limine_memmap_response *memory_map_response = boot_get_memory_map();
-	if (memory_map_response == NULL)
-	{
-		return;
-	}
+	struct limine_hhdm_response *hhdm_response = boot_get_hhdm();
+	assert(hhdm_response != NULL);
 
-	if (memory_map_response->entry_count == 0)
-	{
-		return;
-	}
+	s_memory_offset = hhdm_response->offset;
+
+	struct limine_memmap_response *memory_map_response = boot_get_memory_map();
+	assert(memory_map_response != NULL);
+	assert(memory_map_response->entry_count != 0);
 
 	struct limine_memmap_entry **memory_map = memory_map_response->entries;
 	for (size_t i = 0; i < memory_map_response->entry_count; ++i)
@@ -46,14 +45,6 @@ void pmm_init(void)
 		}
 	}
 
-	struct limine_hhdm_response *hhdm_response = boot_get_hhdm();
-	if (hhdm_response == NULL)
-	{
-		return;
-	}
-
-	s_memory_offset = hhdm_response->offset;
-
 	s_bitmap.size = DIV_ROUND_UP(s_highest_page, PAGE_SIZE) / BYTE_SIZE;
 	for (size_t i = 0; i < memory_map_response->entry_count; ++i)
 	{
@@ -66,9 +57,9 @@ void pmm_init(void)
 		{
 			s_bitmap.data = (uint8_t *) (memory_map[i]->base + s_memory_offset);
 
-			bitmap_fill(&s_bitmap, 0xff),
+			bitmap_fill(&s_bitmap, 0xff);
 
-				memory_map[i]->base += s_bitmap.size;
+			memory_map[i]->base += s_bitmap.size;
 			memory_map[i]->length -= s_bitmap.size;
 
 			break;
@@ -93,6 +84,8 @@ void pmm_init(void)
 
 void *pmm_alloc(size_t page_count)
 {
+	assert(page_count != 0);
+
 	size_t current_page_count = 0;
 	for (size_t i = 0; i < s_bitmap.size * BYTE_SIZE; ++i)
 	{
@@ -120,6 +113,8 @@ void *pmm_alloc(size_t page_count)
 
 void *pmm_calloc(size_t page_count)
 {
+	assert(page_count != 0);
+
 	void *ptr = pmm_alloc(page_count);
 	if (ptr == NULL)
 	{
@@ -137,6 +132,9 @@ void *pmm_calloc(size_t page_count)
 
 void pmm_free(void *ptr, size_t page_count)
 {
+	assert(ptr != NULL);
+	assert(page_count != 0);
+
 	const uintptr_t page_address = (uintptr_t) ptr;
 	const size_t page = page_address / PAGE_SIZE;
 	for (size_t i = page; i < page + page_count; ++i)
@@ -145,7 +143,7 @@ void pmm_free(void *ptr, size_t page_count)
 	}
 }
 
-size_t pmm_get_hhdm_offset()
+size_t pmm_get_memory_offset()
 {
 	return s_memory_offset;
 }

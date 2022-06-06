@@ -7,6 +7,7 @@
 #include "arch/madt.h"
 
 #include "arch/acpi.h"
+#include "lib/assert.h"
 #include "lib/logger.h"
 
 struct madt_table
@@ -24,6 +25,7 @@ static VECTOR_TYPE(struct madt_ioapic *) s_ioapics = NULL;
 void madt_init(void)
 {
 	s_table = (struct madt_table *) acpi_find_sdt("APIC", 0);
+	assert(s_table != NULL);
 
 	const uintptr_t length = (uintptr_t) s_table + s_table->header.length;
 	for (uint8_t *ptr = s_table->entries; (uintptr_t) ptr < length;

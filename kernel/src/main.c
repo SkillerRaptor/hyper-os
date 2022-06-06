@@ -11,9 +11,7 @@
 #include "arch/pic.h"
 #include "lib/logger.h"
 #include "memory/pmm.h"
-#include "memory/vmm.h"
-
-#include <stddef.h>
+#include "memory/vmm.h" 
 
 __attribute__((noreturn)) void kernel_main(void)
 {

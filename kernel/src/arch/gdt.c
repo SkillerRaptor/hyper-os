@@ -6,17 +6,19 @@
 
 #include "arch/gdt.h"
 
+#include "lib/assert.h"
 #include "lib/logger.h"
 
+#include <stddef.h>
 #include <stdint.h>
 
-#define ACCESS_ATTRIBUTE_NULL 0x00
+#define ACCESS_ATTRIBUTE_NULL (0 << 0)
 #define ACCESS_ATTRIBUTE_PRESENT (1 << 7)
 #define ACCESS_ATTRIBUTE_CODE_DATA (1 << 4)
 #define ACCESS_ATTRIBUTE_EXECUTABLE (1 << 3)
 #define ACCESS_ATTRIBUTE_READ_WRITE (1 << 1)
 
-#define FLAG_ATTRIBUTE_NULL 0x00
+#define FLAG_ATTRIBUTE_NULL (0 << 0)
 #define FLAG_ATTRIBUTE_4K (1 << 3)
 #define FLAG_ATTRIBUTE_16 (0 << 2)
 #define FLAG_ATTRIBUTE_32 (1 << 2)
@@ -57,13 +59,15 @@ static void gdt_create_entry(
 	uint8_t access,
 	uint8_t flags)
 {
-	entry->limit_low = (uint16_t) (limit & 0x0000FFFF);
-	entry->base_low = (uint16_t) (base & 0x0000FFFF);
-	entry->base_middle = (uint8_t) ((base & 0x00FF0000) >> 16);
-	entry->access = (uint8_t) access;
-	entry->limit_high = (uint8_t) ((limit & 0x000F0000) >> 16);
-	entry->flags = (uint8_t) flags;
-	entry->base_high = (uint8_t) ((base & 0xFF000000) >> 24);
+	assert(entry != NULL);
+
+	entry->limit_low = (uint16_t) (limit & 0x0000ffff);
+	entry->base_low = (uint16_t) (base & 0x0000ffff);
+	entry->base_middle = (uint8_t) ((base & 0x00ff0000) >> 16);
+	entry->access = access;
+	entry->limit_high = (uint8_t) ((limit & 0x000f0000) >> 16);
+	entry->flags = flags;
+	entry->base_high = (uint8_t) ((base & 0xff000000) >> 24);
 }
 
 void gdt_init(void)

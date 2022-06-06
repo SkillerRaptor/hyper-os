@@ -7,6 +7,7 @@
 #include "lib/logger.h"
 
 #include "arch/boot.h"
+#include "lib/assert.h"
 #include "lib/string.h"
 
 #include <stdarg.h>
@@ -151,15 +152,8 @@ static void logger_vlog(const char *format, va_list args)
 void logger_init()
 {
 	struct limine_terminal_response *terminal_response = boot_get_terminal();
-	if (terminal_response == NULL)
-	{
-		return;
-	}
-
-	if (terminal_response->terminal_count == 0)
-	{
-		return;
-	}
+	assert(terminal_response != NULL);
+	assert(terminal_response->terminal_count != 0);
 
 	s_terminal = terminal_response->terminals[0];
 	s_write = terminal_response->write;

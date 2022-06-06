@@ -17,6 +17,7 @@ set(SOURCES
 		src/arch/io.c
 		src/arch/madt.c
 		src/arch/pic.c
+		src/lib/assert.c
 		src/lib/logger.c
 		src/lib/memory.c
 		src/lib/string.c
@@ -33,6 +34,7 @@ set(HEADERS
 		include/arch/io.h
 		include/arch/madt.h
 		include/arch/pic.h
+		include/lib/assert.h
 		include/lib/logger.h
 		include/lib/math.h
 		include/lib/memory.h

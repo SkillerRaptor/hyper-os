@@ -7,6 +7,7 @@
 #include "arch/acpi.h"
 
 #include "arch/boot.h"
+#include "lib/assert.h"
 #include "lib/logger.h"
 #include "lib/string.h"
 #include "memory/pmm.h"
@@ -41,40 +42,42 @@ static struct sdt *acpi_get_sdt(size_t index)
 	if (s_is_xsdt)
 	{
 		uint64_t *ptr = (uint64_t *) s_rsdt->list;
-		return (struct sdt *) (ptr[index] + pmm_get_hhdm_offset());
+		assert(ptr != NULL);
+
+		return (struct sdt *) (ptr[index] + pmm_get_memory_offset());
 	}
 
 	uint32_t *ptr = (uint32_t *) s_rsdt->list;
-	return (struct sdt *) (ptr[index] + pmm_get_hhdm_offset());
+	assert(ptr != NULL);
+
+	return (struct sdt *) (ptr[index] + pmm_get_memory_offset());
 }
 
 void acpi_init(void)
 {
 	struct limine_rsdp_response *rsdp_response = boot_get_rsdp();
-	if (rsdp_response == NULL)
-	{
-		return;
-	}
+	assert(rsdp_response != NULL);
 
 	struct rsdp *rsdp = (struct rsdp *) rsdp_response->address;
-	if (rsdp == NULL)
-	{
-		return;
-	}
+	assert(rsdp != NULL);
 
 	s_is_xsdt = rsdp->revision == 2 && rsdp->xsdt_address != 0;
-	s_rsdt = (struct rsdt *) (rsdp->rsdt_address + pmm_get_hhdm_offset());
+	s_rsdt = (struct rsdt *) (rsdp->rsdt_address + pmm_get_memory_offset());
 
 	logger_info("Initialized ACPI");
 }
 
 void *acpi_find_sdt(const char *signature, size_t index)
 {
+	assert(signature != NULL);
+
 	size_t count = 0;
 	const size_t entries = s_rsdt->header.length - sizeof(struct sdt);
 	for (size_t i = 0; i < entries / 4; ++i)
 	{
 		struct sdt *sdt = acpi_get_sdt(i);
+		assert(sdt != NULL);
+
 		if (!strncmp(sdt->signature, signature, 4) && (count++ == index))
 		{
 			return (void *) sdt;

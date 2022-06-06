@@ -7,6 +7,7 @@
 #include "arch/idt.h"
 
 #include "arch/gdt.h"
+#include "lib/assert.h"
 #include "lib/logger.h"
 
 #include <stddef.h>
@@ -38,12 +39,13 @@ static struct Descriptor s_descriptor = { 0 };
 extern void *interrupt_handlers[];
 
 static void idt_register_interrupt_handler(
-	size_t index,
+	struct Entry *entry,
 	void *handler,
 	uint8_t attribute)
 {
-	struct Entry *entry = &s_entries[index];
-	uint64_t handler_address = (uint64_t) handler;
+	assert(entry != NULL);
+
+	const uint64_t handler_address = (uint64_t) handler;
 
 	entry->offset_low = (uint16_t) handler_address;
 	entry->selector = KERNEL_CODE_SELECTOR;
@@ -59,7 +61,9 @@ void idt_init(void)
 	for (size_t i = 0; i < 256; i++)
 	{
 		idt_register_interrupt_handler(
-			i, interrupt_handlers[i], ATTRIBUTE_PRESENT | ATTRIBUTE_INTERRUPT_GATE);
+			&s_entries[i],
+			interrupt_handlers[i],
+			ATTRIBUTE_PRESENT | ATTRIBUTE_INTERRUPT_GATE);
 	}
 
 	s_descriptor.size = sizeof(s_entries) - 1;
