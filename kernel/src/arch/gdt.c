@@ -10,7 +10,6 @@
 #include "lib/logger.h"
 
 #include <stddef.h>
-#include <stdint.h>
 
 #define ACCESS_ATTRIBUTE_NULL (0 << 0)
 #define ACCESS_ATTRIBUTE_PRESENT (1 << 7)
@@ -24,6 +23,11 @@
 #define FLAG_ATTRIBUTE_32 (1 << 2)
 #define FLAG_ATTRIBUTE_64 (1 << 1)
 
+#define TSS_TYPE_PRESENT (1 << 3)
+#define TSS_TYPE_INACTIVE (1 << 3 | 1 << 0)
+
+#define TSS_SELECTOR 0x38
+
 struct entry
 {
 	uint16_t limit_low;
@@ -35,12 +39,25 @@ struct entry
 	uint8_t base_high;
 } __attribute__((packed));
 
+struct tss_entry
+{
+	uint16_t length;
+	uint16_t base_low;
+	uint8_t base_middle_1;
+	uint8_t flags_low;
+	uint8_t flags_high;
+	uint8_t base_middle_2;
+	uint32_t base_high;
+	uint32_t reserved;
+} __attribute__((packed));
+
 struct table
 {
 	struct entry null_entry;
 	struct entry kernel_entries_16[2];
 	struct entry kernel_entries_32[2];
 	struct entry kernel_entries_64[2];
+	struct tss_entry tss_entry;
 } __attribute__((packed));
 
 struct descriptor
@@ -57,18 +74,11 @@ static void gdt_create_entry(
 	uint32_t base,
 	uint32_t limit,
 	uint8_t access,
-	uint8_t flags)
-{
-	assert(entry != NULL);
+	uint8_t flags);
 
-	entry->limit_low = (uint16_t) (limit & 0x0000ffff);
-	entry->base_low = (uint16_t) (base & 0x0000ffff);
-	entry->base_middle = (uint8_t) ((base & 0x00ff0000) >> 16);
-	entry->access = access;
-	entry->limit_high = (uint8_t) ((limit & 0x000f0000) >> 16);
-	entry->flags = flags;
-	entry->base_high = (uint8_t) ((base & 0xff000000) >> 24);
-}
+static void gdt_create_tss_entry(
+	struct tss_entry *tss_entry,
+	uintptr_t address);
 
 void gdt_init(void)
 {
@@ -127,6 +137,8 @@ void gdt_init(void)
 			ACCESS_ATTRIBUTE_READ_WRITE,
 		FLAG_ATTRIBUTE_4K | FLAG_ATTRIBUTE_32);
 
+	gdt_create_tss_entry(&s_table.tss_entry, 0);
+
 	s_descriptor.size = sizeof(s_table) - 1;
 	s_descriptor.address = (uintptr_t) &s_table;
 
@@ -158,4 +170,45 @@ void gdt_load(void)
 											 "r"((uint64_t) KERNEL_DATA_SELECTOR),
 											 "r"((uint64_t) KERNEL_CODE_SELECTOR)
 										 : "memory");
+}
+
+void gdt_load_tss(struct tss *tss)
+{
+	assert(tss != NULL);
+
+	gdt_create_tss_entry(&s_table.tss_entry, (uintptr_t) tss);
+
+	__asm__ __volatile__("ltr %0" : : "rm"((uint16_t) TSS_SELECTOR) : "memory");
+}
+
+static void gdt_create_entry(
+	struct entry *entry,
+	uint32_t base,
+	uint32_t limit,
+	uint8_t access,
+	uint8_t flags)
+{
+	assert(entry != NULL);
+
+	entry->limit_low = (uint16_t) (limit & 0x0000ffff);
+	entry->base_low = (uint16_t) (base & 0x0000ffff);
+	entry->base_middle = (uint8_t) ((base & 0x00ff0000) >> 16);
+	entry->access = access;
+	entry->limit_high = (uint8_t) ((limit & 0x000f0000) >> 16);
+	entry->flags = flags;
+	entry->base_high = (uint8_t) ((base & 0xff000000) >> 24);
+}
+
+static void gdt_create_tss_entry(struct tss_entry *tss_entry, uintptr_t address)
+{
+	assert(tss_entry != NULL);
+
+	tss_entry->length = sizeof(struct tss);
+	tss_entry->base_low = (uint16_t) (address & 0xffff);
+	tss_entry->base_middle_1 = (uint8_t) ((address >> 16) & 0xff);
+	tss_entry->flags_low = (TSS_TYPE_PRESENT << 4) | TSS_TYPE_INACTIVE;
+	tss_entry->flags_high = 0;
+	tss_entry->base_middle_2 = (uint8_t) ((address >> 24) & 0xff);
+	tss_entry->base_high = (uint32_t) (address >> 32);
+	tss_entry->reserved = 0;
 }
