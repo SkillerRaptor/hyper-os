@@ -14,6 +14,7 @@ set(SOURCES
 		src/arch/boot.c
 		src/arch/cpu.c
 		src/arch/gdt.c
+		src/arch/hpet.c
 		src/arch/idt.c
 		src/arch/interrupts.asm
 		src/arch/io.c
@@ -34,6 +35,7 @@ set(HEADERS
 		include/arch/boot.h
 		include/arch/cpu.h
 		include/arch/gdt.h
+		include/arch/hpet.h
 		include/arch/idt.h
 		include/arch/io.h
 		include/arch/madt.h

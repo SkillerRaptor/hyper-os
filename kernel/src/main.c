@@ -7,12 +7,13 @@
 #include "arch/acpi.h"
 #include "arch/apic.h"
 #include "arch/gdt.h"
+#include "arch/hpet.h"
 #include "arch/idt.h"
 #include "arch/madt.h"
 #include "arch/pic.h"
 #include "lib/logger.h"
 #include "memory/pmm.h"
-#include "memory/vmm.h" 
+#include "memory/vmm.h"
 
 __attribute__((noreturn)) void kernel_main(void)
 {
@@ -28,9 +29,12 @@ __attribute__((noreturn)) void kernel_main(void)
 	acpi_init();
 	madt_init();
 
+	hpet_init();
 	apic_init();
 
 	logger_info("HyperOS booted successfully");
+
+	__asm__ __volatile__("sti");
 
 	for (;;)
 	{
