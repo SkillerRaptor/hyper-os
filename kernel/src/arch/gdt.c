@@ -24,7 +24,7 @@
 #define FLAG_ATTRIBUTE_32 (1 << 2)
 #define FLAG_ATTRIBUTE_64 (1 << 1)
 
-struct Entry
+struct entry
 {
 	uint16_t limit_low;
 	uint16_t base_low;
@@ -35,25 +35,25 @@ struct Entry
 	uint8_t base_high;
 } __attribute__((packed));
 
-struct Table
+struct table
 {
-	struct Entry null_entry;
-	struct Entry kernel_entries_16[2];
-	struct Entry kernel_entries_32[2];
-	struct Entry kernel_entries_64[2];
+	struct entry null_entry;
+	struct entry kernel_entries_16[2];
+	struct entry kernel_entries_32[2];
+	struct entry kernel_entries_64[2];
 } __attribute__((packed));
 
-struct Descriptor
+struct descriptor
 {
 	uint16_t size;
 	uint64_t address;
 } __attribute__((packed));
 
-static struct Table s_table = { 0 };
-static struct Descriptor s_descriptor = { 0 };
+static struct table s_table = { 0 };
+static struct descriptor s_descriptor = { 0 };
 
 static void gdt_create_entry(
-	struct Entry *entry,
+	struct entry *entry,
 	uint32_t base,
 	uint32_t limit,
 	uint8_t access,

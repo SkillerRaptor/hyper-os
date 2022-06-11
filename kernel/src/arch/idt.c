@@ -16,7 +16,7 @@
 #define ATTRIBUTE_PRESENT (1 << 7)
 #define ATTRIBUTE_INTERRUPT_GATE (1 << 1 | 1 << 2 | 1 << 3)
 
-struct Entry
+struct entry
 {
 	uint16_t offset_low;
 	uint16_t selector;
@@ -27,20 +27,20 @@ struct Entry
 	uint32_t zero;
 } __attribute__((packed));
 
-struct Descriptor
+struct descriptor
 {
 	uint16_t size;
 	uint64_t address;
 } __attribute__((packed));
 
-static struct Entry s_entries[256] = { 0 };
-static struct Descriptor s_descriptor = { 0 };
+static struct entry s_entries[256] = { 0 };
+static struct descriptor s_descriptor = { 0 };
 static interrupt_handler s_interrupt_handlers[256] = { 0 };
 
 extern void *interrupt_handlers[];
 
 static void idt_register_interrupt_handler(
-	struct Entry *entry,
+	struct entry *entry,
 	void *handler,
 	uint8_t attribute)
 {
