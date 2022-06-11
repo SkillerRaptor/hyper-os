@@ -10,7 +10,9 @@
 set(SOURCES
 		src/main.c
 		src/arch/acpi.c
+		src/arch/apic.c
 		src/arch/boot.c
+		src/arch/cpu.c
 		src/arch/gdt.c
 		src/arch/idt.c
 		src/arch/interrupts.asm
@@ -28,7 +30,9 @@ set(SOURCES
 
 set(HEADERS
 		include/arch/acpi.h
+		include/arch/apic.h
 		include/arch/boot.h
+		include/arch/cpu.h
 		include/arch/gdt.h
 		include/arch/idt.h
 		include/arch/io.h
@@ -39,7 +43,6 @@ set(HEADERS
 		include/lib/math.h
 		include/lib/memory.h
 		include/lib/string.h
-		include/lib/vector.h
 		include/memory/bitmap.h
 		include/memory/kmalloc.h
 		include/memory/pmm.h

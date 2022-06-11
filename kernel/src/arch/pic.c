@@ -7,7 +7,6 @@
 #include "arch/pic.h"
 
 #include "arch/io.h"
-#include "lib/logger.h"
 
 #include <stdbool.h>
 
@@ -49,8 +48,6 @@ void pic_remap(void)
 	io_wait();
 	io_out8(SLAVE_DATA_SELECTOR, ICW1_8086);
 	io_wait();
-
-	logger_info("Remapped PIC");
 }
 
 void pic_disable(void)
@@ -59,31 +56,4 @@ void pic_disable(void)
 	io_wait();
 	io_out8(MASTER_DATA_SELECTOR, DISABLE_CODE);
 	io_wait();
-}
-
-void pic_set_interrupt_request_mask(uint8_t interrupt_request_line)
-{
-	const bool is_master = interrupt_request_line < 0x8;
-	if (!is_master)
-	{
-		interrupt_request_line -= 0x08;
-	}
-
-	const uint16_t port = is_master ? MASTER_DATA_SELECTOR : SLAVE_DATA_SELECTOR;
-	const uint8_t value = (uint8_t) (io_in8(port) | (1 << interrupt_request_line));
-	io_out8(port, value);
-}
-
-void pic_clear_interrupt_request_mask(uint8_t interrupt_request_line)
-{
-	const bool is_master = interrupt_request_line < 0x8;
-	if (!is_master)
-	{
-		interrupt_request_line -= 0x08;
-	}
-
-	const uint16_t port = is_master ? MASTER_DATA_SELECTOR : SLAVE_DATA_SELECTOR;
-	const uint8_t value =
-		(uint8_t) (io_in8(port) & ~(1 << interrupt_request_line));
-	io_out8(port, value);
 }

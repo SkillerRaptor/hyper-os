@@ -6,11 +6,11 @@
 
 #include "arch/idt.h"
 
+#include "arch/apic.h"
 #include "arch/gdt.h"
 #include "lib/assert.h"
 #include "lib/logger.h"
 
-#include <stddef.h>
 #include <stdint.h>
 
 #define ATTRIBUTE_PRESENT (1 << 7)
@@ -35,6 +35,7 @@ struct Descriptor
 
 static struct Entry s_entries[256] = { 0 };
 static struct Descriptor s_descriptor = { 0 };
+static interrupt_handler s_interrupt_handlers[256] = { 0 };
 
 extern void *interrupt_handlers[];
 
@@ -56,6 +57,22 @@ static void idt_register_interrupt_handler(
 	entry->zero = 0;
 }
 
+static void idt_default_interrupt_handler(size_t interrupt)
+{
+	logger_error("Unhandled interrupt 0x%02x", interrupt);
+	for (;;)
+	{
+		__asm__ __volatile__("cli");
+		__asm__ __volatile__("hlt");
+	}
+}
+
+void idt_raise(size_t interrupt)
+{
+	s_interrupt_handlers[interrupt](interrupt);
+	lapic_send_eoi();
+}
+
 void idt_init(void)
 {
 	for (size_t i = 0; i < 256; i++)
@@ -64,6 +81,7 @@ void idt_init(void)
 			&s_entries[i],
 			interrupt_handlers[i],
 			ATTRIBUTE_PRESENT | ATTRIBUTE_INTERRUPT_GATE);
+		s_interrupt_handlers[i] = idt_default_interrupt_handler;
 	}
 
 	s_descriptor.size = sizeof(s_entries) - 1;
@@ -77,15 +95,9 @@ void idt_init(void)
 void idt_load(void)
 {
 	__asm__ __volatile__("lidt %0" : : "m"(s_descriptor));
-	__asm__ __volatile__("sti");
 }
 
-void idt_raise(size_t interrupt)
+void idt_set_handler(size_t interrupt, interrupt_handler handler)
 {
-	logger_error("Unhandled interrupt 0x%02x", interrupt);
-	for (;;)
-	{
-		__asm__ __volatile__("cli");
-		__asm__ __volatile__("hlt");
-	}
+	s_interrupt_handlers[interrupt] = handler;
 }

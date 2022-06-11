@@ -7,7 +7,6 @@
 #pragma once
 
 #include "arch/acpi.h"
-#include "lib/vector.h"
 
 struct madt_header
 {
@@ -32,7 +31,19 @@ struct madt_ioapic
 	uint32_t gsi_base;
 } __attribute__((packed));
 
+struct madt_lapic_list
+{
+	struct madt_lapic **data;
+	size_t size;
+};
+
+struct madt_ioapic_list
+{
+	struct madt_ioapic **data;
+	size_t size;
+};
+
 void madt_init(void);
 
-VECTOR_TYPE(struct madt_lapic *) madt_get_lapics();
-VECTOR_TYPE(struct madt_ioapic *) madt_get_ioapics();
+struct madt_lapic_list *madt_get_lapics();
+struct madt_ioapic_list *madt_get_ioapics();

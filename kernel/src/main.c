@@ -5,6 +5,7 @@
  */
 
 #include "arch/acpi.h"
+#include "arch/apic.h"
 #include "arch/gdt.h"
 #include "arch/idt.h"
 #include "arch/madt.h"
@@ -19,12 +20,6 @@ __attribute__((noreturn)) void kernel_main(void)
 
 	gdt_init();
 	pic_remap();
-
-	for (uint8_t i = 0; i < 16; ++i)
-	{
-		pic_set_interrupt_request_mask(i);
-	}
-
 	idt_init();
 
 	pmm_init();
@@ -32,6 +27,8 @@ __attribute__((noreturn)) void kernel_main(void)
 
 	acpi_init();
 	madt_init();
+
+	apic_init();
 
 	logger_info("HyperOS booted successfully");
 

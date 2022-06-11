@@ -8,5 +8,5 @@
 
 #include <stdint.h>
 
-void pic_remap(void);
-void pic_disable(void);
+void cpu_write_msr(uint32_t msr, uint64_t value);
+uint64_t cpu_read_msr(uint32_t msr);

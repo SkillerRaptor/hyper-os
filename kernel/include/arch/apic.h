@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include <stdint.h>
+void apic_init(void);
 
-void pic_remap(void);
-void pic_disable(void);
+void lapic_send_eoi(void);
