@@ -15,22 +15,22 @@ void bitmap_fill(struct bitmap *bitmap, uint8_t value)
 
 void bitmap_set(struct bitmap *bitmap, size_t index, bool value)
 {
-	const size_t byte = index / 8;
-	const size_t bit = index % 8;
+	const size_t byte = index / BYTE_SIZE;
+	const size_t bit = index % BYTE_SIZE;
 
 	if (!value)
 	{
-		bitmap->data[byte] &= ~(1 << (bit));
+		bitmap->data[byte] &= ~(1 << bit);
 		return;
 	}
 
-	bitmap->data[byte] |= (1 << (bit));
+	bitmap->data[byte] |= (1 << bit);
 }
 
 bool bitmap_get(struct bitmap *bitmap, size_t index)
 {
-	const size_t byte = index / 8;
-	const size_t bit = index % 8;
+	const size_t byte = index / BYTE_SIZE;
+	const size_t bit = index % BYTE_SIZE;
 
-	return bitmap->data[byte] & (1 << (bit));
+	return bitmap->data[byte] & (1 << bit);
 }

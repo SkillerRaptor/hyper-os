@@ -43,6 +43,8 @@ void apic_init(void)
 	lapic_init();
 	lapic_timer_init();
 
+	__asm__ __volatile__("sti");
+
 	logger_info("Initialized APIC");
 }
 

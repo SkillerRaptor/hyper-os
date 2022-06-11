@@ -27,7 +27,9 @@ set(SOURCES
 		src/memory/bitmap.c
 		src/memory/kmalloc.c
 		src/memory/pmm.c
-		src/memory/vmm.c)
+		src/memory/vmm.c
+		src/scheduling/smp.c
+		src/scheduling/spinlock.c)
 
 set(HEADERS
 		include/arch/acpi.h
@@ -48,13 +50,16 @@ set(HEADERS
 		include/memory/bitmap.h
 		include/memory/kmalloc.h
 		include/memory/pmm.h
-		include/memory/vmm.h)
+		include/memory/vmm.h
+		include/scheduling/smp.h
+		include/scheduling/spinlock.h)
 
 add_executable(kernel ${SOURCES} ${HEADERS})
 target_include_directories(kernel PRIVATE include)
 target_link_libraries(kernel PRIVATE limine)
 target_compile_options(kernel PRIVATE
 		-O0
+		-g
 		-fno-stack-check
 		-fno-stack-protector
 		-fno-asynchronous-unwind-tables

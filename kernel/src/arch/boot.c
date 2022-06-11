@@ -21,6 +21,11 @@ static volatile struct limine_rsdp_request s_rsdp_request = {
 	.revision = 0,
 };
 
+static volatile struct limine_smp_request s_smp_request = {
+	.id = LIMINE_SMP_REQUEST,
+	.revision = 0,
+};
+
 static volatile struct limine_terminal_request s_terminal_request = {
 	.id = LIMINE_TERMINAL_REQUEST,
 	.revision = 0,
@@ -39,6 +44,11 @@ struct limine_memmap_response *boot_get_memory_map()
 struct limine_rsdp_response *boot_get_rsdp()
 {
 	return s_rsdp_request.response;
+}
+
+struct limine_smp_response *boot_get_smp()
+{
+	return s_smp_request.response;
 }
 
 struct limine_terminal_response *boot_get_terminal()

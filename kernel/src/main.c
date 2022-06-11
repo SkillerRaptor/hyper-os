@@ -14,6 +14,7 @@
 #include "lib/logger.h"
 #include "memory/pmm.h"
 #include "memory/vmm.h"
+#include "scheduling/smp.h"
 
 __attribute__((noreturn)) void kernel_main(void)
 {
@@ -32,9 +33,9 @@ __attribute__((noreturn)) void kernel_main(void)
 	hpet_init();
 	apic_init();
 
-	logger_info("HyperOS booted successfully");
+	smp_init();
 
-	__asm__ __volatile__("sti");
+	logger_info("HyperOS booted successfully");
 
 	for (;;)
 	{

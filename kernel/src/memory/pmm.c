@@ -12,12 +12,14 @@
 #include "lib/math.h"
 #include "lib/memory.h"
 #include "memory/bitmap.h"
+#include "scheduling/spinlock.h"
 
 #include <stdint.h>
 
 static uintptr_t s_highest_page = 0;
 static size_t s_memory_offset = 0;
 static struct bitmap s_bitmap = { 0 };
+static struct spinlock s_lock = { 0 };
 
 void pmm_init(void)
 {
@@ -84,10 +86,12 @@ void pmm_init(void)
 
 void *pmm_alloc(size_t page_count)
 {
+	spinlock_lock(&s_lock);
+
 	assert(page_count != 0);
 
 	size_t current_page_count = 0;
-	for (size_t i = 0; i < s_bitmap.size * BYTE_SIZE; ++i)
+	for (size_t i = 0; i < s_highest_page / PAGE_SIZE; ++i)
 	{
 		if (bitmap_get(&s_bitmap, i))
 		{
@@ -98,15 +102,20 @@ void *pmm_alloc(size_t page_count)
 		++current_page_count;
 		if (current_page_count == page_count)
 		{
-			const size_t page = i - current_page_count;
-			for (size_t j = page; j < i; ++j)
+			const size_t index = i + 1;
+			const size_t page = index - page_count;
+			for (size_t j = page; j < index; ++j)
 			{
-				bitmap_set(&s_bitmap, i, true);
+				bitmap_set(&s_bitmap, j, true);
 			}
 
-			return (void *) (i * PAGE_SIZE);
+			spinlock_unlock(&s_lock);
+
+			return (void *) (page * PAGE_SIZE);
 		}
 	}
+
+	spinlock_unlock(&s_lock);
 
 	return NULL;
 }

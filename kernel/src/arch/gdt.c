@@ -8,6 +8,7 @@
 
 #include "lib/assert.h"
 #include "lib/logger.h"
+#include "scheduling/spinlock.h"
 
 #include <stddef.h>
 
@@ -27,6 +28,8 @@
 #define TSS_TYPE_INACTIVE (1 << 3 | 1 << 0)
 
 #define TSS_SELECTOR 0x38
+
+static struct spinlock s_lock;
 
 struct entry
 {
@@ -174,11 +177,15 @@ void gdt_load(void)
 
 void gdt_load_tss(struct tss *tss)
 {
+	spinlock_lock(&s_lock);
+
 	assert(tss != NULL);
 
 	gdt_create_tss_entry(&s_table.tss_entry, (uintptr_t) tss);
 
 	__asm__ __volatile__("ltr %0" : : "rm"((uint16_t) TSS_SELECTOR) : "memory");
+
+	spinlock_unlock(&s_lock);
 }
 
 static void gdt_create_entry(

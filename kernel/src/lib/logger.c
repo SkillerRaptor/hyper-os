@@ -9,12 +9,15 @@
 #include "arch/boot.h"
 #include "lib/assert.h"
 #include "lib/string.h"
+#include "scheduling/spinlock.h"
 
 #include <stdarg.h>
 #include <stdbool.h>
 
 static struct limine_terminal *s_terminal = NULL;
 static limine_terminal_write s_write = NULL;
+
+static struct spinlock s_lock = { 0 };
 
 static void logger_write_string(const char *string)
 {
@@ -161,6 +164,8 @@ void logger_init()
 
 void logger_info(const char *format, ...)
 {
+	spinlock_lock(&s_lock);
+
 	logger_write_string("info: ");
 
 	va_list args;
@@ -169,10 +174,14 @@ void logger_info(const char *format, ...)
 	logger_vlog(format, args);
 
 	va_end(args);
+
+	spinlock_unlock(&s_lock);
 }
 
 void logger_warning(const char *format, ...)
 {
+	spinlock_lock(&s_lock);
+
 	logger_write_string("warning: ");
 
 	va_list args;
@@ -181,10 +190,14 @@ void logger_warning(const char *format, ...)
 	logger_vlog(format, args);
 
 	va_end(args);
+
+	spinlock_unlock(&s_lock);
 }
 
 void logger_error(const char *format, ...)
 {
+	spinlock_lock(&s_lock);
+
 	logger_write_string("error: ");
 
 	va_list args;
@@ -193,10 +206,14 @@ void logger_error(const char *format, ...)
 	logger_vlog(format, args);
 
 	va_end(args);
+
+	spinlock_unlock(&s_lock);
 }
 
 void logger_debug(const char *format, ...)
 {
+	spinlock_lock(&s_lock);
+
 	logger_write_string("debug: ");
 
 	va_list args;
@@ -205,4 +222,6 @@ void logger_debug(const char *format, ...)
 	logger_vlog(format, args);
 
 	va_end(args);
+
+	spinlock_unlock(&s_lock);
 }

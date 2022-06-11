@@ -15,10 +15,13 @@ struct page_map
 
 void vmm_init(void);
 
-struct page_map *vmm_create_page_map();
+struct page_map *vmm_create_page_map(void);
+
 void vmm_map_page(
 	struct page_map *page_map,
 	uintptr_t physical_address,
 	uintptr_t virtual_address,
 	uintptr_t flags);
 void vmm_switch_page_map(struct page_map *page_map);
+
+struct page_map *vmm_get_kernel_page_map(void);
