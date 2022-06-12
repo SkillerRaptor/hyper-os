@@ -6,6 +6,7 @@
 
 #include "lib/assert.h"
 
+#include "lib/stacktrace.h"
 #include "lib/logger.h"
 
 __attribute__((noreturn)) void __assertion_failed(
@@ -14,7 +15,12 @@ __attribute__((noreturn)) void __assertion_failed(
 	unsigned int line,
 	const char *function)
 {
+	logger_error("");
 	logger_error("Assertion '%s' failed in %s at %s:%u", assertion, function, file, line);
+	logger_error("");
+	stacktrace_print(50);
+	logger_error("");
+
 	for (;;)
 	{
 		__asm__ __volatile__("cli");

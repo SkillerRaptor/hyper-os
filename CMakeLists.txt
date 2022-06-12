@@ -23,7 +23,7 @@ set(CMAKE_C_LINK_EXECUTABLE "ld.lld <OBJECTS> -o <TARGET> <CMAKE_C_LINK_FLAGS> <
 set(CMAKE_ASM_NASM_COMPILER "nasm")
 set(CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS "asm;nasm;S;s")
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf64)
-set(CMAKE_ASM_NASM_COMPILE_OBJECT "nasm <INCLUDES> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
+set(CMAKE_ASM_NASM_COMPILE_OBJECT "nasm <INCLUDES> -g -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
 
 #-------------------------------------------------------------------------------------------
 # Third Party

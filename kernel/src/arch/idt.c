@@ -10,6 +10,7 @@
 #include "arch/gdt.h"
 #include "lib/assert.h"
 #include "lib/logger.h"
+#include "lib/stacktrace.h"
 
 #include <stdint.h>
 
@@ -59,7 +60,12 @@ static void idt_register_interrupt_handler(
 
 static void idt_default_interrupt_handler(struct registers *registers)
 {
-	logger_error("Unhandled interrupt 0x%02x", registers->isr);
+	logger_error("");
+	logger_error("An unhandled interrupt 0x%02x occured", registers->isr);
+	logger_error("");
+	stacktrace_print(50);
+	logger_error("");
+
 	for (;;)
 	{
 		__asm__ __volatile__("cli");

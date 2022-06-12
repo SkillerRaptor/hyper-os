@@ -23,6 +23,7 @@ set(SOURCES
 		src/lib/assert.c
 		src/lib/logger.c
 		src/lib/memory.c
+		src/lib/stacktrace.c
 		src/lib/string.c
 		src/lib/vector.c
 		src/memory/bitmap.c
@@ -50,6 +51,7 @@ set(HEADERS
 		include/lib/logger.h
 		include/lib/math.h
 		include/lib/memory.h
+		include/lib/stacktrace.h
 		include/lib/string.h
 		include/lib/vector.h
 		include/memory/bitmap.h
@@ -107,10 +109,10 @@ target_link_options(kernel PRIVATE
 add_custom_command(OUTPUT HyperOS.iso DEPENDS kernel
 		COMMAND make -C ${CMAKE_SOURCE_DIR}/third_party/limine
 		COMMAND mkdir -p ${CMAKE_BINARY_DIR}/boot
+		COMMAND nm -n ${CMAKE_CURRENT_BINARY_DIR}/kernel > ${CMAKE_BINARY_DIR}/boot/kernel_symbols.map
 		COMMAND cp ${CMAKE_CURRENT_BINARY_DIR}/kernel ${CMAKE_CURRENT_SOURCE_DIR}/boot/limine.cfg ${CMAKE_SOURCE_DIR}/third_party/limine/limine.sys ${CMAKE_SOURCE_DIR}/third_party/limine/limine-cd.bin ${CMAKE_SOURCE_DIR}/third_party/limine/limine-cd-efi.bin ${CMAKE_BINARY_DIR}/boot
 		COMMAND xorriso -as mkisofs -b limine-cd.bin -no-emul-boot -boot-load-size 4 -boot-info-table --efi-boot limine-cd-efi.bin -efi-boot-part --efi-boot-image --protective-msdos-label ${CMAKE_BINARY_DIR}/boot -o ${CMAKE_BINARY_DIR}/HyperOS.iso
-		COMMAND ${CMAKE_SOURCE_DIR}/third_party/limine/limine-deploy ${CMAKE_BINARY_DIR}/HyperOS.iso
-)
+		COMMAND ${CMAKE_SOURCE_DIR}/third_party/limine/limine-deploy ${CMAKE_BINARY_DIR}/HyperOS.iso)
 
 add_custom_target(iso ALL DEPENDS HyperOS.iso)
 

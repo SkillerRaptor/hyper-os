@@ -11,20 +11,16 @@
 #include "arch/idt.h"
 #include "arch/madt.h"
 #include "arch/pic.h"
+#include "lib/assert.h"
 #include "lib/logger.h"
+#include "lib/stacktrace.h"
+#include "memory/kmalloc.h"
 #include "memory/pmm.h"
 #include "memory/vmm.h"
 #include "scheduling/scheduler.h"
 #include "scheduling/smp.h"
 
 __attribute__((noreturn)) static void main_thread(void);
-
-static void test_thread(void)
-{
-	logger_info("TEST");
-
-	scheduler_wait();
-}
 
 __attribute__((noreturn)) void kernel_main(void)
 {
@@ -36,6 +32,8 @@ __attribute__((noreturn)) void kernel_main(void)
 
 	pmm_init();
 	vmm_init();
+
+	stacktrace_init();
 
 	acpi_init();
 	madt_init();

@@ -14,6 +14,13 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
+#define FONT_COLOR_RED "\033[30;31m"
+#define FONT_COLOR_GREEN "\033[30;32m"
+#define FONT_COLOR_YELLOW "\033[30;33m"
+#define FONT_COLOR_CYAN "\033[30;3m"
+
+#define FONT_RESET "\033[0m"
+
 static struct limine_terminal *s_terminal = NULL;
 static limine_terminal_write s_write = NULL;
 
@@ -166,7 +173,7 @@ void logger_info(const char *format, ...)
 {
 	spinlock_lock(&s_lock);
 
-	logger_write_string("info: ");
+	logger_write_string(FONT_COLOR_GREEN "info" FONT_RESET ": ");
 
 	va_list args;
 	va_start(args, format);
@@ -182,7 +189,7 @@ void logger_warning(const char *format, ...)
 {
 	spinlock_lock(&s_lock);
 
-	logger_write_string("warning: ");
+	logger_write_string(FONT_COLOR_YELLOW "warning" FONT_RESET ": ");
 
 	va_list args;
 	va_start(args, format);
@@ -198,7 +205,7 @@ void logger_error(const char *format, ...)
 {
 	spinlock_lock(&s_lock);
 
-	logger_write_string("error: ");
+	logger_write_string(FONT_COLOR_RED "error" FONT_RESET ": ");
 
 	va_list args;
 	va_start(args, format);
@@ -214,7 +221,7 @@ void logger_debug(const char *format, ...)
 {
 	spinlock_lock(&s_lock);
 
-	logger_write_string("debug: ");
+	logger_write_string(FONT_COLOR_CYAN "debug" FONT_RESET ": ");
 
 	va_list args;
 	va_start(args, format);
