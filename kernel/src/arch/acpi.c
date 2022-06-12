@@ -62,7 +62,10 @@ void acpi_init(void)
 	assert(rsdp != NULL);
 
 	s_is_xsdt = rsdp->revision == 2 && rsdp->xsdt_address != 0;
-	s_rsdt = (struct rsdt *) (rsdp->rsdt_address + pmm_get_memory_offset());
+
+	const uint64_t address = s_is_xsdt ? rsdp->xsdt_address : rsdp->rsdt_address;
+	s_rsdt = (struct rsdt *) (address + pmm_get_memory_offset());
+	assert(s_rsdt != NULL);
 
 	logger_info("Initialized ACPI");
 }
