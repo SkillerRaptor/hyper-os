@@ -6,9 +6,11 @@
 
 #pragma once
 
+#include "arch/registers.h"
+
 #include <stddef.h>
 
-typedef void (*interrupt_handler)(size_t);
+typedef void (*interrupt_handler)(struct registers*);
 
 void idt_init(void);
 void idt_load(void);

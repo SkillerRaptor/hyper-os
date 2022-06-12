@@ -7,3 +7,5 @@
 #pragma once
 
 void smp_init(void);
+
+struct cpu_info *smp_get_cpu_infos();

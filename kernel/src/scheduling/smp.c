@@ -7,6 +7,7 @@
 #include "scheduling/smp.h"
 
 #include "arch/boot.h"
+#include "arch/cpu.h"
 #include "arch/gdt.h"
 #include "arch/idt.h"
 #include "lib/assert.h"
@@ -18,14 +19,6 @@
 #include "scheduling/spinlock.h"
 
 #include <stddef.h>
-
-struct cpu_info
-{
-	uint64_t id;
-	uint32_t lapic_id;
-
-	struct tss tss;
-};
 
 static uint64_t s_online_cpu_count = 0;
 static uint32_t s_bsp_lapic_id = 0;
@@ -45,11 +38,15 @@ void smp_init(void)
 	struct limine_smp_info **cpus = smp_response->cpus;
 	for (size_t i = 0; i < smp_response->cpu_count; ++i)
 	{
-		const uint64_t stack = (uintptr_t) pmm_calloc(1) + PAGE_SIZE;
+		const uint64_t stack =
+			(uintptr_t) pmm_calloc(1) + PAGE_SIZE + pmm_get_memory_offset();
 
 		s_cpu_infos[i].id = i;
 		s_cpu_infos[i].lapic_id = cpus[i]->lapic_id;
+		s_cpu_infos[i].pid = -1;
+		s_cpu_infos[i].tid = -1;
 		s_cpu_infos[i].tss.rsp[0] = stack;
+		s_cpu_infos[i].page_map = vmm_get_kernel_page_map();
 
 		cpus[i]->extra_argument = (uint64_t) &s_cpu_infos[i];
 
@@ -71,13 +68,15 @@ void smp_init(void)
 
 static void cpu_init(struct limine_smp_info *smp_info)
 {
-	struct cpu_info *cpu_info = (struct cpu_info *) smp_info->extra_argument;
-
 	gdt_load();
 	idt_load();
 	vmm_switch_page_map(vmm_get_kernel_page_map());
 
-	gdt_load_tss(&s_cpu_infos[cpu_info->id].tss);
+	cpu_set_kernel_gs((uintptr_t) smp_info->extra_argument);
+
+	struct cpu_info *cpu_info = cpu_get_local_info();
+
+	gdt_load_tss(&cpu_info->tss);
 
 	spinlock_lock(&s_lock);
 	++s_online_cpu_count;
@@ -92,4 +91,9 @@ static void cpu_init(struct limine_smp_info *smp_info)
 	{
 		__asm__ __volatile__("hlt");
 	}
+}
+
+struct cpu_info *smp_get_cpu_infos()
+{
+	return s_cpu_infos;
 }

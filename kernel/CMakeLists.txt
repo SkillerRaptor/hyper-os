@@ -24,10 +24,13 @@ set(SOURCES
 		src/lib/logger.c
 		src/lib/memory.c
 		src/lib/string.c
+		src/lib/vector.c
 		src/memory/bitmap.c
 		src/memory/kmalloc.c
 		src/memory/pmm.c
 		src/memory/vmm.c
+		src/scheduling/scheduler.asm
+		src/scheduling/scheduler.c
 		src/scheduling/smp.c
 		src/scheduling/spinlock.c)
 
@@ -42,17 +45,22 @@ set(HEADERS
 		include/arch/io.h
 		include/arch/madt.h
 		include/arch/pic.h
+		include/arch/registers.h
 		include/lib/assert.h
 		include/lib/logger.h
 		include/lib/math.h
 		include/lib/memory.h
 		include/lib/string.h
+		include/lib/vector.h
 		include/memory/bitmap.h
 		include/memory/kmalloc.h
 		include/memory/pmm.h
 		include/memory/vmm.h
+		include/scheduling/scheduler.h
 		include/scheduling/smp.h
-		include/scheduling/spinlock.h)
+		include/scheduling/spinlock.h
+		include/scheduling/task.h
+		include/scheduling/thread.h)
 
 add_executable(kernel ${SOURCES} ${HEADERS})
 target_include_directories(kernel PRIVATE include)

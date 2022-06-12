@@ -49,11 +49,14 @@ extern idt_raise
 %macro interrupt_handler 1
 align 16
 interrupt_handler_%1:
-    cld
+    push 0
+    push %1
     pushaq
-    mov rdi, %1
+    mov rdi, rsp
+    cld
     call idt_raise
     popaq
+    add rsp, 0x10
     iretq
 %endmacro
 

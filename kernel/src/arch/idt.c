@@ -57,9 +57,9 @@ static void idt_register_interrupt_handler(
 	entry->zero = 0;
 }
 
-static void idt_default_interrupt_handler(size_t interrupt)
+static void idt_default_interrupt_handler(struct registers *registers)
 {
-	logger_error("Unhandled interrupt 0x%02x", interrupt);
+	logger_error("Unhandled interrupt 0x%02x", registers->isr);
 	for (;;)
 	{
 		__asm__ __volatile__("cli");
@@ -67,9 +67,9 @@ static void idt_default_interrupt_handler(size_t interrupt)
 	}
 }
 
-void idt_raise(size_t interrupt)
+void idt_raise(struct registers *registers)
 {
-	s_interrupt_handlers[interrupt](interrupt);
+	s_interrupt_handlers[registers->isr](registers);
 	lapic_send_eoi();
 }
 

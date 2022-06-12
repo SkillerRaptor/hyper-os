@@ -14,7 +14,17 @@
 #include "lib/logger.h"
 #include "memory/pmm.h"
 #include "memory/vmm.h"
+#include "scheduling/scheduler.h"
 #include "scheduling/smp.h"
+
+__attribute__((noreturn)) static void main_thread(void);
+
+static void test_thread(void)
+{
+	logger_info("TEST");
+
+	scheduler_wait();
+}
 
 __attribute__((noreturn)) void kernel_main(void)
 {
@@ -34,11 +44,20 @@ __attribute__((noreturn)) void kernel_main(void)
 	apic_init();
 
 	smp_init();
+	scheduler_init();
 
-	logger_info("HyperOS booted successfully");
+	__asm__ __volatile__("sti");
 
-	for (;;)
-	{
-		__asm__ __volatile__("hlt");
-	}
+	const int64_t kernel_process_id = scheduler_create_task(NULL);
+	scheduler_create_thread(
+		kernel_process_id, (uintptr_t) main_thread, KERNEL_CODE_SELECTOR);
+
+	scheduler_wait();
+}
+
+__attribute__((noreturn)) static void main_thread(void)
+{
+	logger_info("HyperOS booted successfully!");
+
+	scheduler_wait();
 }

@@ -8,7 +8,6 @@
 
 #include "arch/cpu.h"
 #include "arch/hpet.h"
-#include "arch/idt.h"
 #include "arch/pic.h"
 #include "lib/logger.h"
 #include "memory/pmm.h"
@@ -28,7 +27,6 @@
 #define LAPIC_TIMER_CURRENT_COUNT_REGISTER 0x390
 #define LAPIC_TIMER_DIVIDER_REGISTER 0x3e0
 
-#define LAPIC_TIMER_ISR 0x20
 #define LAPIC_TIMER_MASKED 0x10000
 #define LAPIC_TIMER_PERIODIC 0x20000
 #define LAPIC_TIMER_DIVIDER_16 0x3
@@ -43,19 +41,12 @@ void apic_init(void)
 	lapic_init();
 	lapic_timer_init();
 
-	__asm__ __volatile__("sti");
-
 	logger_info("Initialized APIC");
 }
 
 /*
  * LAPIC
  */
-
-static void lapic_timer_isr(size_t interrupt)
-{
-	// TODO: Replace function with scheduler schedule function
-}
 
 static void lapic_write(uint32_t lapic_register, uint32_t value)
 {
@@ -84,8 +75,6 @@ static void lapic_init(void)
 
 static void lapic_timer_init(void)
 {
-	idt_set_handler(LAPIC_TIMER_ISR, lapic_timer_isr);
-
 	lapic_write(LAPIC_TIMER_DIVIDER_REGISTER, LAPIC_TIMER_DIVIDER_16);
 	lapic_write(LAPIC_TIMER_INITIAL_COUNT_REGISTER, 0xFFFFFFFF);
 

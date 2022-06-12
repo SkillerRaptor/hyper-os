@@ -8,6 +8,8 @@
 
 #include <stdint.h>
 
+#define LAPIC_TIMER_ISR 0x20
+
 void apic_init(void);
 
 void lapic_send_eoi(void);
