@@ -6,11 +6,13 @@
 
 #include "arch/acpi.h"
 #include "arch/apic.h"
+#include "arch/fadt.h"
 #include "arch/gdt.h"
 #include "arch/hpet.h"
 #include "arch/idt.h"
 #include "arch/madt.h"
 #include "arch/pic.h"
+#include "devices/rtc.h"
 #include "lib/logger.h"
 #include "lib/stacktrace.h"
 #include "memory/kmalloc.h"
@@ -37,6 +39,9 @@ __attribute__((noreturn)) void kernel_main(void)
 	acpi_init();
 	madt_init();
 
+	fadt_init();
+	rtc_init();
+
 	hpet_init();
 	apic_init();
 
@@ -52,7 +57,16 @@ __attribute__((noreturn)) void kernel_main(void)
 
 __attribute__((noreturn)) static void main_thread(void)
 {
-	logger_info("HyperOS booted successfully!");
+	struct time time = rtc_get_time();
+	struct date date = rtc_get_date();
+	logger_info(
+		"HyperOS booted successfully! (%02u:%02u:%02u, %02u/%02u/%02u)",
+		time.hour,
+		time.minute,
+		time.second,
+		date.day,
+		date.month,
+		date.year);
 
 	scheduler_wait();
 }

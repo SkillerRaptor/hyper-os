@@ -85,6 +85,7 @@ void *acpi_find_sdt(const char *signature, size_t index)
 	{
 		struct sdt *sdt = acpi_get_sdt(i);
 		assert(sdt != NULL);
+		assert(sdt->signature != NULL);
 
 		if (!strncmp(sdt->signature, signature, 4) && (count++ == index))
 		{

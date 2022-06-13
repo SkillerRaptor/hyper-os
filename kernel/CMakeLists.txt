@@ -13,6 +13,7 @@ set(SOURCES
 		src/arch/apic.c
 		src/arch/boot.c
 		src/arch/cpu.c
+		src/arch/fadt.c
 		src/arch/gdt.c
 		src/arch/hpet.c
 		src/arch/idt.c
@@ -20,6 +21,7 @@ set(SOURCES
 		src/arch/io.c
 		src/arch/madt.c
 		src/arch/pic.c
+		src/devices/rtc.c
 		src/lib/assert.c
 		src/lib/logger.c
 		src/lib/memory.c
@@ -40,6 +42,7 @@ set(HEADERS
 		include/arch/apic.h
 		include/arch/boot.h
 		include/arch/cpu.h
+		include/arch/fadt.h
 		include/arch/gdt.h
 		include/arch/hpet.h
 		include/arch/idt.h
@@ -47,6 +50,7 @@ set(HEADERS
 		include/arch/madt.h
 		include/arch/pic.h
 		include/arch/registers.h
+		include/devices/rtc.h
 		include/lib/assert.h
 		include/lib/logger.h
 		include/lib/math.h
@@ -68,7 +72,7 @@ add_executable(kernel ${SOURCES} ${HEADERS})
 target_include_directories(kernel PRIVATE include)
 target_link_libraries(kernel PRIVATE limine)
 target_compile_options(kernel PRIVATE
-		-O0
+		-O3
 		-g
 		-fno-stack-check
 		-fno-stack-protector
@@ -119,4 +123,4 @@ add_custom_target(iso ALL DEPENDS HyperOS.iso)
 #-------------------------------------------------------------------------------------------
 # Run
 #-------------------------------------------------------------------------------------------
-add_custom_target(run DEPENDS HyperOS.iso COMMAND qemu-system-x86_64 -M q35 -m 2G -cdrom ${CMAKE_BINARY_DIR}/HyperOS.iso)
+add_custom_target(run DEPENDS HyperOS.iso COMMAND qemu-system-x86_64 -M q35 -m 2G -rtc base=localtime -cdrom ${CMAKE_BINARY_DIR}/HyperOS.iso)
