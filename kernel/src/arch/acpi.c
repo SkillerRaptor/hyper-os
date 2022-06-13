@@ -41,13 +41,13 @@ static struct sdt *acpi_get_sdt(size_t index)
 {
 	if (s_is_xsdt)
 	{
-		uint64_t *ptr = (uint64_t *) s_rsdt->list;
+		const uint64_t *ptr = (uint64_t *) s_rsdt->list;
 		assert(ptr != NULL);
 
 		return (struct sdt *) (ptr[index] + pmm_get_memory_offset());
 	}
 
-	uint32_t *ptr = (uint32_t *) s_rsdt->list;
+	const uint32_t *ptr = (uint32_t *) s_rsdt->list;
 	assert(ptr != NULL);
 
 	return (struct sdt *) (ptr[index] + pmm_get_memory_offset());
@@ -67,7 +67,12 @@ void acpi_init(void)
 	s_rsdt = (struct rsdt *) (address + pmm_get_memory_offset());
 	assert(s_rsdt != NULL);
 
-	logger_info("Initialized ACPI");
+	logger_info(
+		"ACPI: Found %s at 0x%016x",
+		s_is_xsdt ? "XSDT" : "RSDT",
+		(uintptr_t) s_rsdt);
+
+	logger_info("ACPI: Initialized");
 }
 
 void *acpi_find_sdt(const char *signature, size_t index)

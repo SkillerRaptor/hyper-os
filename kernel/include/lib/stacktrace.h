@@ -9,4 +9,5 @@
 #include <stddef.h>
 
 void stacktrace_init(void);
+
 void stacktrace_print(size_t max_frames);

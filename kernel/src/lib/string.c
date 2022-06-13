@@ -10,20 +10,7 @@
 
 #define ULLONG_MAX 18446744073709551615ULL
 
-static bool is_delimiter(char character, const char *delimiters)
-{
-	while (*delimiters != '\0')
-	{
-		if (character == *delimiters)
-		{
-			return true;
-		}
-
-		delimiters++;
-	}
-
-	return false;
-}
+static bool is_delimiter(char character, const char *delimiters);
 
 size_t strlen(const char *string)
 {
@@ -110,6 +97,28 @@ char *strtok(char *string, const char *delimiters)
 		string++;
 	}
 }
+
+int isalpha(int character)
+{
+	return (character >= 'a' && character <= 'z') ||
+				 (character >= 'A' && character <= 'Z');
+}
+
+int isdigit(int character)
+{
+	return character >= '0' && character <= '9';
+}
+
+int isspace(int character)
+{
+	return character == ' ';
+}
+
+int isupper(int character)
+{
+	return character >= 'A' && character <= 'Z';
+}
+
 uint64_t stroull(const char *string, char **endptr, int base)
 {
 	char character = '\0';
@@ -192,23 +201,17 @@ uint64_t stroull(const char *string, char **endptr, int base)
 	return acc;
 }
 
-int isalpha(int character)
+static bool is_delimiter(char character, const char *delimiters)
 {
-	return (character >= 'a' && character <= 'z') ||
-				 (character >= 'A' && character <= 'Z');
-}
+	while (*delimiters != '\0')
+	{
+		if (character == *delimiters)
+		{
+			return true;
+		}
 
-int isdigit(int character)
-{
-	return character >= '0' && character <= '9';
-}
+		delimiters++;
+	}
 
-int isspace(int character)
-{
-	return character == ' ';
-}
-
-int isupper(int character)
-{
-	return character >= 'A' && character <= 'Z';
+	return false;
 }

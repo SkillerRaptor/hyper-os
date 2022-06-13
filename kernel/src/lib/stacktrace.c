@@ -9,9 +9,11 @@
 #include "arch/boot.h"
 #include "lib/assert.h"
 #include "lib/logger.h"
+#include "lib/math.h"
 #include "lib/memory.h"
 #include "lib/string.h"
 #include "memory/kmalloc.h"
+#include "memory/pmm.h"
 
 #include <stdint.h>
 
@@ -23,8 +25,8 @@ struct stack_frame
 
 struct symbol
 {
-	uintptr_t address;
 	char name[100];
+	uintptr_t address;
 };
 
 static size_t s_symbol_count = 0;
@@ -37,6 +39,8 @@ void stacktrace_init(void)
 
 	struct limine_file *file = module_response->modules[0];
 	assert(file != NULL);
+
+	logger_info("Stacktrace: Found kernel symbol map at 0x%016x", (uintptr_t) file->address);
 
 	char *symbol_map = kmalloc(sizeof(char) * file->size);
 	for (size_t i = 0; i < file->size; ++i)
@@ -52,40 +56,43 @@ void stacktrace_init(void)
 
 	s_symbols = kmalloc(sizeof(struct symbol) * s_symbol_count);
 
-	char **symbol_lines = kmalloc(sizeof(char *) * s_symbol_count);
+	char **symbol_map_lines = kmalloc(sizeof(char *) * s_symbol_count);
 
-	size_t i = 0;
-	char *line = strtok(symbol_map, "\n");
-	while (line != NULL)
+	size_t current_symbol = 0;
+	char *symbol_map_line = strtok(symbol_map, "\n");
+	while (symbol_map_line != NULL)
 	{
-		size_t line_length = strlen(line);
-		symbol_lines[i] = kmalloc(sizeof(char) * line_length);
-		memcpy(symbol_lines[i], line, line_length);
+		const size_t line_length = strlen(symbol_map_line);
 
-		++i;
+		symbol_map_lines[current_symbol] = kmalloc(sizeof(char) * line_length);
+		memcpy(symbol_map_lines[current_symbol], symbol_map_line, line_length);
 
-		line = strtok(NULL, "\n");
+		++current_symbol;
+
+		symbol_map_line = strtok(NULL, "\n");
 	}
+
+	kfree(symbol_map);
 
 	for (size_t i = 0; i < s_symbol_count; ++i)
 	{
-		char *symbol_line = symbol_lines[i];
+		char *symbol_line = symbol_map_lines[i];
 
-		size_t j = 0;
+		size_t part_index = 0;
 		char *symbol_part = strtok(symbol_line, " ");
 		while (symbol_part != NULL)
 		{
-			if (j == 0)
+			if (part_index == 0)
 			{
 				s_symbols[i].address = stroull(symbol_part, NULL, 16);
 			}
 
-			if (j == 2)
+			if (part_index == 2)
 			{
 				memcpy(s_symbols[i].name, symbol_part, strlen(symbol_part));
 			}
 
-			++j;
+			++part_index;
 
 			symbol_part = strtok(NULL, " ");
 		}
@@ -93,8 +100,15 @@ void stacktrace_init(void)
 		kfree(symbol_line);
 	}
 
-	kfree(symbol_lines);
-	kfree(symbol_map);
+	kfree(symbol_map_lines);
+
+	logger_info("Stacktrace: Parsed symbol map");
+
+	const size_t page_count = DIV_ROUND_UP(file->size, PAGE_SIZE);
+	pmm_free((void *) (file->address - pmm_get_memory_offset()), page_count);
+	logger_info("Stacktrace: Freed %u pages of memory", page_count);
+
+	logger_info("Stacktrace: Initialized", DIV_ROUND_UP(file->size, PAGE_SIZE));
 }
 
 void stacktrace_print(size_t max_frames)
@@ -102,7 +116,7 @@ void stacktrace_print(size_t max_frames)
 	struct stack_frame *stack_frame = NULL;
 	__asm__ __volatile__("mov %%rbp, %0" : "=r"(stack_frame) : : "memory");
 
-	logger_error("Stack trace:");
+	logger_error("Stacktrace:");
 	for (size_t i = 0; stack_frame != NULL && i < max_frames; ++i)
 	{
 		const uint64_t rip = stack_frame->rip;
@@ -126,9 +140,10 @@ void stacktrace_print(size_t max_frames)
 
 		if (symbol == NULL)
 		{
+			logger_error(" %u. ?? <0x%016x>", i + 1, rip);
 			continue;
 		}
 
-		logger_error("# %u 0x%016x %s", i + 1, symbol->address, symbol->name);
+		logger_error(" %u. %s <0x%016x>", i + 1, symbol->name, rip);
 	}
 }

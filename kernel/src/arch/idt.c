@@ -90,12 +90,14 @@ void idt_init(void)
 		s_interrupt_handlers[i] = idt_default_interrupt_handler;
 	}
 
+	logger_info("IDT: Registered interrupt handler");
+
 	s_descriptor.size = sizeof(s_entries) - 1;
 	s_descriptor.address = (uintptr_t) s_entries;
 
 	idt_load();
 
-	logger_info("Initialized IDT");
+	logger_info("IDT: Initialized");
 }
 
 void idt_load(void)

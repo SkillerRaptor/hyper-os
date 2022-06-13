@@ -41,7 +41,7 @@ void apic_init(void)
 	lapic_init();
 	lapic_timer_init();
 
-	logger_info("Initialized APIC");
+	logger_info("APIC: Initialized");
 }
 
 /*
@@ -71,6 +71,8 @@ static void lapic_init(void)
 		LAPIC_SPURIOUS_REGISTER,
 		lapic_read(LAPIC_SPURIOUS_REGISTER) | LAPIC_SPURIOUS_ENABLE_APIC |
 			LAPIC_SPURIOUS_ALL);
+
+	logger_info("APIC: Initialized LAPIC");
 }
 
 static void lapic_timer_init(void)
@@ -83,11 +85,14 @@ static void lapic_timer_init(void)
 	lapic_write(LAPIC_TIMER_REGISTER, LAPIC_TIMER_MASKED);
 
 	const uint32_t ticks =
-		0xffffffff - lapic_read(LAPIC_TIMER_CURRENT_COUNT_REGISTER);
+		(0xffffffff - lapic_read(LAPIC_TIMER_CURRENT_COUNT_REGISTER)) / 10;
+	logger_info("APIC: Configured LAPIC timer with %u ticks", ticks);
 
 	lapic_write(LAPIC_TIMER_REGISTER, LAPIC_TIMER_ISR | LAPIC_TIMER_PERIODIC);
 	lapic_write(LAPIC_TIMER_DIVIDER_REGISTER, LAPIC_TIMER_DIVIDER_16);
-	lapic_write(LAPIC_TIMER_INITIAL_COUNT_REGISTER, ticks / 10);
+	lapic_write(LAPIC_TIMER_INITIAL_COUNT_REGISTER, ticks);
+
+	logger_info("APIC: Initialized LAPIC timer");
 }
 
 uint8_t lapic_get_current_cpu()

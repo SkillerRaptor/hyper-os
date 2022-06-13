@@ -47,6 +47,8 @@ void pmm_init(void)
 		}
 	}
 
+	logger_info("PMM: Found highest page at 0x%016x", s_highest_page);
+
 	s_bitmap.size = DIV_ROUND_UP(s_highest_page, PAGE_SIZE) / BYTE_SIZE;
 	for (size_t i = 0; i < memory_map_response->entry_count; ++i)
 	{
@@ -64,6 +66,10 @@ void pmm_init(void)
 			memory_map[i]->base += s_bitmap.size;
 			memory_map[i]->length -= s_bitmap.size;
 
+			logger_info(
+				"PMM: Allocated bitmap at 0x%016x - 0x%016x",
+				memory_map[i]->base,
+				memory_map[i]->base + memory_map[i]->length);
 			break;
 		}
 	}
@@ -81,7 +87,7 @@ void pmm_init(void)
 		}
 	}
 
-	logger_info("Initialized PMM");
+	logger_info("PMM: Initialized");
 }
 
 void *pmm_alloc(size_t page_count)

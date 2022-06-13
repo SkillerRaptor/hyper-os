@@ -34,6 +34,8 @@ void vmm_init(void)
 			ATTRIBUTE_READ_WRITE | ATTRIBUTE_PRESENT);
 	}
 
+	logger_info("VMM: Mapped higher half");
+
 	struct limine_memmap_response *memory_map_response = boot_get_memory_map();
 	assert(memory_map_response != NULL);
 	assert(memory_map_response->entry_count != 0);
@@ -52,9 +54,13 @@ void vmm_init(void)
 		}
 	}
 
+	logger_info("VMM: Mapped memory map");
+
 	vmm_switch_page_map(s_kernel_page_map);
 
-	logger_info("Initialized VMM");
+	logger_info("VMM: Loaded kernel page map");
+
+	logger_info("VMM: Initialized");
 }
 
 struct page_map *vmm_create_page_map(void)

@@ -11,7 +11,6 @@
 #include "arch/idt.h"
 #include "arch/madt.h"
 #include "arch/pic.h"
-#include "lib/assert.h"
 #include "lib/logger.h"
 #include "lib/stacktrace.h"
 #include "memory/kmalloc.h"
@@ -43,8 +42,6 @@ __attribute__((noreturn)) void kernel_main(void)
 
 	smp_init();
 	scheduler_init();
-
-	__asm__ __volatile__("sti");
 
 	const int64_t kernel_process_id = scheduler_create_task(NULL);
 	scheduler_create_thread(

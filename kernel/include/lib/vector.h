@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include "lib/vector.h"
 #include "scheduling/spinlock.h"
 
 #include <stddef.h>

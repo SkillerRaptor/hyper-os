@@ -79,12 +79,13 @@ void hpet_init(void)
 	assert(s_entry != NULL);
 
 	s_clock = s_entry->general_capabilities.counter_clock_period;
+	logger_info("HPET: Configured clock period with %uns", s_clock / 1000000);
 
 	s_entry->general_configuration.enable = 0;
 	s_entry->main_counter_value = 0;
 	s_entry->general_configuration.enable = 1;
 
-	logger_info("Initialized HPET");
+	logger_info("HPET: Initialized");
 }
 
 void hpet_sleep(uint64_t milliseconds)

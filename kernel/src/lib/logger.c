@@ -17,18 +17,85 @@
 #define FONT_COLOR_RED "\033[30;31m"
 #define FONT_COLOR_GREEN "\033[30;32m"
 #define FONT_COLOR_YELLOW "\033[30;33m"
-#define FONT_COLOR_CYAN "\033[30;3m"
+#define FONT_COLOR_CYAN "\033[30;36m"
 
 #define FONT_RESET "\033[0m"
 
-static struct limine_terminal *s_terminal = NULL;
 static limine_terminal_write s_write = NULL;
-
+static struct limine_terminal *s_terminal = NULL;
 static struct spinlock s_lock = { 0 };
 
-static void logger_write_string(const char *string)
+static void logger_vlog(const char *format, va_list args);
+static void logger_write_string(const char *string);
+
+void logger_init()
 {
-	s_write(s_terminal, string, strlen(string));
+	struct limine_terminal_response *terminal_response = boot_get_terminal();
+	assert(terminal_response != NULL);
+	assert(terminal_response->terminal_count != 0);
+
+	s_terminal = terminal_response->terminals[0];
+	s_write = terminal_response->write;
+
+	logger_info("Logger: Initialized");
+}
+
+void logger_info(const char *format, ...)
+{
+	spinlock_lock(&s_lock);
+
+	logger_write_string(FONT_COLOR_GREEN "info" FONT_RESET ": ");
+
+	va_list args;
+	va_start(args, format);
+	logger_vlog(format, args);
+	va_end(args);
+
+	spinlock_unlock(&s_lock);
+}
+
+void logger_warning(const char *format, ...)
+{
+	spinlock_lock(&s_lock);
+
+	logger_write_string(FONT_COLOR_YELLOW "warning" FONT_RESET ": ");
+
+	va_list args;
+	va_start(args, format);
+	logger_vlog(format, args);
+	va_end(args);
+
+	spinlock_unlock(&s_lock);
+}
+
+void logger_error(const char *format, ...)
+{
+	spinlock_lock(&s_lock);
+
+	logger_write_string(FONT_COLOR_RED "error" FONT_RESET ": ");
+
+	va_list args;
+	va_start(args, format);
+	logger_vlog(format, args);
+	va_end(args);
+
+	spinlock_unlock(&s_lock);
+}
+
+void logger_debug(const char *format, ...)
+{
+#ifndef NDEBUG
+	spinlock_lock(&s_lock);
+
+	logger_write_string(FONT_COLOR_CYAN "debug" FONT_RESET ": ");
+
+	va_list args;
+	va_start(args, format);
+	logger_vlog(format, args);
+	va_end(args);
+
+	spinlock_unlock(&s_lock);
+#endif
 }
 
 static void logger_write_character(char character)
@@ -36,9 +103,9 @@ static void logger_write_character(char character)
 	s_write(s_terminal, &character, 1);
 }
 
-static bool logger_is_digit(char character)
+static void logger_write_string(const char *string)
 {
-	return (character >= '0') && (character <= '9');
+	s_write(s_terminal, string, strlen(string));
 }
 
 static char *logger_convert_to_string(
@@ -48,20 +115,18 @@ static char *logger_convert_to_string(
 	bool uppercase,
 	bool negative)
 {
-	static const char *s_lowercase_representation = "0123456789abcdef";
-	static const char *s_uppercase_representation = "0123456789ABCDEF";
 	static char buffer[50] = { 0 };
 
 	const char *representation =
-		uppercase ? s_uppercase_representation : s_lowercase_representation;
+		uppercase ? "0123456789ABCDEF" : "0123456789abcdef";
 
-	char *character_ptr = &buffer[49];
-	*character_ptr = '\0';
+	char *ptr = &buffer[49];
+	*ptr = '\0';
 
 	size_t string_width = 0;
 	do
 	{
-		*--character_ptr = representation[number % base];
+		*--ptr = representation[number % base];
 		number /= base;
 
 		++string_width;
@@ -72,16 +137,16 @@ static char *logger_convert_to_string(
 		size_t move_width = min_width - string_width;
 		do
 		{
-			*--character_ptr = '0';
+			*--ptr = '0';
 		} while (--move_width != 0);
 	}
 
 	if (negative)
 	{
-		*--character_ptr = '-';
+		*--ptr = '-';
 	}
 
-	return character_ptr;
+	return ptr;
 }
 
 static void logger_vlog(const char *format, va_list args)
@@ -97,7 +162,7 @@ static void logger_vlog(const char *format, va_list args)
 		++format;
 
 		size_t width = 0;
-		while (logger_is_digit(*format))
+		while (isdigit(*format))
 		{
 			width *= 10;
 			width += (size_t) (*(format++) - '0');
@@ -108,7 +173,7 @@ static void logger_vlog(const char *format, va_list args)
 		case 'd':
 		case 'i':
 		{
-			int64_t i = va_arg(args, int64_t);
+			const int64_t i = va_arg(args, int64_t);
 			logger_write_string(logger_convert_to_string(i, 10, width, false, i < 0));
 			break;
 		}
@@ -157,78 +222,4 @@ static void logger_vlog(const char *format, va_list args)
 	}
 
 	logger_write_character('\n');
-}
-
-void logger_init()
-{
-	struct limine_terminal_response *terminal_response = boot_get_terminal();
-	assert(terminal_response != NULL);
-	assert(terminal_response->terminal_count != 0);
-
-	s_terminal = terminal_response->terminals[0];
-	s_write = terminal_response->write;
-}
-
-void logger_info(const char *format, ...)
-{
-	spinlock_lock(&s_lock);
-
-	logger_write_string(FONT_COLOR_GREEN "info" FONT_RESET ": ");
-
-	va_list args;
-	va_start(args, format);
-
-	logger_vlog(format, args);
-
-	va_end(args);
-
-	spinlock_unlock(&s_lock);
-}
-
-void logger_warning(const char *format, ...)
-{
-	spinlock_lock(&s_lock);
-
-	logger_write_string(FONT_COLOR_YELLOW "warning" FONT_RESET ": ");
-
-	va_list args;
-	va_start(args, format);
-
-	logger_vlog(format, args);
-
-	va_end(args);
-
-	spinlock_unlock(&s_lock);
-}
-
-void logger_error(const char *format, ...)
-{
-	spinlock_lock(&s_lock);
-
-	logger_write_string(FONT_COLOR_RED "error" FONT_RESET ": ");
-
-	va_list args;
-	va_start(args, format);
-
-	logger_vlog(format, args);
-
-	va_end(args);
-
-	spinlock_unlock(&s_lock);
-}
-
-void logger_debug(const char *format, ...)
-{
-	spinlock_lock(&s_lock);
-
-	logger_write_string(FONT_COLOR_CYAN "debug" FONT_RESET ": ");
-
-	va_list args;
-	va_start(args, format);
-
-	logger_vlog(format, args);
-
-	va_end(args);
-
-	spinlock_unlock(&s_lock);
 }

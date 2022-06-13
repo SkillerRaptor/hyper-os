@@ -61,6 +61,7 @@ void madt_init(void)
 			struct madt_lapic *lapic = (struct madt_lapic *) ptr;
 			s_lapics.data[current_lapic_index] = lapic;
 			++current_lapic_index;
+			logger_info("MADT: Found LAPIC #%u", current_lapic_index);
 			break;
 		}
 		case 1:
@@ -68,6 +69,7 @@ void madt_init(void)
 			struct madt_ioapic *ioapic = (struct madt_ioapic *) ptr;
 			s_ioapics.data[current_ioapic_index] = ioapic;
 			++current_ioapic_index;
+			logger_info("MADT: Found IO/APIC #%u", current_lapic_index);
 			break;
 		}
 		default:
@@ -75,7 +77,7 @@ void madt_init(void)
 		}
 	}
 
-	logger_info("Initialized MADT");
+	logger_info("MADT: Initialized");
 }
 
 struct madt_lapic_list *madt_get_lapics()

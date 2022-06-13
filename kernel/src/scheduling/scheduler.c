@@ -33,12 +33,14 @@ extern void switch_task(struct registers *registers);
 void scheduler_init(void)
 {
 	idt_set_handler(LAPIC_TIMER_ISR, scheduler_schedule);
+	logger_info(
+		"Scheduler: Registered LAPIC timer ISR at 0x%02x", LAPIC_TIMER_ISR);
 
 	vector_init(&s_task_queue, sizeof(pid_t));
 	vector_init(&s_task_list, sizeof(struct task));
 	vector_init(&s_thread_list, sizeof(struct thread));
 
-	logger_info("Initialized Scheduler");
+	logger_info("Scheduler: Initialized");
 }
 
 __attribute__((noreturn)) void scheduler_wait(void)

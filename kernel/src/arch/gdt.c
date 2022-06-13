@@ -140,14 +140,18 @@ void gdt_init(void)
 			ACCESS_ATTRIBUTE_READ_WRITE,
 		FLAG_ATTRIBUTE_4K | FLAG_ATTRIBUTE_32);
 
+	logger_info("GDT: Created kernel entries");
+
 	gdt_create_tss_entry(&s_table.tss_entry, 0);
+
+	logger_info("GDT: Created TSS entry");
 
 	s_descriptor.size = sizeof(s_table) - 1;
 	s_descriptor.address = (uintptr_t) &s_table;
 
 	gdt_load();
 
-	logger_info("Initialized GDT");
+	logger_info("GDT: Initialized");
 }
 
 void gdt_load(void)

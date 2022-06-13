@@ -16,6 +16,7 @@
 #include "memory/kmalloc.h"
 #include "memory/pmm.h"
 #include "memory/vmm.h"
+#include "scheduling/scheduler.h"
 #include "scheduling/spinlock.h"
 
 #include <stddef.h>
@@ -34,6 +35,8 @@ void smp_init(void)
 
 	s_bsp_lapic_id = smp_response->bsp_lapic_id;
 	s_cpu_infos = kmalloc(sizeof(struct cpu_info) * smp_response->cpu_count);
+
+	logger_info("SMP: Found %u available CPUs", smp_response->cpu_count);
 
 	struct limine_smp_info **cpus = smp_response->cpus;
 	for (size_t i = 0; i < smp_response->cpu_count; ++i)
@@ -63,7 +66,7 @@ void smp_init(void)
 	{
 	}
 
-	logger_info("Initialized SMP");
+	logger_info("SMP: Initialized");
 }
 
 static void cpu_init(struct limine_smp_info *smp_info)
@@ -78,6 +81,11 @@ static void cpu_init(struct limine_smp_info *smp_info)
 
 	gdt_load_tss(&cpu_info->tss);
 
+	if (cpu_info->lapic_id != s_bsp_lapic_id)
+	{
+		logger_info("SMP: Started CPU #%u", cpu_info->id);
+	}
+
 	spinlock_lock(&s_lock);
 	++s_online_cpu_count;
 	spinlock_unlock(&s_lock);
@@ -87,10 +95,7 @@ static void cpu_init(struct limine_smp_info *smp_info)
 		return;
 	}
 
-	for (;;)
-	{
-		__asm__ __volatile__("hlt");
-	}
+	scheduler_wait();
 }
 
 struct cpu_info *smp_get_cpu_infos()
