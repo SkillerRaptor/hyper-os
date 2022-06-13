@@ -176,7 +176,7 @@ void gdt_load(void)
 										 : "m"(s_descriptor),
 											 "r"((uint64_t) KERNEL_DATA_SELECTOR),
 											 "r"((uint64_t) KERNEL_CODE_SELECTOR)
-										 : "memory");
+										 : "rbx", "memory");
 }
 
 void gdt_load_tss(struct tss *tss)

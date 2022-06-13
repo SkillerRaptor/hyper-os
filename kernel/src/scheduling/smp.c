@@ -64,6 +64,8 @@ void smp_init(void)
 
 	while (s_online_cpu_count != smp_response->cpu_count)
 	{
+		// NOTE: Prevents compiler from optimizing loop
+		__asm__ __volatile__("");
 	}
 
 	logger_info("SMP: Initialized");

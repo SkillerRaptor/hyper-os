@@ -94,5 +94,7 @@ void hpet_sleep(uint64_t milliseconds)
 		s_entry->main_counter_value + (milliseconds * 1000000000000) / s_clock;
 	while (s_entry->main_counter_value < ticks)
 	{
+		// NOTE: Prevents compiler from optimizing loop
+		__asm__ __volatile__("");
 	}
 }
