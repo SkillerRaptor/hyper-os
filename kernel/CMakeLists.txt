@@ -72,7 +72,7 @@ add_executable(kernel ${SOURCES} ${HEADERS})
 target_include_directories(kernel PRIVATE include)
 target_link_libraries(kernel PRIVATE limine)
 target_compile_options(kernel PRIVATE
-		-O3
+		-O0
 		-g
 		-fno-stack-check
 		-fno-stack-protector
@@ -123,4 +123,4 @@ add_custom_target(iso ALL DEPENDS HyperOS.iso)
 #-------------------------------------------------------------------------------------------
 # Run
 #-------------------------------------------------------------------------------------------
-add_custom_target(run DEPENDS HyperOS.iso COMMAND qemu-system-x86_64 -M q35 -m 2G -rtc base=localtime -cdrom ${CMAKE_BINARY_DIR}/HyperOS.iso)
+add_custom_target(run DEPENDS HyperOS.iso COMMAND qemu-system-x86_64 -M q35 -m 2G -rtc base=localtime -smp 4 -cdrom ${CMAKE_BINARY_DIR}/HyperOS.iso)

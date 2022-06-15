@@ -12,6 +12,7 @@
 
 void apic_init(void);
 
+void lapic_enable(void);
 void lapic_send_eoi(void);
 
 uint8_t lapic_get_current_cpu();

@@ -48,29 +48,33 @@ void apic_init(void)
  * LAPIC
  */
 
-static void lapic_write(uint32_t lapic_register, uint32_t value)
-{
-	uint8_t *lapic_address =
-		(uint8_t *) (cpu_read_msr(APIC_BASE_MSR) & 0xfffff000);
-	*((volatile uint32_t *) (lapic_address + lapic_register)) = value;
-}
+static void lapic_write(uint32_t lapic_register, uint32_t value);
+static uint32_t lapic_read(uint32_t lapic_register);
 
-static uint32_t lapic_read(uint32_t lapic_register)
+void lapic_enable(void)
 {
-	uint8_t *lapic_address =
-		(uint8_t *) (cpu_read_msr(APIC_BASE_MSR) & 0xfffff000);
-	return *((volatile uint32_t *) (lapic_address + lapic_register));
-}
-
-static void lapic_init(void)
-{
-	cpu_write_msr(
-		APIC_BASE_MSR, (cpu_read_msr(APIC_BASE_MSR) | LAPIC_ENABLE) & ~((1 << 10)));
-
 	lapic_write(
 		LAPIC_SPURIOUS_REGISTER,
 		lapic_read(LAPIC_SPURIOUS_REGISTER) | LAPIC_SPURIOUS_ENABLE_APIC |
 			LAPIC_SPURIOUS_ALL);
+}
+
+void lapic_send_eoi(void)
+{
+	lapic_write(LAPIC_EOI_REGISTER, 0);
+}
+
+uint8_t lapic_get_current_cpu()
+{
+	return (uint8_t) (lapic_read(LAPIC_ID_REGISTER) >> 24);
+}
+
+void lapic_init(void)
+{
+	cpu_write_msr(
+		APIC_BASE_MSR, (cpu_read_msr(APIC_BASE_MSR) | LAPIC_ENABLE) & ~((1 << 10)));
+
+	lapic_enable();
 
 	logger_info("APIC: Initialized LAPIC");
 }
@@ -95,12 +99,16 @@ static void lapic_timer_init(void)
 	logger_info("APIC: Initialized LAPIC timer");
 }
 
-uint8_t lapic_get_current_cpu()
+static void lapic_write(uint32_t lapic_register, uint32_t value)
 {
-	return (uint8_t) (lapic_read(LAPIC_ID_REGISTER) >> 24);
+	uint8_t *lapic_address =
+		(uint8_t *) (cpu_read_msr(APIC_BASE_MSR) & 0xfffff000);
+	*((volatile uint32_t *) (lapic_address + lapic_register)) = value;
 }
 
-void lapic_send_eoi(void)
+static uint32_t lapic_read(uint32_t lapic_register)
 {
-	lapic_write(LAPIC_EOI_REGISTER, 0);
+	uint8_t *lapic_address =
+		(uint8_t *) (cpu_read_msr(APIC_BASE_MSR) & 0xfffff000);
+	return *((volatile uint32_t *) (lapic_address + lapic_register));
 }

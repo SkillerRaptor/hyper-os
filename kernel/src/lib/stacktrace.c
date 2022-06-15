@@ -14,6 +14,7 @@
 #include "lib/string.h"
 #include "memory/kmalloc.h"
 #include "memory/pmm.h"
+#include "scheduling/spinlock.h"
 
 #include <stdint.h>
 
@@ -31,6 +32,7 @@ struct symbol
 
 static size_t s_symbol_count = 0;
 static struct symbol *s_symbols = NULL;
+static struct spinlock s_lock = { 0 };
 
 void stacktrace_init(void)
 {
@@ -40,7 +42,9 @@ void stacktrace_init(void)
 	struct limine_file *file = module_response->modules[0];
 	assert(file != NULL);
 
-	logger_info("Stacktrace: Found kernel symbol map at 0x%016x", (uintptr_t) file->address);
+	logger_info(
+		"Stacktrace: Found kernel symbol map at 0x%016x",
+		(uintptr_t) file->address);
 
 	char *symbol_map = kmalloc(sizeof(char) * file->size);
 	for (size_t i = 0; i < file->size; ++i)
@@ -113,6 +117,8 @@ void stacktrace_init(void)
 
 void stacktrace_print(size_t max_frames)
 {
+	spinlock_lock(&s_lock);
+
 	struct stack_frame *stack_frame = NULL;
 	__asm__ __volatile__("mov %%rbp, %0" : "=r"(stack_frame) : : "memory");
 
@@ -122,7 +128,7 @@ void stacktrace_print(size_t max_frames)
 		const uint64_t rip = stack_frame->rip;
 		if (rip == 0)
 		{
-			return;
+			break;
 		}
 
 		stack_frame = stack_frame->rbp;
@@ -146,4 +152,6 @@ void stacktrace_print(size_t max_frames)
 
 		logger_error(" %u. %s <0x%016x>", i + 1, symbol->name, rip);
 	}
+
+	spinlock_unlock(&s_lock);
 }

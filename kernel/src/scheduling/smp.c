@@ -6,6 +6,7 @@
 
 #include "scheduling/smp.h"
 
+#include "arch/apic.h"
 #include "arch/boot.h"
 #include "arch/cpu.h"
 #include "arch/gdt.h"
@@ -82,6 +83,8 @@ static void cpu_init(struct limine_smp_info *smp_info)
 	struct cpu_info *cpu_info = cpu_get_local_info();
 
 	gdt_load_tss(&cpu_info->tss);
+
+	lapic_enable();
 
 	if (cpu_info->lapic_id != s_bsp_lapic_id)
 	{
