@@ -21,9 +21,9 @@
 static struct vector s_task_queue = { 0 };
 static struct vector s_task_list = { 0 };
 static struct vector s_thread_list = { 0 };
-
 static int64_t s_task_count = 0;
 static int64_t s_thread_count = 0;
+static pid_t s_kernel_process_id = 0;
 static struct spinlock s_lock = { 0 };
 
 static void scheduler_schedule(struct registers *);
@@ -34,11 +34,14 @@ void scheduler_init(void)
 {
 	idt_set_handler(LAPIC_TIMER_ISR, scheduler_schedule);
 	logger_info(
-		"Scheduler: Registered LAPIC timer ISR at 0x%02x", LAPIC_TIMER_ISR);
+		"Scheduler: LAPIC timer ISR registered at 0x%02x", LAPIC_TIMER_ISR);
 
 	vector_init(&s_task_queue, sizeof(pid_t));
 	vector_init(&s_task_list, sizeof(struct task));
 	vector_init(&s_thread_list, sizeof(struct thread));
+
+	s_kernel_process_id = scheduler_create_task(vmm_get_kernel_page_map());
+	logger_info("Scheduler: Kernel process created with pid %u", s_kernel_process_id);
 
 	logger_info("Scheduler: Initialized");
 }
@@ -58,7 +61,7 @@ pid_t scheduler_create_task(struct page_map *page_map)
 	struct task task = { 0 };
 	task.pid = s_task_count++;
 	task.state = TASK_STATE_IDLING;
-	task.page_map = page_map != NULL ? page_map : vmm_get_kernel_page_map();
+	task.page_map = page_map != NULL ? page_map : vmm_create_page_map();
 
 	vector_push_back(&s_task_queue, &task.pid);
 	vector_push_back(&s_task_list, &task);
@@ -96,6 +99,11 @@ tid_t scheduler_create_thread(pid_t pid, uintptr_t rip, uint16_t cs)
 	vector_push_back(&s_thread_list, &thread);
 
 	return thread.tid;
+}
+
+pid_t scheduler_get_kernel_process()
+{
+	return s_kernel_process_id;
 }
 
 static void scheduler_schedule(struct registers *registers)

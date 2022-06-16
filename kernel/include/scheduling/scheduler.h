@@ -18,3 +18,5 @@ __attribute__((noreturn)) void scheduler_wait(void);
 
 pid_t scheduler_create_task(struct page_map *page_map);
 tid_t scheduler_create_thread(pid_t pid, uintptr_t rip, uint16_t cs);
+
+pid_t scheduler_get_kernel_process();

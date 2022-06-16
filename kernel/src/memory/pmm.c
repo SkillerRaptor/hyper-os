@@ -47,7 +47,7 @@ void pmm_init(void)
 		}
 	}
 
-	logger_info("PMM: Found highest page at 0x%016x", s_highest_page);
+	logger_info("PMM: Highest page found at 0x%016x", s_highest_page);
 
 	s_bitmap.size = DIV_ROUND_UP(s_highest_page, PAGE_SIZE) / BYTE_SIZE;
 	for (size_t i = 0; i < memory_map_response->entry_count; ++i)
@@ -67,19 +67,25 @@ void pmm_init(void)
 			memory_map[i]->length -= s_bitmap.size;
 
 			logger_info(
-				"PMM: Allocated bitmap at 0x%016x - 0x%016x",
+				"PMM: Bitmap allocated at 0x%016x - 0x%016x",
 				memory_map[i]->base,
 				memory_map[i]->base + memory_map[i]->length);
 			break;
 		}
 	}
 
+	size_t total_memory = 0;
+	size_t free_memory = 0;
 	for (size_t i = 0; i < memory_map_response->entry_count; ++i)
 	{
+		total_memory += memory_map[i]->length;
+
 		if (memory_map[i]->type != LIMINE_MEMMAP_USABLE)
 		{
 			continue;
 		}
+
+		free_memory += memory_map[i]->length;
 
 		for (uintptr_t j = 0; j < memory_map[i]->length; j += PAGE_SIZE)
 		{
@@ -87,6 +93,12 @@ void pmm_init(void)
 		}
 	}
 
+	total_memory /= 1024 * 1024;
+	free_memory /= 1024 * 1024;
+
+	logger_info("PMM: Total memory - %uMiB", total_memory);
+	logger_info("PMM: Used memory - %uMiB", total_memory - free_memory);
+	logger_info("PMM: Free memory - %uMiB", free_memory);
 	logger_info("PMM: Initialized");
 }
 

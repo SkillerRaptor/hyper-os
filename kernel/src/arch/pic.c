@@ -8,8 +8,6 @@
 
 #include "arch/io.h"
 
-#include <stdbool.h>
-
 #define MASTER_COMMAND_SELECTOR 0x20
 #define MASTER_DATA_SELECTOR 0x21
 #define MASTER_OFFSET 0x20

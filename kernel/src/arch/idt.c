@@ -90,7 +90,7 @@ void idt_init(void)
 		s_interrupt_handlers[i] = idt_default_interrupt_handler;
 	}
 
-	logger_info("IDT: Registered interrupt handler");
+	logger_info("IDT: Interrupt handlers registered");
 
 	s_descriptor.size = sizeof(s_entries) - 1;
 	s_descriptor.address = (uintptr_t) s_entries;

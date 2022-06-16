@@ -84,8 +84,3 @@ void fadt_init(void)
 
 	logger_info("FADT: Initialized");
 }
-
-uint8_t fadt_get_century(void)
-{
-	return s_table->century;
-}

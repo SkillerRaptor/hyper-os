@@ -76,7 +76,7 @@ void lapic_init(void)
 
 	lapic_enable();
 
-	logger_info("APIC: Initialized LAPIC");
+	logger_info("APIC: LAPIC initialized");
 }
 
 static void lapic_timer_init(void)
@@ -90,13 +90,13 @@ static void lapic_timer_init(void)
 
 	const uint32_t ticks =
 		(0xffffffff - lapic_read(LAPIC_TIMER_CURRENT_COUNT_REGISTER)) / 10;
-	logger_info("APIC: Configured LAPIC timer with %u ticks", ticks);
+	logger_info("APIC: LAPIC timer configured with %u ticks", ticks);
 
 	lapic_write(LAPIC_TIMER_REGISTER, LAPIC_TIMER_ISR | LAPIC_TIMER_PERIODIC);
 	lapic_write(LAPIC_TIMER_DIVIDER_REGISTER, LAPIC_TIMER_DIVIDER_16);
 	lapic_write(LAPIC_TIMER_INITIAL_COUNT_REGISTER, ticks);
 
-	logger_info("APIC: Initialized LAPIC timer");
+	logger_info("APIC: LAPIC timer initialized");
 }
 
 static void lapic_write(uint32_t lapic_register, uint32_t value)

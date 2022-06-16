@@ -43,7 +43,7 @@ void stacktrace_init(void)
 	assert(file != NULL);
 
 	logger_info(
-		"Stacktrace: Found kernel symbol map at 0x%016x",
+		"Stacktrace: Kernel symbol map found at 0x%016x",
 		(uintptr_t) file->address);
 
 	char *symbol_map = kmalloc(sizeof(char) * file->size);
@@ -106,11 +106,11 @@ void stacktrace_init(void)
 
 	kfree(symbol_map_lines);
 
-	logger_info("Stacktrace: Parsed symbol map");
+	logger_info("Stacktrace: Symbol map parsed");
 
 	const size_t page_count = DIV_ROUND_UP(file->size, PAGE_SIZE);
 	pmm_free((void *) (file->address - pmm_get_memory_offset()), page_count);
-	logger_info("Stacktrace: Freed %u pages of memory", page_count);
+	logger_info("Stacktrace: %u pages were freed", page_count);
 
 	logger_info("Stacktrace: Initialized", DIV_ROUND_UP(file->size, PAGE_SIZE));
 }

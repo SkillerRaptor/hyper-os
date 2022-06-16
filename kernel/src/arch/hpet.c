@@ -79,7 +79,7 @@ void hpet_init(void)
 	assert(s_entry != NULL);
 
 	s_clock = s_entry->general_capabilities.counter_clock_period;
-	logger_info("HPET: Configured clock period with %uns", s_clock / 1000000);
+	logger_info("HPET: Clock period configured with %uns", s_clock / 1000000);
 
 	s_entry->general_configuration.enable = 0;
 	s_entry->main_counter_value = 0;
