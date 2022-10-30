@@ -1,0 +1,4 @@
+[workspace]
+members = [
+    "hyper_kernel",
+]
