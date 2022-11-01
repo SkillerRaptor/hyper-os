@@ -132,7 +132,7 @@ pub fn init() {
 
     load();
 
-    info!("Initialized IDT");
+    info!("IDT: Initialized");
 }
 
 fn load() {
@@ -149,7 +149,6 @@ fn load() {
 #[no_mangle]
 extern "C" fn idt_raise(isr: usize, registers: *mut Registers) {
     let mut registers = unsafe { &mut *registers };
-
     if let Some(handler) = unsafe { HANDLERS[isr] } {
         handler(&mut registers);
     }

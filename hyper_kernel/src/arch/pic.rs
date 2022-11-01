@@ -37,8 +37,6 @@ pub fn remap() {
 
     io::out8(MASTER_DATA_SELECTOR, ICW1_8086);
     io::out8(SLAVE_DATA_SELECTOR, ICW1_8086);
-
-    info!("Remapped PIC");
 }
 
 pub fn end_of_interrupt(isr: u8) {

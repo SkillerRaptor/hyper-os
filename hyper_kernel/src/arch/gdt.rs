@@ -211,7 +211,7 @@ pub fn init() {
 
     load();
 
-    info!("Initialized GDT");
+    info!("GDT: Initialized");
 }
 
 fn load() {
