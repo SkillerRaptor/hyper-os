@@ -8,6 +8,9 @@ use bitflags::bitflags;
 use core::{arch::asm, mem};
 use log::info;
 
+pub const KERNEL_CODE_SELECTOR: u64 = 0x28;
+pub const KERNEL_DATA_SELECTOR: u64 = 0x30;
+
 bitflags! {
     struct AccessAttribute: u8 {
         const NULL = 0;
@@ -98,7 +101,7 @@ impl Table {
 }
 
 #[repr(C, packed)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 struct Descriptor {
     size: u16,
     address: u64,
@@ -208,13 +211,11 @@ pub fn init() {
 
     load();
 
-    info!(target: "GDT", "Initialized");
+    info!("Initialized GDT");
 }
 
 fn load() {
     unsafe {
-        const KERNEL_CODE_SELECTOR: u64 = 0x28;
-        const KERNEL_DATA_SELECTOR: u64 = 0x30;
         asm!(
             "lgdt [{descriptor}]",
             "push {tmp}",

@@ -9,7 +9,10 @@
 mod arch;
 mod common;
 
-use crate::{arch::gdt, common::logger};
+use crate::{
+    arch::{cpu, gdt, idt, pic},
+    common::logger,
+};
 
 use core::panic::PanicInfo;
 use limine::*;
@@ -23,6 +26,7 @@ fn panic(_: &PanicInfo) -> ! {
 }
 
 #[no_mangle]
+#[allow(unconditional_panic)]
 extern "C" fn kernel_main() -> ! {
     logger::init();
 
@@ -45,6 +49,10 @@ extern "C" fn kernel_main() -> ! {
     info!("");
 
     gdt::init();
+    pic::remap();
+    idt::init();
 
-    loop {}
+    loop {
+        cpu::halt();
+    }
 }

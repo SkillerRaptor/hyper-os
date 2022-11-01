@@ -31,11 +31,7 @@ impl Log for HyperLogger {
             Level::Trace => print!("\x1b[35;1mtrace"),
         }
 
-        if record.target() == "hyper_kernel" {
-            println!("\x1b[0m: {}", record.args());
-        } else {
-            println!("\x1b[0m: {}: {}", record.target(), record.args());
-        }
+        println!("\x1b[0m: {}", record.args());
     }
 
     fn flush(&self) {}
