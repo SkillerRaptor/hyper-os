@@ -6,9 +6,10 @@
 
 #![no_std]
 #![no_main]
+mod arch;
 mod common;
 
-use crate::common::logger;
+use crate::{arch::gdt, common::logger};
 
 use core::panic::PanicInfo;
 use limine::*;
@@ -42,6 +43,8 @@ extern "C" fn kernel_main() -> ! {
     info!("");
     info!("Booted with {} v{}", bootloader_name, bootloader_version);
     info!("");
+
+    gdt::init();
 
     loop {}
 }

@@ -8,9 +8,9 @@ use crate::{print, println};
 
 use log::{Level, LevelFilter, Log};
 
-struct HyperLogger;
-
 static LOGGER: HyperLogger = HyperLogger;
+
+struct HyperLogger;
 
 impl Log for HyperLogger {
     fn enabled(&self, _: &log::Metadata) -> bool {
@@ -31,7 +31,11 @@ impl Log for HyperLogger {
             Level::Trace => print!("\x1b[35;1mtrace"),
         }
 
-        println!("\x1b[0m: {}", record.args());
+        if record.target() == "hyper_kernel" {
+            println!("\x1b[0m: {}", record.args());
+        } else {
+            println!("\x1b[0m: {}: {}", record.target(), record.args());
+        }
     }
 
     fn flush(&self) {}
