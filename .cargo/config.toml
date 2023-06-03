@@ -1,0 +1,19 @@
+#-------------------------------------------------------------------------------------------
+# Copyright (c) 2023 SkillerRaptor
+#
+# SPDX-License-Identifier: MIT
+#-------------------------------------------------------------------------------------------
+
+[unstable]
+build-std = ["core", "compiler_builtins", "alloc"]
+build-std-features = ["compiler-builtins-mem"]
+
+[build]
+target = "./.cargo/x86_64-hyper_os.json"
+
+[target.x86_64-hyper_os]
+rustflags = [
+	"-C", "link-arg=-T./kernel/boot/linker.ld",
+	"-C", "force-frame-pointers",
+	"-C", "force-unwind-tables",
+]
