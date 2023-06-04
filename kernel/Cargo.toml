@@ -12,3 +12,5 @@ edition = "2021"
 [dependencies]
 bitflags = "2.3"
 limine = "0.1"
+log = "0.4"
+spin = "0.9"

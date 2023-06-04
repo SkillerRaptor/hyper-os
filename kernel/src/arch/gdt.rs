@@ -214,6 +214,8 @@ pub fn init() {
     }
 
     install();
+
+    log::info!("Initialized GDT");
 }
 
 fn install() {
