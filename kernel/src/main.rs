@@ -10,7 +10,7 @@
 
 mod arch;
 
-use crate::arch::{cpu, gdt};
+use crate::arch::{cpu, gdt, interrupts};
 
 use core::panic::PanicInfo;
 
@@ -19,7 +19,7 @@ extern "C" fn kernel_main() -> ! {
     gdt::init();
 
     unsafe {
-        cpu::disable_interrupts();
+        interrupts::disable();
 
         loop {
             cpu::halt();
@@ -30,7 +30,7 @@ extern "C" fn kernel_main() -> ! {
 #[panic_handler]
 fn rust_panic(_panic_info: &PanicInfo) -> ! {
     unsafe {
-        cpu::disable_interrupts();
+        interrupts::disable();
 
         loop {
             cpu::halt();

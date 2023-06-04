@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
 */
 
-use crate::arch::cpu;
+use crate::arch::interrupts;
 
 use core::{arch::asm, mem};
 
@@ -217,7 +217,7 @@ pub fn init() {
 }
 
 fn install() {
-    cpu::disable_interrupts();
+    interrupts::disable();
 
     unsafe {
         asm!(

@@ -6,27 +6,9 @@
 
 use core::arch::asm;
 
-/// Enables interrupts
-///
-/// Sets the interrupt flag
-#[inline(always)]
-pub fn enable_interrupts() {
-    unsafe {
-        asm!("sti", options(nomem, nostack));
-    }
-}
-
-/// Disables interrupts
-///
-/// Clears the interrupt flag
-#[inline(always)]
-pub fn disable_interrupts() {
-    unsafe {
-        asm!("cli", options(nomem, nostack));
-    }
-}
-
 /// Halts the CPU
+///
+/// Resumes when next interrupt arrives
 #[inline(always)]
 pub fn halt() {
     unsafe {
