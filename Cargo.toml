@@ -4,7 +4,19 @@
 # SPDX-License-Identifier: MIT
 #-------------------------------------------------------------------------------------------
 
-[workspace]
-members = [ "builder", "kernel" ]
-default-members = [ "builder" ]
-resolver = "2"
+[package]
+name = "hyper-os"
+version = "0.1.0"
+edition = "2021"
+default-run = "builder"
+
+[[bin]]
+name = "builder"
+path = "builder/src/main.rs"
+
+[dependencies]
+chrono = "0.4"
+clap = { version = "4.3", features = [ "derive" ] }
+color-eyre = "0.6"
+fern = { version = "0.6", features = [ "colored" ] }
+log = "0.4"
