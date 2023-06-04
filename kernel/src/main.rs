@@ -10,19 +10,19 @@
 
 mod arch;
 
-use crate::arch::gdt;
+use crate::arch::{cpu, gdt};
 
-use core::{arch::asm, panic::PanicInfo};
+use core::panic::PanicInfo;
 
 #[no_mangle]
 extern "C" fn kernel_main() -> ! {
     gdt::init();
 
     unsafe {
-        asm!("cli");
+        cpu::disable_interrupts();
 
         loop {
-            asm!("hlt");
+            cpu::halt();
         }
     }
 }
@@ -30,10 +30,10 @@ extern "C" fn kernel_main() -> ! {
 #[panic_handler]
 fn rust_panic(_panic_info: &PanicInfo) -> ! {
     unsafe {
-        asm!("cli");
+        cpu::disable_interrupts();
 
         loop {
-            asm!("hlt");
+            cpu::halt();
         }
     }
 }

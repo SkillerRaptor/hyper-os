@@ -25,3 +25,11 @@ pub fn disable_interrupts() {
         asm!("cli", options(nomem, nostack));
     }
 }
+
+/// Halts the CPU
+#[inline(always)]
+pub fn halt() {
+    unsafe {
+        asm!("hlt", options(nomem, nostack));
+    }
+}
