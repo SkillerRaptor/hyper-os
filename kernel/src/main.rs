@@ -6,11 +6,18 @@
 
 #![no_std]
 #![no_main]
+#![allow(dead_code)]
+
+mod arch;
+
+use crate::arch::gdt;
 
 use core::{arch::asm, panic::PanicInfo};
 
 #[no_mangle]
 extern "C" fn kernel_main() -> ! {
+    gdt::init();
+
     unsafe {
         asm!("cli");
 
