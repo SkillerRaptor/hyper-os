@@ -13,7 +13,7 @@ target = "./.cargo/x86_64-hyper_os.json"
 
 [target.x86_64-hyper_os]
 rustflags = [
-	"-C", "link-arg=-T./kernel/boot/linker.ld",
+	"-C", "link-arg=-T./boot/linker.ld",
 	"-C", "force-frame-pointers",
 	"-C", "force-unwind-tables",
 ]

@@ -5,6 +5,6 @@
  */
 
 fn main() {
-    println!("cargo:rustc-link-arg=-T./kernel/boot/linker.ld");
-    println!("cargo:rerun-if-changed=./kernel/boot/linker.ld");
+    println!("cargo:rustc-link-arg=-T./boot/linker.ld");
+    println!("cargo:rerun-if-changed=./boot/linker.ld");
 }

@@ -8,11 +8,7 @@ mod logger;
 
 use clap::Parser;
 use color_eyre::{eyre::bail, Result};
-use std::{
-    env, fs,
-    path::Path,
-    process::{Command, Stdio},
-};
+use std::{env, fs, path::Path, process::Command};
 
 #[derive(Debug, Parser)]
 #[command(author, version)]
@@ -28,7 +24,7 @@ fn main() -> Result<()> {
     let args = Args::parse();
     logger::init(3)?;
 
-    let workspace_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
+    let workspace_dir = env!("CARGO_MANIFEST_DIR");
     build_limine(workspace_dir)?;
 
     let debug = args.debug;
@@ -51,8 +47,6 @@ fn build_limine(workspace_dir: &str) -> Result<()> {
 
     let success = Command::new("make")
         .args(["-C", "./limine"])
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
         .status()?
         .success();
 
@@ -75,8 +69,6 @@ fn build_kernel(workspace_dir: &str, debug: bool) -> Result<()> {
             .arg("build")
             .args(["-Z", "unstable-options"])
             .args(["--target", "./.cargo/x86_64-hyper_os.json"])
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
             .status()?
             .success()
     } else {
@@ -85,8 +77,6 @@ fn build_kernel(workspace_dir: &str, debug: bool) -> Result<()> {
             .args(["-Z", "unstable-options"])
             .args(["--target", "./.cargo/x86_64-hyper_os.json"])
             .arg("--release")
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
             .status()?
             .success()
     };
@@ -113,9 +103,15 @@ fn build_iso(workspace_dir: &str, debug: bool) -> Result<()> {
     fs::create_dir(iso_root_path)?;
 
     if debug {
-        fs::copy("./x86_64-hyper_os/debug/kernel", "./iso_root/kernel.elf")?;
+        fs::copy(
+            "../kernel/target/x86_64-hyper_os/debug/kernel",
+            "./iso_root/kernel.elf",
+        )?;
     } else {
-        fs::copy("./x86_64-hyper_os/release/kernel", "./iso_root/kernel.elf")?;
+        fs::copy(
+            "../kernel/target/x86_64-hyper_os/release/kernel",
+            "./iso_root/kernel.elf",
+        )?;
     }
 
     fs::copy("../kernel/boot/limine.cfg", "./iso_root/limine.cfg")?;
@@ -141,8 +137,6 @@ fn build_iso(workspace_dir: &str, debug: bool) -> Result<()> {
         .arg("--protective-msdos-label")
         .arg("./iso_root/")
         .args(["-o", "hyper-os.iso"])
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
         .status()?
         .success();
 
@@ -152,8 +146,6 @@ fn build_iso(workspace_dir: &str, debug: bool) -> Result<()> {
 
     let success = Command::new("../third_party/limine/limine-deploy")
         .arg("hyper-os.iso")
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
         .status()?
         .success();
 
